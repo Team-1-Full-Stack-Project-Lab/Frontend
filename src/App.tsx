@@ -1,15 +1,17 @@
-import Header from './components/Header'
-import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import MainLayout from './layouts/MainLayout'
+import HomePage from './pages/HomePage'
+import TripsPage from './pages/TripsPage'
 
-function App() {
+export default function App() {
   return (
-    <>
-      <div>
-        <Header />
-      </div>
-
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/trips" element={<TripsPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
-
-export default App
