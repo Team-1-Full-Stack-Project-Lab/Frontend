@@ -11,7 +11,7 @@ export default function LoginPage() {
     email: '',
     password: '',
   })
-  const [errors, setErrors] = useState({
+  const [errors] = useState({
     email: '',
     password: '',
   })
