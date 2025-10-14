@@ -47,7 +47,7 @@ export default function TripsPage() {
       </div>
 
       <div className="flex justify-between items-center w-full border border-gray-200 rounded-2xl p-4 hover:shadow-sm">
-        <h2 className="font-semibold text-gray-900">Busca tu reservación</h2>
+        <h2 className="font-semibold text-gray-900">Busca tu reservación </h2>
         <p className="text-sm text-gray-500">Busca con tu número de itinerario</p>
       </div>
     </>
