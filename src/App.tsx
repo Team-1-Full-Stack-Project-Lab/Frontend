@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage'
 import TripsPage from './pages/TripsPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import AuthLayout from './layouts/AuthLayout'
 
 export default function App() {
   return (
@@ -13,8 +14,10 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/trips" element={<TripsPage />} />
         </Route>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   )
