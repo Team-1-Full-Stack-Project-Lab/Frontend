@@ -58,7 +58,7 @@ export default function MainLayout() {
         )}
       </header>
 
-      <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-10">
+      <main className="flex-1 w-full">
         <Outlet />
       </main>
 
