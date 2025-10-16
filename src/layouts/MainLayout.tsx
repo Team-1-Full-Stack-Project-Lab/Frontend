@@ -15,7 +15,7 @@ export default function MainLayout() {
 
           <nav className="hidden lg:flex space-x-4">
             <Link to="/trips" className="text-gray-800 hover:text-blue-600 font-medium">
-              Viajes
+              Trips
             </Link>
 
             <div className="border-l border-gray-300 h-6 my-auto" />
@@ -42,7 +42,7 @@ export default function MainLayout() {
                 className="text-gray-800 hover:text-blue-600 font-medium"
                 onClick={() => setMenuOpen(false)}
               >
-                Viajes
+                Trips
               </Link>
 
               <hr className="border-gray-300" />
