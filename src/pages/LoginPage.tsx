@@ -25,7 +25,7 @@ export default function LoginPage() {
     <>
       <title>Inicio Sesión</title>
 
-      <Card className="w-full">
+      <Card className="w-full px-12 py-8">
         <CardHeader>
           <CardTitle>Inicia sesión</CardTitle>
           <CardDescription>Ingresa tus data para acceder a tu cuenta</CardDescription>

@@ -29,7 +29,7 @@ export default function RegisterPage() {
     <>
       <title>Nueva Cuenta</title>
 
-      <Card className="w-full">
+      <Card className="w-full px-12 py-8">
         <CardHeader>
           <CardTitle>Crea tu cuenta</CardTitle>
           <CardDescription>Completa los campos para registrarte como nuevo usuario</CardDescription>
