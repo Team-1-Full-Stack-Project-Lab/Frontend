@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 export function DeleteProfile({ userData, userId }: { userData: UserData | null, userId: number }) {
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
   if (!userData) {
     return null;
   }

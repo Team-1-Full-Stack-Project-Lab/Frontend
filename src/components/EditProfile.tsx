@@ -21,7 +21,7 @@ interface EditProfileProps {
 export function EditProfile({ userData, onUpdate, userId }: EditProfileProps & { userId: number }) {
   const [firstName2, setFirstName] = useState("");
   const [lastName2, setLastName] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (userData) {
