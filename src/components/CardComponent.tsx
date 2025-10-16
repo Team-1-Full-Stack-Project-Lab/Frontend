@@ -10,10 +10,10 @@ export function CardComponent() {
         <Calendar className="w-6 h-6 text-[#003580]" />
       </div>
 
-      <p className="text-lg text-gray-800">No tienes ningún viaje programado. ¿A dónde se te antoja ir?</p>
+      <p className="text-lg text-gray-800">You have no upcoming trips. Where are you going next?</p>
 
       <Link to="/">
-        <Button className="mt-2 bg-[#006CE4] hover:bg-[#0055b8] text-white px-6 rounded-full">Buscar</Button>
+        <Button className="mt-2 bg-[#006CE4] hover:bg-[#0055b8] text-white px-6 rounded-full">Search</Button>
       </Link>
     </Card>
   )

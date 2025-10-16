@@ -23,14 +23,14 @@ export default function LoginPage() {
 
   return (
     <>
-      <title>Inicio Sesión</title>
+      <title>Login</title>
 
       <Card className="w-full px-12 py-8">
         <CardHeader>
-          <CardTitle>Inicia sesión</CardTitle>
-          <CardDescription>Ingresa tus data para acceder a tu cuenta</CardDescription>
+          <CardTitle>Login</CardTitle>
+          <CardDescription>Enter your credentials to access your account</CardDescription>
           <CardAction>
-            <Link to="/register">Crear cuenta</Link>
+            <Link to="/register">Create an account</Link>
           </CardAction>
         </CardHeader>
         <CardContent>
@@ -49,7 +49,7 @@ export default function LoginPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="password">Contraseña</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -63,7 +63,7 @@ export default function LoginPage() {
             </div>
 
             <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white">
-              Ingresar
+              Login
             </Button>
           </form>
         </CardContent>

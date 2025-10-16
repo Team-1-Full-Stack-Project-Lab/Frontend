@@ -26,12 +26,12 @@ export default function MapCard({ place }: Props) {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gray-50">
-              <p className="text-sm text-muted-foreground">Previsualización del mapa no disponible</p>
+              <p className="text-sm text-muted-foreground">Map preview not available</p>
             </div>
           )
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-50">
-            <p className="text-sm text-muted-foreground">Selecciona una ubicación</p>
+            <p className="text-sm text-muted-foreground">Select a location</p>
           </div>
         )}
       </div>
@@ -43,7 +43,7 @@ export default function MapCard({ place }: Props) {
           rel="noreferrer"
           className="text-sm text-blue-600 hover:underline"
         >
-          Ver en el mapa
+          View on Map
         </a>
       </div>
     </div>

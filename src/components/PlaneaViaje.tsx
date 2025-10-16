@@ -25,16 +25,16 @@ export function PlaneaViaje({ onGuardarViaje }: PlaneaViajeProps) {
         <div className="text-blue-800 hover:text-blue-500">
             <AlertDialog open={open} onOpenChange={setOpen}>
                 <AlertDialogTrigger asChild >
-                    <Button variant="ghost" className=" text-blue-800 hover:text-blue-500"> + Planear un viaje </Button>
+                    <Button variant="ghost" className=" text-blue-800 hover:text-blue-500"> + Create a trip </Button>
                 </AlertDialogTrigger>
                 < AlertDialogContent className="sm:max-w-[425px]">
                     <AlertDialogHeader>
                         <AlertDialogTitle>
-                            <h2 className="text-2xl font-bold text-gray-900">Planea un nuevo viaje</h2>
+                            <h2 className="text-2xl font-bold text-gray-900">Create a new trip</h2>
                         </AlertDialogTitle>
                         <AlertDialogDescription>
                             <p className="text-gray-600 text-sm mb-4">
-                                Guarda las opciones que te gusten y planea tu viaje
+                                Track things you love and plan your whole trip
                             </p>
                             <InputViaje onGuardar={handleGuardar} onCancelar={() => setOpen(false)} />
                             <div className="flex justify-end mt-4" />

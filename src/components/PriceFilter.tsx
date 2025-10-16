@@ -39,26 +39,26 @@ export default function PriceFilter({ prices, min = 80, max = 650, onChange }: P
     const minEl = minRef.current
     const maxEl = maxRef.current
 
-  if (!rangeEl || !bgEl || !fgEl || !minEl || !maxEl) return
+    if (!rangeEl || !bgEl || !fgEl || !minEl || !maxEl) return
 
-  // Dynamic bucket bounds from prices (fallback to [0,1000])
-  const computedMin = prices && prices.length > 0 ? Math.floor(Math.min(...prices)) : 0
-  const computedMaxRaw = prices && prices.length > 0 ? Math.ceil(Math.max(...prices)) : 1000
-  // overflow cap: show a 650+ area so very expensive items are visible in the right-most bucket
-  const overflowCap = 650
-  const computedMax = Math.max(computedMaxRaw, overflowCap)
+    // Dynamic bucket bounds from prices (fallback to [0,1000])
+    const computedMin = prices && prices.length > 0 ? Math.floor(Math.min(...prices)) : 0
+    const computedMaxRaw = prices && prices.length > 0 ? Math.ceil(Math.max(...prices)) : 1000
+    // overflow cap: show a 650+ area so very expensive items are visible in the right-most bucket
+    const overflowCap = 650
+    const computedMax = Math.max(computedMaxRaw, overflowCap)
 
     const bucketCount = 29
     const bucketWidth = (computedMax - computedMin) / bucketCount || 1
 
-  const histogramData = (() => {
+    const histogramData = (() => {
       if (prices && prices.length > 0) {
         const buckets = new Array(bucketCount).fill(0)
         prices.forEach((p: number) => {
           const priceNum = Number(p) || 0
-            // if price exceeds overflowCap, put into last bucket so it appears under '650+'
-            let idx = Math.min(buckets.length - 1, Math.max(0, Math.floor((priceNum - computedMin) / bucketWidth)))
-            if (priceNum > overflowCap) idx = buckets.length - 1
+          // if price exceeds overflowCap, put into last bucket so it appears under '650+'
+          let idx = Math.min(buckets.length - 1, Math.max(0, Math.floor((priceNum - computedMin) / bucketWidth)))
+          if (priceNum > overflowCap) idx = buckets.length - 1
           buckets[idx]++
         })
         return buckets
@@ -122,11 +122,11 @@ export default function PriceFilter({ prices, min = 80, max = 650, onChange }: P
         }
       })
 
-  slider = (rangeEl as any)
+      slider = (rangeEl as any)
 
-  // initialize prev refs
-  prevMinRef.current = localMin
-  prevMaxRef.current = localMax
+      // initialize prev refs
+      prevMinRef.current = localMin
+      prevMaxRef.current = localMax
 
       const onUpdate = (values: string[]) => {
         const v0 = Math.round(Number(values[0]))
@@ -159,9 +159,9 @@ export default function PriceFilter({ prices, min = 80, max = 650, onChange }: P
         onChange?.(v0, v1)
       }
 
-  slider.noUiSlider.on('start', onStart)
-  slider.noUiSlider.on('update', onUpdate)
-  slider.noUiSlider.on('end', onEnd)
+      slider.noUiSlider.on('start', onStart)
+      slider.noUiSlider.on('update', onUpdate)
+      slider.noUiSlider.on('end', onEnd)
 
       // input handling: allow free typing while editing. Apply changes on blur.
       const minBlur = () => {
@@ -212,7 +212,7 @@ export default function PriceFilter({ prices, min = 80, max = 650, onChange }: P
         fgChart?.updateSeries([{ name: 'Sales', data: fgInit }], false)
       } catch { }
 
-  window.addEventListener('resize', resizeHandler)
+      window.addEventListener('resize', resizeHandler)
 
       return () => {
         try {
@@ -234,15 +234,15 @@ export default function PriceFilter({ prices, min = 80, max = 650, onChange }: P
 
   return (
     <div className="mt-6">
-      <div className="text-sm font-medium mb-2">Precio total</div>
+      <div className="text-sm font-medium mb-2">Total Price</div>
 
       <div className="grid grid-cols-2 gap-3 mb-4">
         <label className="block">
-          <div className="text-xs text-muted-foreground">Mínimo</div>
+          <div className="text-xs text-muted-foreground">Minimum</div>
           <input ref={minRef} id="hs-pass-charts-values-to-inputs-min-target" type="number" value={localMin} onChange={(e) => updateMin(Number(e.target.value) || 0)} className="py-2.5 sm:py-3 px-4 block w-full border border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500" />
         </label>
         <label className="block">
-          <div className="text-xs text-muted-foreground">Máximo</div>
+          <div className="text-xs text-muted-foreground">Maximum</div>
           <input ref={maxRef} id="hs-pass-charts-values-to-inputs-max-target" type="number" value={localMax} onChange={(e) => updateMax(Number(e.target.value) || 0)} className="py-2.5 sm:py-3 px-4 block w-full border border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500" />
         </label>
       </div>

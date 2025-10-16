@@ -18,7 +18,7 @@ export default function RentalCard({ title, location, pricePerNight, tag, images
   const next = () => setIndex((i) => (i + 1) % imgs.length)
 
   return (
-  <Card className="w-full max-w-full flex-row flex items-stretch gap-0 p-0 rounded-lg h-52">
+    <Card className="w-full max-w-full flex-row flex items-stretch gap-0 p-0 rounded-lg h-52">
       {/* Left: image area */}
       <div className="w-2/5 shrink-0 h-full relative overflow-hidden">
         <img src={imgs[index]} alt={title} className="h-full w-full object-cover rounded-l-lg" />
@@ -39,14 +39,14 @@ export default function RentalCard({ title, location, pricePerNight, tag, images
         </button>
       </div>
 
-  {/* Right: content */}
+      {/* Right: content */}
       <div className="flex-1 p-6 h-full flex flex-col justify-between">
         <div className="flex items-start justify-between">
           <div className="pr-4">
-            <div className="text-sm text-muted-foreground mb-1">Visto</div>
+            <div className="text-sm text-muted-foreground mb-1">Viewed</div>
             <h3 className="text-xl font-semibold mb-1"><a href="#">{title}</a></h3>
             <p className="text-sm text-muted-foreground mb-3">{location}</p>
-            <p className="text-sm text-muted-foreground mb-4">Cocina · Desayuno incluido · 100% reembolsable</p>
+            <p className="text-sm text-muted-foreground mb-4">Kitchen · Breakfast included · 100% refundable</p>
           </div>
 
           <div className="text-right">
@@ -58,10 +58,10 @@ export default function RentalCard({ title, location, pricePerNight, tag, images
         <div className="mt-4 flex items-center justify-between">
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2 py-1 rounded">8.0</span>
-            <div className="text-sm">Muy bueno · 5 opiniones</div>
+            <div className="text-sm">Very good · 5 reviews</div>
           </div>
 
-          <a href="#" className="inline-block text-blue-600 hover:underline">Ver detalles</a>
+          <a href="#" className="inline-block text-blue-600 hover:underline">View details</a>
         </div>
       </div>
     </Card>

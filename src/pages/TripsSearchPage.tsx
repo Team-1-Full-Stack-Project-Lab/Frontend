@@ -27,9 +27,9 @@ export default function TripsSearchPage() {
       id: 'r1',
       title: 'Cabañas Pewma Futrono',
       location: 'Futrono',
-      pricePerNight: '$129 en total',
+      pricePerNight: '$129 total',
       price: 129,
-      tag: '$65 por noche',
+      tag: '$65 per night',
       images: ['/background.webp', '/paris-france-eiffel-tower-romantic-sunset.jpg'],
       filters: ['Cabaña', 'Desayuno incluido', 'Futrono'],
     },
@@ -37,16 +37,16 @@ export default function TripsSearchPage() {
       id: 'r2',
       title: 'Entre Rios Lodge',
       location: 'Futrono',
-      pricePerNight: '$609 en total',
+      pricePerNight: '$609 total',
       price: 609,
-      tag: '$304 por noche',
+      tag: '$304 per night',
       images: ['/background.webp', '/tokyo-japan-cherry-blossoms-city-skyline.jpg'],
       filters: ['Hotel', 'Alberca'],
     },
-    { id: 'r3', title: 'Lago Azul Retreat', location: 'Futrono', pricePerNight: '$180 en total', price: 180, tag: '$90 por noche', images: ['/background.webp'], filters: ['Cabaña', 'Pago durante la estancia'] },
-    { id: 'r4', title: 'Casa del Bosque', location: 'Futrono', pricePerNight: '$210 en total', price: 210, tag: '$105 por noche', images: ['/paris-france-eiffel-tower-romantic-sunset.jpg'], filters: ['Tina de hidromasaje', 'Cabaña'] },
-    { id: 'r5', title: 'Vista Hermosa', location: 'Futrono', pricePerNight: '$150 en total', price: 150, tag: '$75 por noche', images: ['/tokyo-japan-cherry-blossoms-city-skyline.jpg'], filters: ['Desayuno incluido', 'Hotel'] },
-    { id: 'r6', title: 'Cabañas del Sur', location: 'Futrono', pricePerNight: '$99 en total', price: 99, tag: '$50 por noche', images: ['/iceland-northern-lights-aurora-mountains.jpg'], filters: ['Acepta mascotas', 'Cabaña'] },
+    { id: 'r3', title: 'Lago Azul Retreat', location: 'Futrono', pricePerNight: '$180 total', price: 180, tag: '$90 per night', images: ['/background.webp'], filters: ['Cabaña', 'Pago durante la estancia'] },
+    { id: 'r4', title: 'Casa del Bosque', location: 'Futrono', pricePerNight: '$210 total', price: 210, tag: '$105 per night', images: ['/paris-france-eiffel-tower-romantic-sunset.jpg'], filters: ['Tina de hidromasaje', 'Cabaña'] },
+    { id: 'r5', title: 'Vista Hermosa', location: 'Futrono', pricePerNight: '$150 total', price: 150, tag: '$75 per night', images: ['/tokyo-japan-cherry-blossoms-city-skyline.jpg'], filters: ['Desayuno incluido', 'Hotel'] },
+    { id: 'r6', title: 'Cabañas del Sur', location: 'Futrono', pricePerNight: '$99 total', price: 99, tag: '$50 per nignt', images: ['/iceland-northern-lights-aurora-mountains.jpg'], filters: ['Acepta mascotas', 'Cabaña'] },
   ]
 
   const [queryStr, setQueryStr] = useState('')
@@ -114,8 +114,8 @@ export default function TripsSearchPage() {
 
             <section className="mb-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-medium">Propiedades</h2>
-                <div className="text-sm text-muted-foreground">{filtered.length} propiedades</div>
+                <h2 className="text-lg font-medium">Properties</h2>
+                <div className="text-sm text-muted-foreground">{filtered.length} Properties</div>
               </div>
 
               <div className="grid gap-4">
