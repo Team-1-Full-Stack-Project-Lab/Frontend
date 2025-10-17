@@ -4,21 +4,23 @@ import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useAuth } from '@/hooks/useAuth'
 import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export default function LoginPage() {
+  const navigate = useNavigate()
+  const { login, loading, error } = useAuth()
+
   const [data, setData] = useState({
-    email: '',
-    password: '',
-  })
-  const [errors] = useState({
     email: '',
     password: '',
   })
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    console.log('Login Form:', data)
+    login(data.email, data.password)
+    navigate('/')
   }
 
   return (
@@ -45,7 +47,6 @@ export default function LoginPage() {
                 onChange={e => setData({ ...data, email: e.target.value })}
                 required
               />
-              {errors.email && <InputError message={errors.email} className="mt-2" />}
             </div>
 
             <div className="grid gap-2">
@@ -59,10 +60,10 @@ export default function LoginPage() {
                 onChange={e => setData({ ...data, password: e.target.value })}
                 required
               />
-              {errors.password && <InputError message={errors.password} className="mt-2" />}
             </div>
 
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white">
+            {error && <InputError message={error} />}
+            <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-500 text-white">
               Login
             </Button>
           </form>
