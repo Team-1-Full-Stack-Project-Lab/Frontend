@@ -4,13 +4,13 @@ import { Button } from '@/components/ui/button'
 import { InputError } from '@/components/InputError'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
-  const { register, loading, error } = useAuth()
+  const { register, loading, error, isAuthenticated } = useAuth()
 
   const [data, setData] = useState({
     firstname: '',
@@ -22,8 +22,11 @@ export default function RegisterPage() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     register(data.firstname, data.lastname, data.email, data.password)
-    navigate('/')
   }
+
+  useEffect(() => {
+    if (isAuthenticated) navigate('/')
+  }, [isAuthenticated, navigate])
 
   return (
     <>

@@ -5,12 +5,12 @@ import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/useAuth'
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { login, loading, error } = useAuth()
+  const { login, loading, error, isAuthenticated } = useAuth()
 
   const [data, setData] = useState({
     email: '',
@@ -20,8 +20,11 @@ export default function LoginPage() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     login(data.email, data.password)
-    navigate('/')
   }
+
+  useEffect(() => {
+    if (isAuthenticated) navigate('/')
+  }, [isAuthenticated, navigate])
 
   return (
     <>
