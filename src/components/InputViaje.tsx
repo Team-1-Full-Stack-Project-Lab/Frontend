@@ -27,33 +27,33 @@ export function InputViaje({ onGuardar }: InputViajeProps) {
             <div className="flex flex-col gap-3">
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="nombre" className="text-gray-800 font-medium mb-2">
-                        Nombre del viaje
+                        Trip name
                         <span className="text-red-500">*</span>
                     </Label>
                     <Input
                         id="nombre"
                         value={nombre}
                         onChange={(e) => setNombre(e.target.value)}
-                        placeholder="Nombre del viaje"
+                        placeholder="Trip name"
                         className="rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400"
                     />
                 </div>
                 <div className="flex flex-col gap-1 mb-2">
                     <Label htmlFor="descripcion" className="text-gray-800 font-medium mb-2">
-                        Descripción
+                        Description
                     </Label>
                     <Textarea
                         id="descripcion"
                         value={descripcion}
                         onChange={(e) => setDescripcion(e.target.value)}
-                        placeholder="Agrega una descripción"
+                        placeholder="Add a description"
                         className="rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400"
                     />
                 </div>
             </div>
             < AlertDialogFooter >
                 <AlertDialogCancel className="mt-2 bg-[#a7183c] hover:bg-[#e9c5ce] text-white px-6 rounded-full">
-                    Cancelar
+                    Cancel
                 </AlertDialogCancel>
                 <Button
                     onClick={handleGuardar}
@@ -62,7 +62,7 @@ export function InputViaje({ onGuardar }: InputViajeProps) {
                         ? "bg-[#a8c7fa] text-white cursor-not-allowed"
                         : "bg-[#006CE4] hover:bg-[#0055b8] text-white "
                         }`}>
-                    Guardar
+                    Save
                 </Button>
             </AlertDialogFooter>
         </div>

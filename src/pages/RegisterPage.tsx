@@ -5,15 +5,14 @@ import { InputError } from '@/components/InputError'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function RegisterPage() {
+  const navigate = useNavigate()
+  const { register, loading, error } = useAuth()
+
   const [data, setData] = useState({
-    firstname: '',
-    lastname: '',
-    email: '',
-    password: '',
-  })
-  const [errors] = useState({
     firstname: '',
     lastname: '',
     email: '',
@@ -22,44 +21,43 @@ export default function RegisterPage() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    console.log('Register Form:', data)
+    register(data.firstname, data.lastname, data.email, data.password)
+    navigate('/')
   }
 
   return (
     <>
-      <title>Nueva Cuenta</title>
+      <title>New Account</title>
 
-      <Card className="w-full">
+      <Card className="w-full px-12 py-8">
         <CardHeader>
-          <CardTitle>Crea tu cuenta</CardTitle>
-          <CardDescription>Completa los campos para registrarte como nuevo usuario</CardDescription>
+          <CardTitle>Create an account</CardTitle>
+          <CardDescription>Complete the fields to register as a new user</CardDescription>
         </CardHeader>
         <CardContent>
           <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
             <div className="grid gap-2">
-              <Label htmlFor="firstname">Nombre</Label>
+              <Label htmlFor="firstname">First Name</Label>
               <Input
                 id="firstname"
                 type="text"
-                placeholder="Tu nombre"
+                placeholder="Your first name"
                 value={data.firstname}
                 onChange={e => setData({ ...data, firstname: e.target.value })}
                 required
               />
-              {errors.firstname && <InputError message={errors.firstname} className="mt-2" />}
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="lastname">Apellido</Label>
+              <Label htmlFor="lastname">Last Name</Label>
               <Input
                 id="lastname"
                 type="text"
-                placeholder="Tu apellido"
+                placeholder="Your last name"
                 value={data.lastname}
                 onChange={e => setData({ ...data, lastname: e.target.value })}
                 required
               />
-              {errors.lastname && <InputError message={errors.lastname} className="mt-2" />}
             </div>
 
             <div className="grid gap-2">
@@ -72,11 +70,10 @@ export default function RegisterPage() {
                 onChange={e => setData({ ...data, email: e.target.value })}
                 required
               />
-              {errors.email && <InputError message={errors.email} className="mt-2" />}
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="password">Contraseña</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -86,14 +83,14 @@ export default function RegisterPage() {
                 onChange={e => setData({ ...data, password: e.target.value })}
                 required
               />
-              {errors.password && <InputError message={errors.password} className="mt-2" />}
             </div>
 
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white">
-              Registrarse
+            {error && <InputError message={error} />}
+            <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-500 text-white">
+              Register
             </Button>
 
-            <Link to="/login">¿Ya tienes cuenta? Inicia sesión</Link>
+            <Link to="/login">Already have an account? Login</Link>
           </form>
         </CardContent>
       </Card>

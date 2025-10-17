@@ -1,7 +1,16 @@
+import { useAuth } from '@/hooks/useAuth'
+import { useEffect } from 'react'
 import { FaArrowAltCircleLeft } from 'react-icons/fa'
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 
 export default function AuthLayout() {
+  const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
+
+  useEffect(() => {
+    if (isAuthenticated) navigate('/')
+  }, [isAuthenticated, navigate])
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white">
       <Link to="/" className="absolute top-5 left-5 text-blue-600 hover:text-blue-500">
