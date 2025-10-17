@@ -5,15 +5,14 @@ import { InputError } from '@/components/InputError'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function RegisterPage() {
+  const navigate = useNavigate()
+  const { register, loading, error } = useAuth()
+
   const [data, setData] = useState({
-    firstname: '',
-    lastname: '',
-    email: '',
-    password: '',
-  })
-  const [errors] = useState({
     firstname: '',
     lastname: '',
     email: '',
@@ -22,7 +21,8 @@ export default function RegisterPage() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    console.log('Register Form:', data)
+    register(data.firstname, data.lastname, data.email, data.password)
+    navigate('/')
   }
 
   return (
@@ -46,7 +46,6 @@ export default function RegisterPage() {
                 onChange={e => setData({ ...data, firstname: e.target.value })}
                 required
               />
-              {errors.firstname && <InputError message={errors.firstname} className="mt-2" />}
             </div>
 
             <div className="grid gap-2">
@@ -59,7 +58,6 @@ export default function RegisterPage() {
                 onChange={e => setData({ ...data, lastname: e.target.value })}
                 required
               />
-              {errors.lastname && <InputError message={errors.lastname} className="mt-2" />}
             </div>
 
             <div className="grid gap-2">
@@ -72,7 +70,6 @@ export default function RegisterPage() {
                 onChange={e => setData({ ...data, email: e.target.value })}
                 required
               />
-              {errors.email && <InputError message={errors.email} className="mt-2" />}
             </div>
 
             <div className="grid gap-2">
@@ -86,10 +83,10 @@ export default function RegisterPage() {
                 onChange={e => setData({ ...data, password: e.target.value })}
                 required
               />
-              {errors.password && <InputError message={errors.password} className="mt-2" />}
             </div>
 
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white">
+            {error && <InputError message={error} />}
+            <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-500 text-white">
               Register
             </Button>
 
