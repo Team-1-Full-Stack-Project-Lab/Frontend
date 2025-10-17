@@ -21,7 +21,7 @@ export default function RegisterPage() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    register(data.firstname, data.lastname, data.email, data.password)
+    register(data.email, data.firstname, data.lastname, data.password)
   }
 
   useEffect(() => {
