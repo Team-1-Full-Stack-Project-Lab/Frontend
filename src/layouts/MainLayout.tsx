@@ -1,9 +1,30 @@
-import { useState } from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { FaBars, FaTimes } from 'react-icons/fa'
+import { useAuth } from '@/hooks/useAuth'
+import { UserDropdown } from '@/components/UserDropdown'
 
 export default function MainLayout() {
+  const navigate = useNavigate()
+  const { logout, user, refreshUser, isAuthenticated } = useAuth()
+
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const handleLogout = () => {
+    logout()
+  }
+
+  const handleProfile = () => {
+    navigate('/profile')
+  }
+
+  const handleSettings = () => {
+    navigate('/settings')
+  }
+
+  useEffect(() => {
+    if (isAuthenticated && !user) refreshUser()
+  }, [isAuthenticated, user, refreshUser])
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -19,9 +40,13 @@ export default function MainLayout() {
             </Link>
 
             <div className="border-l border-gray-300 h-6 my-auto" />
-            <Link to="/login" className="text-gray-800 hover:text-blue-600 font-medium">
-              Login
-            </Link>
+            {user ? (
+              <UserDropdown user={user} onLogout={handleLogout} onProfile={handleProfile} onSettings={handleSettings} />
+            ) : (
+              <Link to="/login" className="text-gray-800 hover:text-blue-600 font-medium">
+                Login
+              </Link>
+            )}
           </nav>
 
           <div className="lg:hidden">
@@ -46,13 +71,22 @@ export default function MainLayout() {
               </Link>
 
               <hr className="border-gray-300" />
-              <Link
-                to="/login"
-                className="text-gray-800 hover:text-blue-600 font-medium"
-                onClick={() => setMenuOpen(false)}
-              >
-                Login
-              </Link>
+              {user ? (
+                <UserDropdown
+                  user={user}
+                  onLogout={handleLogout}
+                  onProfile={handleProfile}
+                  onSettings={handleSettings}
+                />
+              ) : (
+                <Link
+                  to="/login"
+                  className="text-gray-800 hover:text-blue-600 font-medium"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Login
+                </Link>
+              )}
             </nav>
           </div>
         )}
