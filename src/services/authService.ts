@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+const BACKEND_URL = "http://localhost:8080"//import.meta.env.VITE_BACKEND_URL
 const TOKEN_COOKIE_NAME = 'token'
 const TOKEN_EXPIRY_DAYS = 7
 
