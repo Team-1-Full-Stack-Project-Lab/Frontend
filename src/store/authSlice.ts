@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import * as authService from '@/services/authService'
+import * as userService from '@/services/userService'
 import type { UserData } from '@/shared/types'
 
 interface AuthState {
@@ -45,6 +46,26 @@ export const checkAuth = createAsyncThunk('auth/checkAuth', async (_, { rejectWi
   try {
     const user = await authService.getCurrentUser()
     return user
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    return rejectWithValue(message)
+  }
+})
+
+export const deleteUserAccount = createAsyncThunk("user/deleteAccount", async (_, { rejectWithValue }) => {
+  try {
+    const user = await userService.deleteUserAccount();
+    return user;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    return rejectWithValue(message)
+  }
+})
+
+export const updateUserProfile = createAsyncThunk("user/updateProfile", async (userData: userService.UpdateUserProfile, { rejectWithValue }) => {
+  try {
+    const user = await userService.updateUserProfile(userData);
+    return user;
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error'
     return rejectWithValue(message)
@@ -98,6 +119,29 @@ const authSlice = createSlice({
         authService.logout()
         state.user = null
         state.isAuthenticated = false
+      })
+      .addCase(deleteUserAccount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteUserAccount.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteUserAccount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateUserProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
   },
 })

@@ -6,7 +6,7 @@ interface ProfileDataProps {
   onUpdate: (updatedUserData: UserData) => void;
 }
 
-export function ProfileData({ userData, onUpdate, userId }: ProfileDataProps & { userId: number }) {
+export function ProfileData({ userData }: ProfileDataProps) {
   if (!userData) {
     return null;
   }
@@ -16,7 +16,7 @@ export function ProfileData({ userData, onUpdate, userId }: ProfileDataProps & {
         <h1 className="text-2xl font-bold text-[#121838] mb-3">{userData.firstName} {userData.lastName}</h1>
         <div className="flex items-center justify-between mt-4 mr-4">
           <h2 className="text-3xl font-bold text-[#121838] mr-6">Basic information</h2>
-          <EditProfile userData={userData} onUpdate={onUpdate} userId={userId} />
+          <EditProfile userData={userData} />
         </div>
         <p className="text-sm text-gray-500">Make sure this information matches your travel ID, like your passport or license.</p>
       </header>

@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useAppDispatch, useAppSelector } from '@/hooks/store'
-import { loginUser, logoutUser, registerUser, checkAuth } from '@/store/authSlice'
+import { loginUser, logoutUser, registerUser, checkAuth, deleteUserAccount, updateUserProfile } from '@/store/authSlice'
 
 export function useAuth() {
   const dispatch = useAppDispatch()
@@ -28,6 +28,14 @@ export function useAuth() {
     dispatch(checkAuth())
   }, [dispatch])
 
+  const deleteAccount = useCallback(() => {
+    dispatch(deleteUserAccount())
+  }, [dispatch])
+
+  const updateProfile = useCallback((email: string, firstName: string, lastName: string) => {
+    dispatch(updateUserProfile({ email, firstName, lastName }))
+  }, [dispatch])
+
   return {
     user,
     token,
@@ -38,5 +46,7 @@ export function useAuth() {
     register,
     logout,
     refreshUser,
+    deleteAccount,
+    updateProfile,
   }
 }

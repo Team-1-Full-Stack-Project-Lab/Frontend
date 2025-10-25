@@ -1,35 +1,25 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { DeleteProfile } from "../components/DeleteProfile";
 import { ProfileData } from "../components/ProfileData";
 import type { UserData } from "@/shared/types";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
-export const userId = 8; //AQUI CORREGIR CON ID DINAMICO
-
-export const URL_ENDPOINT = `http://localhost:8080/user/profile/${userId}`;
 
 export default function ProfilePage() {
-  const [userData, setUserData] = useState<UserData | null>(null);
-
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await fetch(URL_ENDPOINT);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch user data: ${response.status}`);
-        }
-        const data: UserData = await response.json();
-        setUserData(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchUserProfile();
-  }, []);
+  const navigate = useNavigate();
+  const { user, refreshUser, isAuthenticated } = useAuth();
 
   const handleProfileUpdate = (updatedUserData: UserData) => {
-    setUserData(updatedUserData);
+    console.log("Profile updated:", updatedUserData);
   };
+
+  useEffect(() => {
+    if (isAuthenticated && !user) refreshUser();
+    if (!isAuthenticated) navigate("/");
+  }, [isAuthenticated, user, navigate, refreshUser]);
+
+
   return (
     <>
       <title>My Profile</title>
@@ -37,13 +27,13 @@ export default function ProfilePage() {
         <div className="grid gap-4 grid-cols-1 md:grid-cols-[1fr_3fr]">
           <header className="space-y-5 rounded-xl p-4 text-center">
             <h1 className="text-2xl font-bold text-[#121838]">
-              Hi {userData?.firstName} !
+              Hi {user?.firstName} !
             </h1>
-            <p>{userData?.email}</p>
+            <p>{user?.email}</p>
           </header>
           <aside className="rounded-xl border border-gray-300">
-            <ProfileData userData={userData} onUpdate={handleProfileUpdate} userId={userId} />
-            <DeleteProfile userData={userData} userId={userId} />
+            <ProfileData userData={user} onUpdate={handleProfileUpdate} />
+            <DeleteProfile />
           </aside>
         </div>
       </section>

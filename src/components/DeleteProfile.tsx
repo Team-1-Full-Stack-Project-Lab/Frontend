@@ -9,64 +9,62 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import type { UserData } from "@/shared/types";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { type FormEvent, useState } from "react"
+import { useAuth } from "@/hooks/useAuth"
+import { AlertNotification } from "./Alert-notification"
 
-export function DeleteProfile({ userData, userId }: { userData: UserData | null, userId: number }) {
-  const navigate = useNavigate();
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [, setError] = useState<string | null>(null);
-  if (!userData) {
-    return null;
-  }
-  const handleDelete = async () => {
-    if (!userId) {
-      setError("No se pudo identificar al usuario");
-      return;
-    }
-    setIsDeleting(true);
-    setError(null);
+export function DeleteProfile() {
+  const { deleteAccount, logout } = useAuth()
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [open, setOpen] = useState(false)
+
+
+  const handleDelete = (e: FormEvent) => {
+    e.preventDefault()
     try {
-      const response = await fetch(`http://localhost:8080/user/profile/${userId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error("Error al eliminar la cuenta");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Ha ocurrido un error al eliminar la cuenta");
-    } finally {
-      setIsDeleting(false);
+      deleteAccount()
+      setOpen(false)
+      setShowSuccess(true)
+      setTimeout(() => {
+        logout()
+      }, 2500)
+    } catch (error) {
+      console.error("Error deleting account:", error)
+      setOpen(false)
     }
-    navigate('/login');
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild className="mb-5 ml-4">
-        <Button variant="ghost" className="text-red-600 hover:text-red-500">Delete Account</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <form onSubmit={handleDelete}>
-          <DialogHeader>
-            <DialogTitle>Delete Your Account</DialogTitle>
-            <DialogDescription>
-              Deleting your account is permanent. Are you sure you want to delete this account?
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline" disabled={isDeleting}>Cancel</Button>
-            </DialogClose>
-            <Button type="button" className="bg-red-600 hover:bg-red-500" onClick={handleDelete}>Delete</Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <>
+      {showSuccess && (
+        <AlertNotification
+          type="success"
+          title="Account Deleted"
+          description="Your account has been successfully deleted."
+          className="fixed top-4 right-4 z-50"
+        />
+      )}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild className="mb-5 ml-4">
+          <Button variant="ghost" className="text-red-600 hover:text-red-500">Delete Account</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <form onSubmit={handleDelete}>
+            <DialogHeader>
+              <DialogTitle>Delete Your Account</DialogTitle>
+              <DialogDescription>
+                Deleting your account is permanent. Are you sure you want to delete this account?
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline" >Cancel</Button>
+              </DialogClose>
+              <Button type="submit" className="bg-red-600 hover:bg-red-500" >Delete</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
