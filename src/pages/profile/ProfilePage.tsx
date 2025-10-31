@@ -1,22 +1,14 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { DeleteProfile } from '@/components/DeleteProfile'
 import { ProfileData } from '@/components/ProfileData'
 import type { UserData } from '@/shared/types'
 import { useAuth } from '@/hooks/useAuth'
 
 export default function ProfilePage() {
-  const navigate = useNavigate()
-  const { user, refreshUser, isAuthenticated } = useAuth()
+  const { user } = useAuth()
 
   const handleProfileUpdate = (updatedUserData: UserData) => {
     console.log('Profile updated:', updatedUserData)
   }
-
-  useEffect(() => {
-    if (isAuthenticated && !user) refreshUser()
-    if (!isAuthenticated) navigate('/')
-  }, [isAuthenticated, user, navigate, refreshUser])
 
   return (
     <>

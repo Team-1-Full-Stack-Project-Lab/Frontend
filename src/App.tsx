@@ -7,6 +7,7 @@ import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 import AuthLayout from './layouts/AuthLayout'
 import ProfilePage from './pages/profile/ProfilePage'
+import ProtectedRoute from './layouts/ProtectedRoute'
 
 export default function App() {
   return (
@@ -14,10 +15,14 @@ export default function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/trips" element={<TripsPage />} />
           <Route path="/stays" element={<StaysPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/trips" element={<TripsPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+          </Route>
         </Route>
+
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
