@@ -45,7 +45,7 @@ export function DeleteProfile() {
         />
       )}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild className="mb-5 ml-4">
+        <DialogTrigger asChild>
           <Button variant="ghost" className="text-red-600 hover:text-red-500">Delete Account</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
