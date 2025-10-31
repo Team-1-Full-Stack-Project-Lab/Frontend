@@ -1,12 +1,12 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import HomePage from './pages/HomePage'
-import TripsPage from './pages/TripsPage'
-import TripsSearchPage from './pages/TripsSearchPage'
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
+import TripsPage from './pages/trips/TripsPage'
+import StaysPage from './pages/stays/StaysPage'
+import LoginPage from './pages/auth/LoginPage'
+import RegisterPage from './pages/auth/RegisterPage'
 import AuthLayout from './layouts/AuthLayout'
-import ProfilePage from './pages/ProfilePage'
+import ProfilePage from './pages/profile/ProfilePage'
 
 export default function App() {
   return (
@@ -15,7 +15,7 @@ export default function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/trips" element={<TripsPage />} />
-          <Route path="/trips-search" element={<TripsSearchPage />} />
+          <Route path="/stays" element={<StaysPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
         <Route element={<AuthLayout />}>

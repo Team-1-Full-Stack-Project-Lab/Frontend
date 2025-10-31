@@ -1,27 +1,25 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import Link from '@/components/Link'
-import { Button } from '@/components/ui/button'
-import { InputError } from '@/components/InputError'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
 import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { InputError } from '@/components/InputError'
+import Link from '@/components/Link'
+import { Button } from '@/components/ui/button'
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/useAuth'
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const navigate = useNavigate()
-  const { register, loading, error, isAuthenticated } = useAuth()
+  const { login, loading, error, isAuthenticated } = useAuth()
 
   const [data, setData] = useState({
-    firstname: '',
-    lastname: '',
     email: '',
     password: '',
   })
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    register(data.email, data.firstname, data.lastname, data.password)
+    login(data.email, data.password)
   }
 
   useEffect(() => {
@@ -30,39 +28,18 @@ export default function RegisterPage() {
 
   return (
     <>
-      <title>New Account</title>
+      <title>Login</title>
 
       <Card className="w-full px-12 py-8">
         <CardHeader>
-          <CardTitle>Create an account</CardTitle>
-          <CardDescription>Complete the fields to register as a new user</CardDescription>
+          <CardTitle>Login</CardTitle>
+          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardAction>
+            <Link to="/register">Create an account</Link>
+          </CardAction>
         </CardHeader>
         <CardContent>
           <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-            <div className="grid gap-2">
-              <Label htmlFor="firstname">First Name</Label>
-              <Input
-                id="firstname"
-                type="text"
-                placeholder="Your first name"
-                value={data.firstname}
-                onChange={e => setData({ ...data, firstname: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="lastname">Last Name</Label>
-              <Input
-                id="lastname"
-                type="text"
-                placeholder="Your last name"
-                value={data.lastname}
-                onChange={e => setData({ ...data, lastname: e.target.value })}
-                required
-              />
-            </div>
-
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -90,10 +67,8 @@ export default function RegisterPage() {
 
             {error && <InputError message={error} />}
             <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-500 text-white">
-              Register
+              Login
             </Button>
-
-            <Link to="/login">Already have an account? Login</Link>
           </form>
         </CardContent>
       </Card>

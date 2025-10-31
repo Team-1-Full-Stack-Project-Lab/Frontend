@@ -142,7 +142,7 @@ export function HeroSearch({
                 if (date?.from) params.set('from', new Date(date.from).toISOString())
                 if (date?.to) params.set('to', new Date(date.to).toISOString())
 
-                navigate(`/trips-search?${params.toString()}`)
+                navigate(`/stays?${params.toString()}`)
               }}
             >
               <Search className="h-5 w-5" />
@@ -235,7 +235,7 @@ export function HeroSearch({
                     if (date?.from) params.set('from', new Date(date.from).toISOString())
                     if (date?.to) params.set('to', new Date(date.to).toISOString())
 
-                    navigate(`/trips-search?${params.toString()}`)
+                    navigate(`/stays?${params.toString()}`)
                   }}
                 >
                   <Search className={`${buttonOnlyIcon ? '' : 'mr-2 h-5 w-5'}`} />
@@ -267,7 +267,7 @@ export function HeroSearch({
             if (date?.from) params.set('from', new Date(date.from).toISOString())
             if (date?.to) params.set('to', new Date(date.to).toISOString())
 
-            navigate(`/trips-search?${params.toString()}`)
+            navigate(`/stays?${params.toString()}`)
           }}
         >
           <Search className="mr-2 h-5 w-5" />

@@ -1,10 +1,10 @@
+import { useState, useEffect } from 'react'
+import { Calendar, MapPin } from 'lucide-react'
+import { format } from 'date-fns'
 import { CardComponent } from '@/components/CardComponent'
 import { CreateItineraryDialog } from '@/components/CreateItineraryDialog'
-import { useState, useEffect } from 'react'
 import { getItineraries } from '@/services/itineraryService'
 import type { Itinerary } from '@/shared/types'
-import { format } from 'date-fns'
-import { Calendar, MapPin } from 'lucide-react'
 
 export default function TripsPage() {
   const [itineraries, setItineraries] = useState<Itinerary[]>([])
@@ -42,12 +42,11 @@ export default function TripsPage() {
           <CreateItineraryDialog onSuccess={handleItineraryCreated} />
         </div>
 
-        {/* Itineraries Section */}
         {itineraries.length > 0 ? (
           <div className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">My Itineraries</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {itineraries.map((itinerary) => (
+              {itineraries.map(itinerary => (
                 <div
                   key={itinerary.id}
                   className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 h-56 flex flex-col justify-end shadow-md hover:shadow-lg transition-shadow cursor-pointer"
@@ -61,7 +60,8 @@ export default function TripsPage() {
                     <div className="flex items-center gap-2 text-white/80 text-sm mb-2">
                       <Calendar className="h-4 w-4" />
                       <span>
-                        {format(new Date(itinerary.startDate), 'MMM d')} - {format(new Date(itinerary.endDate), 'MMM d, yyyy')}
+                        {format(new Date(itinerary.startDate), 'MMM d')} -{' '}
+                        {format(new Date(itinerary.endDate), 'MMM d, yyyy')}
                       </span>
                     </div>
                     <p className="text-sm text-white/70">
