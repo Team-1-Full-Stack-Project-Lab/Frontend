@@ -1,14 +1,33 @@
 import { useState, useEffect } from 'react'
-import { Calendar, MapPin } from 'lucide-react'
+import { Calendar, MapPin, MoreVertical, Pencil, Trash2 } from 'lucide-react'
 import { format } from 'date-fns'
 import { CardComponent } from '@/components/CardComponent'
 import { CreateItineraryDialog } from '@/components/CreateItineraryDialog'
-import { getItineraries } from '@/services/itineraryService'
+import { EditItineraryDialog } from '@/components/EditItineraryDialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import { getItineraries, deleteItinerary } from '@/services/itineraryService'
 import type { Itinerary } from '@/shared/types'
 
 export default function TripsPage() {
   const [itineraries, setItineraries] = useState<Itinerary[]>([])
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+  const [editingItinerary, setEditingItinerary] = useState<Itinerary | null>(null)
+  const [deletingItinerary, setDeletingItinerary] = useState<Itinerary | null>(null)
 
   const loadItineraries = () => {
     const loaded = getItineraries()
@@ -23,6 +42,20 @@ export default function TripsPage() {
     loadItineraries()
     setShowSuccessMessage(true)
     setTimeout(() => setShowSuccessMessage(false), 3000)
+  }
+
+  const handleItineraryUpdated = () => {
+    loadItineraries()
+    setShowSuccessMessage(true)
+    setTimeout(() => setShowSuccessMessage(false), 3000)
+  }
+
+  const handleDeleteConfirm = () => {
+    if (deletingItinerary) {
+      deleteItinerary(deletingItinerary.id)
+      loadItineraries()
+      setDeletingItinerary(null)
+    }
   }
 
   return (
@@ -49,8 +82,38 @@ export default function TripsPage() {
               {itineraries.map(itinerary => (
                 <div
                   key={itinerary.id}
-                  className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 h-56 flex flex-col justify-end shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+                  className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 h-56 flex flex-col justify-end shadow-md hover:shadow-lg transition-shadow"
                 >
+                  {/* Dropdown Menu */}
+                  <div className="absolute top-3 right-3 z-10">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          className="bg-white/90 hover:bg-white rounded-full p-2 shadow-md transition-colors"
+                          aria-label="Options"
+                        >
+                          <MoreVertical className="h-5 w-5 text-gray-700" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem
+                          onClick={() => setEditingItinerary(itinerary)}
+                          className="cursor-pointer"
+                        >
+                          <Pencil className="mr-2 h-4 w-4" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setDeletingItinerary(itinerary)}
+                          className="cursor-pointer text-red-600 focus:text-red-600"
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+
                   <div className="bg-gradient-to-t from-gray-900/80 to-transparent p-4">
                     <h3 className="text-white font-bold text-xl mb-2">{itinerary.name}</h3>
                     <div className="flex items-center gap-2 text-white/90 text-sm mb-1">
@@ -75,6 +138,39 @@ export default function TripsPage() {
         ) : (
           <CardComponent />
         )}
+
+        {/* Edit Dialog */}
+        {editingItinerary && (
+          <EditItineraryDialog
+            itinerary={editingItinerary}
+            open={!!editingItinerary}
+            onOpenChange={(open) => !open && setEditingItinerary(null)}
+            onSuccess={handleItineraryUpdated}
+          />
+        )}
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={!!deletingItinerary} onOpenChange={(open) => !open && setDeletingItinerary(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete your itinerary
+                <strong className="block mt-2 text-foreground">"{deletingItinerary?.name}"</strong>
+                and all of its associated stays and information.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteConfirm}
+                className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+              >
+                Delete Itinerary
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 w-full border border-gray-200 rounded-2xl p-4 hover:shadow-sm mt-8">
           <h2 className="font-semibold text-gray-900">Find your booking</h2>
