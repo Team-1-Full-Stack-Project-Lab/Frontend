@@ -67,6 +67,19 @@ export function deleteItinerary(id: string): boolean {
   return true
 }
 
+export function updateItinerary(id: string, updates: Partial<Omit<Itinerary, 'id' | 'createdAt' | 'stays'>>): Itinerary | null {
+  const itineraries = getItineraries()
+  const itinerary = itineraries.find(i => i.id === id)
+  
+  if (!itinerary) return null
+
+  // Apply updates
+  Object.assign(itinerary, updates)
+  
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(itineraries))
+  return itinerary
+}
+
 export function getItineraryById(id: string): Itinerary | null {
   const itineraries = getItineraries()
   return itineraries.find(i => i.id === id) || null
