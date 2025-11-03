@@ -7,9 +7,13 @@ import { Card } from '@/components/ui/card'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { TripCard } from '@/components/TripCard'
+import { EditTripDialog } from '@/components/EditTripDialog'
+import { DeleteTripAlert } from '@/components/DeleteTripAlert'
 
 export default function TripsPage() {
   const [trips, setTrips] = useState<Trip[]>([])
+  const [editingTrip, setEditingTrip] = useState<Trip>()
+  const [deletingTrip, setDeletingTrip] = useState<Trip>()
 
   const loadTrips = async () => {
     setTrips(await getTrips())
@@ -33,7 +37,7 @@ export default function TripsPage() {
           <div className="mb-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {trips.map(trip => (
-                <TripCard key={trip.id} trip={trip} onChangeTrips={loadTrips} />
+                <TripCard key={trip.id} trip={trip} onEditTrip={setEditingTrip} onDeleteTrip={setDeletingTrip} />
               ))}
             </div>
           </div>
@@ -51,6 +55,30 @@ export default function TripsPage() {
               </Button>
             </Link>
           </Card>
+        )}
+
+        {editingTrip && (
+          <EditTripDialog
+            trip={editingTrip}
+            open={!!editingTrip}
+            onOpenChange={open => !open && setEditingTrip(undefined)}
+            onSuccess={() => {
+              loadTrips()
+              setEditingTrip(undefined)
+            }}
+          />
+        )}
+
+        {deletingTrip && (
+          <DeleteTripAlert
+            trip={deletingTrip}
+            open={!!deletingTrip}
+            onOpenChange={open => !open && setDeletingTrip(undefined)}
+            onSuccess={() => {
+              loadTrips()
+              setDeletingTrip(undefined)
+            }}
+          />
         )}
       </div>
     </>
