@@ -77,7 +77,7 @@ export async function createTrip(data: CreateTripRequest): Promise<Trip> {
   }
 }
 
-export async function updateTrip(id: string, data: UpdateTripRequest): Promise<Trip> {
+export async function updateTrip(id: number, data: UpdateTripRequest): Promise<Trip> {
   const res = await fetch(`${BACKEND_URL}/trips/itineraries/${id}`, {
     method: 'PUT',
     headers: {
@@ -100,7 +100,7 @@ export async function updateTrip(id: string, data: UpdateTripRequest): Promise<T
   }
 }
 
-export async function deleteTrip(id: string): Promise<boolean> {
+export async function deleteTrip(id: number): Promise<boolean> {
   const res = await fetch(`${BACKEND_URL}/trips/itineraries/${id}`, {
     method: 'DELETE',
     headers: {
