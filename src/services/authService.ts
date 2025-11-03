@@ -1,3 +1,4 @@
+import { handleResponse } from '@/shared/helpers'
 import Cookies from 'js-cookie'
 
 const BACKEND_URL = "http://localhost:8080"//import.meta.env.VITE_BACKEND_URL
@@ -35,9 +36,7 @@ export async function login(data: LoginRequest) {
     credentials: 'include',
   })
 
-  if (!res.ok) throw new Error('Invalid credentials')
-
-  const result = (await res.json()) as AuthResponse
+  const result = await handleResponse<AuthResponse>(res)
 
   Cookies.set(TOKEN_COOKIE_NAME, result.token, {
     expires: TOKEN_EXPIRY_DAYS,
@@ -55,9 +54,7 @@ export async function register(data: RegisterRequest) {
     body: JSON.stringify(data),
   })
 
-  if (!res.ok) throw new Error('Registration error')
-
-  const result = (await res.json()) as AuthResponse
+  const result = await handleResponse<AuthResponse>(res)
 
   Cookies.set(TOKEN_COOKIE_NAME, result.token, {
     expires: TOKEN_EXPIRY_DAYS,
@@ -86,9 +83,7 @@ export async function getCurrentUser() {
     throw new Error('Invalid token')
   }
 
-  if (!res.ok) throw new Error('Failed to fetch user data')
-
-  const result = (await res.json()) as UserResponse
+  const result = await handleResponse<AuthResponse>(res)
 
   return result
 }
