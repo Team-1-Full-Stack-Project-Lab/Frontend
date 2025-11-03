@@ -1,9 +1,6 @@
+import { CONFIG } from '@/shared/config'
 import { handleResponse } from '@/shared/helpers'
 import Cookies from 'js-cookie'
-
-const BACKEND_URL = "http://localhost:8080"//import.meta.env.VITE_BACKEND_URL
-const TOKEN_COOKIE_NAME = 'token'
-const TOKEN_EXPIRY_DAYS = 7
 
 export interface LoginRequest {
   email: string
@@ -29,7 +26,7 @@ export interface UserResponse {
 }
 
 export async function login(data: LoginRequest) {
-  const res = await fetch(`${BACKEND_URL}/auth/login`, {
+  const res = await fetch(`${CONFIG.BACKEND_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -38,8 +35,8 @@ export async function login(data: LoginRequest) {
 
   const result = await handleResponse<AuthResponse>(res)
 
-  Cookies.set(TOKEN_COOKIE_NAME, result.token, {
-    expires: TOKEN_EXPIRY_DAYS,
+  Cookies.set(CONFIG.TOKEN_COOKIE_NAME, result.token, {
+    expires: CONFIG.TOKEN_EXPIRY_DAYS,
     secure: true,
     sameSite: 'strict',
   })
@@ -48,7 +45,7 @@ export async function login(data: LoginRequest) {
 }
 
 export async function register(data: RegisterRequest) {
-  const res = await fetch(`${BACKEND_URL}/auth/register`, {
+  const res = await fetch(`${CONFIG.BACKEND_URL}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -56,8 +53,8 @@ export async function register(data: RegisterRequest) {
 
   const result = await handleResponse<AuthResponse>(res)
 
-  Cookies.set(TOKEN_COOKIE_NAME, result.token, {
-    expires: TOKEN_EXPIRY_DAYS,
+  Cookies.set(CONFIG.TOKEN_COOKIE_NAME, result.token, {
+    expires: CONFIG.TOKEN_EXPIRY_DAYS,
     secure: true,
     sameSite: 'strict',
   })
@@ -69,7 +66,7 @@ export async function getCurrentUser() {
   const token = getToken()
   if (!token) throw new Error('No token found')
 
-  const res = await fetch(`${BACKEND_URL}/user/profile`, {
+  const res = await fetch(`${CONFIG.BACKEND_URL}/user/profile`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -89,11 +86,11 @@ export async function getCurrentUser() {
 }
 
 export function logout() {
-  Cookies.remove(TOKEN_COOKIE_NAME)
+  Cookies.remove(CONFIG.TOKEN_COOKIE_NAME)
 }
 
 export function getToken() {
-  return Cookies.get(TOKEN_COOKIE_NAME)
+  return Cookies.get(CONFIG.TOKEN_COOKIE_NAME)
 }
 
 export function isAuthenticated() {

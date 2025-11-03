@@ -1,8 +1,7 @@
 import type { City, Country, State } from '@/shared/types'
 import { getToken } from './authService'
 import { handleResponse } from '@/shared/helpers'
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+import { CONFIG } from '@/shared/config'
 
 export interface CityResponse {
   id: number
@@ -66,14 +65,17 @@ export async function getCities(params?: GetCitiesParams): Promise<City[]> {
     if (params.size !== undefined) searchParams.append('size', params.size.toString())
   }
 
-  const res = await fetch(`${BACKEND_URL}/cities${searchParams.toString() ? `?${searchParams.toString()}` : ''}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getToken()}`,
-    },
-    credentials: 'include',
-  })
+  const res = await fetch(
+    `${CONFIG.BACKEND_URL}/cities${searchParams.toString() ? `?${searchParams.toString()}` : ''}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`,
+      },
+      credentials: 'include',
+    }
+  )
 
   const result = await handleResponse<CitiesResponse>(res)
 
