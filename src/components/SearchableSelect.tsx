@@ -15,6 +15,7 @@ interface SearchableSelectProps {
   options: SearchableSelectOption[]
   value?: string
   onValueChange?: (value: string) => void
+  onQueryChange?: (query: string) => void
   placeholder?: string
   searchPlaceholder?: string
   emptyText?: string
@@ -25,6 +26,7 @@ export function SearchableSelect({
   options,
   value,
   onValueChange,
+  onQueryChange,
   placeholder = 'Select an option...',
   searchPlaceholder = 'Search...',
   emptyText = 'No results found.',
@@ -46,8 +48,8 @@ export function SearchableSelect({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0" align="start">
-        <Command>
-          <CommandInput placeholder={searchPlaceholder} />
+        <Command shouldFilter={!onQueryChange}>
+          <CommandInput placeholder={searchPlaceholder} onValueChange={value => onQueryChange?.(value)} />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>
