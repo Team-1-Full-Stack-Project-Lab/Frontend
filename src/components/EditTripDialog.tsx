@@ -1,14 +1,25 @@
-import { useState, useEffect } from 'react'
-import { Calendar as CalendarIcon } from 'lucide-react'
-import { format } from 'date-fns'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { useEffect, useState } from 'react'
+import { Save, X } from 'lucide-react'
+import { toast } from 'sonner'
+import type { DateRange } from 'react-day-picker'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Calendar } from '@/components/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@/components/ui/field'
+import { SearchableSelect, type SearchableSelectOption } from '@/components/SearchableSelect'
+import { DateRangePicker } from '@/components/DateRangePicker'
 import { updateTrip } from '@/services/tripService'
-import type { Trip } from '@/shared/types'
+import { ApiException } from '@/shared/exceptions'
+import type { Trip, ValidationError } from '@/shared/types'
+import { getCities, type GetCitiesParams } from '@/services/cityService'
+import { parseISO } from 'date-fns'
 
 interface EditTripDialogProps {
   trip: Trip
@@ -18,133 +29,130 @@ interface EditTripDialogProps {
 }
 
 export function EditTripDialog({ trip, open, onOpenChange, onSuccess }: EditTripDialogProps) {
+  const [citiesOptions, setCitiesOptions] = useState<SearchableSelectOption[]>([])
+  const [searchQuery, setSearchQuery] = useState<string>()
   const [name, setName] = useState(trip.name)
-  const [destination, setDestination] = useState(trip.destination)
-  const [startDate, setStartDate] = useState<Date | undefined>(new Date(trip.startDate))
-  const [endDate, setEndDate] = useState<Date | undefined>(new Date(trip.endDate))
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [cityId, setCityId] = useState<number | undefined>(trip.cityId)
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: parseISO(trip.startDate),
+    to: parseISO(trip.endDate),
+  })
+  const [errors, setErrors] = useState<ValidationError>({})
 
-  // Reset form when trip changes
-  useEffect(() => {
-    setName(trip.name)
-    setDestination(trip.destination)
-    setStartDate(new Date(trip.startDate))
-    setEndDate(new Date(trip.endDate))
-    setErrors({})
-  }, [trip])
-
-  const validate = (): boolean => {
-    const newErrors: Record<string, string> = {}
-
-    if (!name.trim()) newErrors.name = 'Name is required'
-    if (!destination.trim()) newErrors.destination = 'Destination is required'
-    if (!startDate) newErrors.startDate = 'Start date is required'
-    if (!endDate) newErrors.endDate = 'End date is required'
-    if (startDate && endDate && startDate >= endDate) {
-      newErrors.endDate = 'End date must be after start date'
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+  const loadCities = async (params?: GetCitiesParams) => {
+    const cities = await getCities(params)
+    setCitiesOptions(
+      cities.map(city => ({
+        value: city.id.toString(),
+        label: `${city.name}, ${city.country?.name || ''}`,
+      }))
+    )
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!validate()) return
+    try {
+      await updateTrip(trip.id, {
+        name,
+        cityId,
+        startDate: date?.from?.toISOString(),
+        endDate: date?.to?.toISOString(),
+      })
 
-    const result = updateTrip(trip.id, {
-      name: name.trim(),
-      destination: destination.trim(),
-      startDate: startDate!.toISOString(),
-      endDate: endDate!.toISOString(),
-    })
+      setName('')
+      setCityId(undefined)
+      setDate(undefined)
+      setErrors({})
 
-    if (result) {
-      onOpenChange(false)
       onSuccess?.()
+    } catch (error) {
+      if (error instanceof ApiException && error.status === 400 && error.apiError.errors)
+        return setErrors(error.apiError.errors)
+      toast.error('Failed to update trip. Please try again.')
     }
   }
+
+  useEffect(() => {
+    loadCities({ featured: true })
+  }, [])
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (!searchQuery || searchQuery.trim() === '') {
+        loadCities({ featured: true })
+      } else {
+        loadCities({ name: searchQuery })
+      }
+    }, 300)
+
+    return () => clearTimeout(t)
+  }, [searchQuery])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Edit Trip</DialogTitle>
-          <DialogDescription>Update the details of your trip. Click save when you're done.</DialogDescription>
-        </DialogHeader>
+      <DialogContent>
+        <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>Edit trip</DialogTitle>
+            <DialogDescription className="opacity-80">
+              Update the details of your trip. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div className="space-y-2">
-            <Label htmlFor="edit-name">Trip Name</Label>
-            <Input
-              id="edit-name"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="e.g., Summer Vacation 2024"
-              className={errors.name ? 'border-red-500' : ''}
-            />
-            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
-          </div>
+          <FieldSet>
+            <FieldGroup className="gap-4">
+              <Field data-invalid={!!errors.name}>
+                <FieldLabel htmlFor="name">Name</FieldLabel>
+                <Input
+                  id="name"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder="e.g., Summer Vacation 2025"
+                  aria-invalid={!!errors.name}
+                />
+                {errors.name && errors.name.map((err, idx) => <FieldError key={idx}>{err}</FieldError>)}
+              </Field>
 
-          <div className="space-y-2">
-            <Label htmlFor="edit-destination">Destination</Label>
-            <Input
-              id="edit-destination"
-              value={destination}
-              onChange={e => setDestination(e.target.value)}
-              placeholder="e.g., Paris, France"
-              className={errors.destination ? 'border-red-500' : ''}
-            />
-            {errors.destination && <p className="text-sm text-red-500">{errors.destination}</p>}
-          </div>
+              <Field data-invalid={!!errors.cityId}>
+                <FieldLabel htmlFor="cityId">Destination</FieldLabel>
+                <SearchableSelect
+                  options={
+                    trip.cityId && !citiesOptions.find(c => c.value === trip.cityId.toString())
+                      ? [{ value: trip.cityId.toString(), label: trip.destination }, ...citiesOptions]
+                      : citiesOptions
+                  }
+                  value={cityId?.toString() || ''}
+                  onValueChange={value => setCityId(Number.parseInt(value))}
+                  placeholder="Select a city"
+                  onQueryChange={q => setSearchQuery(q)}
+                />
+                {errors.cityId && errors.cityId.map((err, idx) => <FieldError key={idx}>{err}</FieldError>)}
+              </Field>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Start Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={`w-full justify-start text-left font-normal ${errors.startDate ? 'border-red-500' : ''}`}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {startDate ? format(startDate, 'PPP') : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={startDate} onSelect={setStartDate} initialFocus />
-                </PopoverContent>
-              </Popover>
-              {errors.startDate && <p className="text-sm text-red-500">{errors.startDate}</p>}
-            </div>
+              <Field data-invalid={!!errors.startDate || !!errors.endDate}>
+                <FieldLabel htmlFor="dates">Dates</FieldLabel>
+                <DateRangePicker
+                  id="dates"
+                  date={date}
+                  onDateChange={setDate}
+                  aria-invalid={!!errors.startDate || !!errors.endDate}
+                />
+                {errors.startDate && errors.startDate.map((err, idx) => <FieldError key={idx}>{err}</FieldError>)}
+                {errors.endDate && errors.endDate.map((err, idx) => <FieldError key={idx}>{err}</FieldError>)}
+              </Field>
+            </FieldGroup>
+          </FieldSet>
 
-            <div className="space-y-2">
-              <Label>End Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={`w-full justify-start text-left font-normal ${errors.endDate ? 'border-red-500' : ''}`}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {endDate ? format(endDate, 'PPP') : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={endDate} onSelect={setEndDate} initialFocus />
-                </PopoverContent>
-              </Popover>
-              {errors.endDate && <p className="text-sm text-red-500">{errors.endDate}</p>}
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-2 pt-4">
+          <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              <X /> Cancel
             </Button>
-            <Button type="submit">Save Changes</Button>
-          </div>
+
+            <Button type="submit" className="bg-primary text-primary-foreground">
+              <Save /> Save Trip
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
