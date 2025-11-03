@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card'
 import { ChevronLeft, ChevronRight, Heart } from 'lucide-react'
 import { useState } from 'react'
-import { SaveToItineraryPopover } from '@/components/SaveToItineraryPopover'
+import { SaveToTripPopover } from '@/components/SaveToTripPopover'
 import type { Stay } from '@/shared/types'
 
 type Props = {
@@ -38,7 +38,7 @@ export default function RentalCard({ title, location, pricePerNight, tag, images
     <>
       {showSuccess && (
         <div className="fixed top-4 right-4 z-50 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 shadow-lg animate-in fade-in slide-in-from-top-5">
-          <p className="font-medium">Saved to itinerary!</p>
+          <p className="font-medium">Saved to trip!</p>
         </div>
       )}
       <Card className="w-full max-w-full flex-row flex items-stretch gap-0 p-0 rounded-lg h-52">
@@ -57,14 +57,14 @@ export default function RentalCard({ title, location, pricePerNight, tag, images
             </>
           )}
 
-          <SaveToItineraryPopover stay={stay} onSaved={handleSaved}>
+          <SaveToTripPopover stay={stay} onSaved={handleSaved}>
             <button 
               className="absolute right-3 top-3 bg-white rounded-full p-2 shadow hover:scale-110 transition-transform cursor-pointer"
-              aria-label="Save to itinerary"
+              aria-label="Save to trip"
             >
               <Heart className="h-5 w-5 text-red-500 fill-transparent hover:fill-red-500 transition-all" />
             </button>
-          </SaveToItineraryPopover>
+          </SaveToTripPopover>
         </div>
 
         {/* Right: content */}
