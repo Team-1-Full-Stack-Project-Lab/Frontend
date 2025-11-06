@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card'
 import { ChevronLeft, ChevronRight, Heart } from 'lucide-react'
 import { useState } from 'react'
 import { SaveToTripPopover } from '@/components/SaveToTripPopover'
-import type { Stay } from '@/shared/types'
+import type { Stay } from '@/types/stays'
 
 type Props = {
   title: string

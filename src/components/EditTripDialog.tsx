@@ -16,8 +16,9 @@ import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@/component
 import { SearchableSelect, type SearchableSelectOption } from '@/components/SearchableSelect'
 import { DateRangePicker } from '@/components/DateRangePicker'
 import { updateTrip } from '@/services/tripService'
-import { ApiException } from '@/shared/exceptions'
-import type { Trip, ValidationError } from '@/shared/types'
+import { ApiException } from '@/utils/exceptions'
+import type { ValidationError } from '@/types/api'
+import type { Trip } from '@/types/trips'
 import { getCities, type GetCitiesParams } from '@/services/cityService'
 import { parseISO } from 'date-fns'
 

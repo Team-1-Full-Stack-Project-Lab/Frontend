@@ -13,19 +13,19 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState, type FormEvent } from "react"
 import { useAuth } from "@/hooks/useAuth"
-import type { UserData } from "@/shared/types"
+import type { User } from "@/types/auth"
 
 interface EditProfileProps {
-  userData: UserData | null;
+  user: User | null;
 }
 
-export function EditProfile({ userData }: EditProfileProps) {
+export function EditProfile({ user }: EditProfileProps) {
   const { updateProfile } = useAuth()
   const [open, setOpen] = useState(false)
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const email = userData?.email || ""
+    const email = user?.email || ""
     const formData = new FormData(e.target as HTMLFormElement)
     const firstName = formData.get("firstName") as string
     const lastName = formData.get("lastName") as string
@@ -57,13 +57,13 @@ export function EditProfile({ userData }: EditProfileProps) {
               <Label htmlFor="name" className="text-right">
                 First Name
               </Label>
-              <Input id="firstName" name="firstName" defaultValue={userData?.firstName} className="col-span-3" required />
+              <Input id="firstName" name="firstName" defaultValue={user?.firstName} className="col-span-3" required />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="lastName" className="text-right">
                 Last Name
               </Label>
-              <Input id="lastName" name="lastName" defaultValue={userData?.lastName} className="col-span-3" required />
+              <Input id="lastName" name="lastName" defaultValue={user?.lastName} className="col-span-3" required />
             </div>
           </div>
           <DialogFooter>

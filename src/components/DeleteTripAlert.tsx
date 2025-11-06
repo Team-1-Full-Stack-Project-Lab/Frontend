@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import type { Trip } from '@/shared/types'
+import type { Trip } from '@/types/trips'
 import { deleteTrip } from '@/services/tripService'
 
 interface DeleteTripDialogProps {

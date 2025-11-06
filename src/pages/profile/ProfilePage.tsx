@@ -24,7 +24,7 @@ export default function ProfilePage() {
 
               <div className="flex items-center justify-between mt-4 mr-4">
                 <h2 className="text-3xl font-bold mr-6">Basic information</h2>
-                <EditProfile userData={user} />
+                <EditProfile user={user} />
               </div>
 
               <p className="text-sm text-gray-500">

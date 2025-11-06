@@ -1,5 +1,5 @@
-import { CONFIG } from '@/shared/config'
-import Cookies from 'js-cookie'
+import { BACKEND_URL } from '@/config/api'
+import { getToken } from './authService'
 
 export interface UserProfile {
   id: number
@@ -19,7 +19,7 @@ export interface AuthResponse {
 export async function getCurrentUser() {
   const token = getToken()
   if (!token) throw new Error('No token found')
-  const res = await fetch(`${CONFIG.BACKEND_URL}/user/profile`, {
+  const res = await fetch(`${BACKEND_URL}/user/profile`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ export async function getCurrentUser() {
 export async function updateUserProfile(data: UpdateUserProfile) {
   const token = getToken()
   if (!token) throw new Error('No token found')
-  const res = await fetch(`${CONFIG.BACKEND_URL}/user/profile`, {
+  const res = await fetch(`${BACKEND_URL}/user/profile`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ export async function updateUserProfile(data: UpdateUserProfile) {
 export async function deleteUserAccount() {
   const token = getToken()
   if (!token) throw new Error('No token found')
-  const res = await fetch(`${CONFIG.BACKEND_URL}/user/profile`, {
+  const res = await fetch(`${BACKEND_URL}/user/profile`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -71,11 +71,4 @@ export async function deleteUserAccount() {
   }
   if (!res.ok) throw new Error('Failed to delete user account')
   return
-}
-
-export function getToken() {
-  return Cookies.get(CONFIG.TOKEN_COOKIE_NAME)
-}
-export function isAuthenticated() {
-  return !!getToken()
 }

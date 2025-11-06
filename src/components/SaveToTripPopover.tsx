@@ -2,7 +2,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Button } from '@/components/ui/button'
 import { CreateTripDialog } from '@/components/CreateTripDialog'
 import { getTrips } from '@/services/tripService'
-import type { Stay } from '@/shared/types'
+import type { Stay } from '@/types/stays'
 import { Plus, Check } from 'lucide-react'
 import { useState, useEffect } from 'react'
 

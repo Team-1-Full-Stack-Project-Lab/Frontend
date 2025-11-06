@@ -1,7 +1,7 @@
-import type { Trip } from '@/shared/types'
+import type { Trip } from '@/types/trips'
 import { getToken } from './authService'
-import { handleResponse } from '@/shared/helpers'
-import { CONFIG } from '@/shared/config'
+import { handleResponse } from '@/utils/helpers'
+import { BACKEND_URL } from '@/config/api'
 
 export interface CreateTripRequest {
   name?: string
@@ -32,7 +32,7 @@ export interface TripsResponse {
 }
 
 export async function getTrips(): Promise<Trip[]> {
-  const res = await fetch(`${CONFIG.BACKEND_URL}/trips/itineraries`, {
+  const res = await fetch(`${BACKEND_URL}/trips/itineraries`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export async function getTrips(): Promise<Trip[]> {
 }
 
 export async function createTrip(data: CreateTripRequest): Promise<Trip> {
-  const res = await fetch(`${CONFIG.BACKEND_URL}/trips/itineraries`, {
+  const res = await fetch(`${BACKEND_URL}/trips/itineraries`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ export async function createTrip(data: CreateTripRequest): Promise<Trip> {
 }
 
 export async function updateTrip(id: number, data: UpdateTripRequest): Promise<Trip> {
-  const res = await fetch(`${CONFIG.BACKEND_URL}/trips/itineraries/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/trips/itineraries/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ export async function updateTrip(id: number, data: UpdateTripRequest): Promise<T
 }
 
 export async function deleteTrip(id: number): Promise<boolean> {
-  const res = await fetch(`${CONFIG.BACKEND_URL}/trips/itineraries/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/trips/itineraries/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

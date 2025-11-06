@@ -1,15 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import * as authService from '@/services/authService'
 import * as userService from '@/services/userService'
-import type { UserData } from '@/shared/types'
-
-interface AuthState {
-  user: UserData | null
-  token: string | null
-  isAuthenticated: boolean
-  loading: boolean
-  error: string | null
-}
+import type { AuthState } from '@/types/auth'
 
 const initialState: AuthState = {
   user: null,
@@ -62,9 +54,9 @@ export const deleteUserAccount = createAsyncThunk("user/deleteAccount", async (_
   }
 })
 
-export const updateUserProfile = createAsyncThunk("user/updateProfile", async (userData: userService.UpdateUserProfile, { rejectWithValue }) => {
+export const updateUserProfile = createAsyncThunk("user/updateProfile", async (data: userService.UpdateUserProfile, { rejectWithValue }) => {
   try {
-    const user = await userService.updateUserProfile(userData);
+    const user = await userService.updateUserProfile(data);
     return user;
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error'

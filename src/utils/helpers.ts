@@ -1,5 +1,5 @@
+import type { ApiError } from '@/types/api'
 import { ApiException } from './exceptions'
-import type { ApiError } from './types'
 
 export async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {

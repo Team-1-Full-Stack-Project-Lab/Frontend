@@ -17,8 +17,8 @@ import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@/component
 import { SearchableSelect, type SearchableSelectOption } from '@/components/SearchableSelect'
 import { DateRangePicker } from '@/components/DateRangePicker'
 import { createTrip } from '@/services/tripService'
-import { ApiException } from '@/shared/exceptions'
-import type { ValidationError } from '@/shared/types'
+import { ApiException } from '@/utils/exceptions'
+import type { ValidationError } from '@/types/api'
 import { getCities, type GetCitiesParams } from '@/services/cityService'
 
 interface CreateTripDialogProps {
