@@ -1,5 +1,6 @@
 import { BACKEND_URL } from '@/config/api'
 import { getToken } from './authService'
+import { handleResponse } from '@/utils/helpers'
 
 export interface UserProfile {
   id: number
@@ -12,11 +13,8 @@ export interface UpdateUserProfile {
   firstName: string
   lastName: string
 }
-export interface AuthResponse {
-  token: string
-}
 
-export async function getCurrentUser() {
+export async function getUserProfile() {
   const token = getToken()
   if (!token) throw new Error('No token found')
   const res = await fetch(`${BACKEND_URL}/user/profile`, {
@@ -30,8 +28,7 @@ export async function getCurrentUser() {
   if (res.status === 401 || res.status === 403) {
     throw new Error('Invalid or expired token')
   }
-  if (!res.ok) throw new Error('Failed to fetch user profile')
-  const result = (await res.json()) as UserProfile
+  const result = await handleResponse<UserProfile>(res)
   return result
 }
 
@@ -50,8 +47,7 @@ export async function updateUserProfile(data: UpdateUserProfile) {
   if (res.status === 401 || res.status === 403) {
     throw new Error('Invalid or expired token')
   }
-  if (!res.ok) throw new Error('Failed to update user profile')
-  const result = (await res.json()) as UserProfile
+  const result = await handleResponse<UserProfile>(res)
   return result
 }
 

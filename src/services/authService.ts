@@ -1,6 +1,7 @@
 import { BACKEND_URL, TOKEN_COOKIE_NAME, TOKEN_EXPIRY_DAYS } from '@/config/api'
 import { handleResponse } from '@/utils/helpers'
 import Cookies from 'js-cookie'
+import { getUserProfile } from './userService'
 
 export interface LoginRequest {
   email: string
@@ -16,13 +17,6 @@ export interface RegisterRequest {
 
 export interface AuthResponse {
   token: string
-}
-
-export interface UserResponse {
-  id: number
-  email: string
-  firstName: string
-  lastName: string
 }
 
 export async function login(data: LoginRequest) {
@@ -63,26 +57,7 @@ export async function register(data: RegisterRequest) {
 }
 
 export async function getCurrentUser() {
-  const token = getToken()
-  if (!token) throw new Error('No token found')
-
-  const res = await fetch(`${BACKEND_URL}/user/profile`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    credentials: 'include',
-  })
-
-  if (res.status === 401 || res.status === 403) {
-    logout()
-    throw new Error('Invalid token')
-  }
-
-  const result = await handleResponse<AuthResponse>(res)
-
-  return result
+  return getUserProfile()
 }
 
 export function logout() {

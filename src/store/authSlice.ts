@@ -44,25 +44,28 @@ export const checkAuth = createAsyncThunk('auth/checkAuth', async (_, { rejectWi
   }
 })
 
-export const deleteUserAccount = createAsyncThunk("user/deleteAccount", async (_, { rejectWithValue }) => {
+export const deleteUserAccount = createAsyncThunk('user/deleteAccount', async (_, { rejectWithValue }) => {
   try {
-    const user = await userService.deleteUserAccount();
-    return user;
+    const user = await userService.deleteUserAccount()
+    return user
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error'
     return rejectWithValue(message)
   }
 })
 
-export const updateUserProfile = createAsyncThunk("user/updateProfile", async (data: userService.UpdateUserProfile, { rejectWithValue }) => {
-  try {
-    const user = await userService.updateUserProfile(data);
-    return user;
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
-    return rejectWithValue(message)
+export const updateUserProfile = createAsyncThunk(
+  'user/updateProfile',
+  async (data: userService.UpdateUserProfile, { rejectWithValue }) => {
+    try {
+      const user = await userService.updateUserProfile(data)
+      return user
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      return rejectWithValue(message)
+    }
   }
-})
+)
 
 const authSlice = createSlice({
   name: 'auth',
@@ -112,28 +115,28 @@ const authSlice = createSlice({
         state.user = null
         state.isAuthenticated = false
       })
-      .addCase(deleteUserAccount.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+      .addCase(deleteUserAccount.pending, state => {
+        state.loading = true
+        state.error = null
       })
-      .addCase(deleteUserAccount.fulfilled, (state) => {
-        state.loading = false;
+      .addCase(deleteUserAccount.fulfilled, state => {
+        state.loading = false
       })
       .addCase(deleteUserAccount.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+        state.loading = false
+        state.error = action.payload as string
       })
-      .addCase(updateUserProfile.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+      .addCase(updateUserProfile.pending, state => {
+        state.loading = true
+        state.error = null
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
+        state.loading = false
+        state.user = action.payload
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+        state.loading = false
+        state.error = action.payload as string
       })
   },
 })
