@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from '@/components/Link'
 import { Button } from '@/components/ui/button'
-import { InputError } from '@/components/InputError'
-import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/useAuth'
+import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@/components/ui/field'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
@@ -39,56 +38,60 @@ export default function RegisterPage() {
         </CardHeader>
         <CardContent>
           <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-            <div className="grid gap-2">
-              <Label htmlFor="firstname">First Name</Label>
-              <Input
-                id="firstname"
-                type="text"
-                placeholder="Your first name"
-                value={data.firstname}
-                onChange={e => setData({ ...data, firstname: e.target.value })}
-                required
-              />
-            </div>
+            <FieldSet>
+              <FieldGroup className="gap-4">
+                <Field data-invalid={!!error}>
+                  <FieldLabel htmlFor="firstname">First Name</FieldLabel>
+                  <Input
+                    id="firstname"
+                    type="text"
+                    placeholder="Your first name"
+                    value={data.firstname}
+                    onChange={e => setData({ ...data, firstname: e.target.value })}
+                    required
+                  />
+                </Field>
 
-            <div className="grid gap-2">
-              <Label htmlFor="lastname">Last Name</Label>
-              <Input
-                id="lastname"
-                type="text"
-                placeholder="Your last name"
-                value={data.lastname}
-                onChange={e => setData({ ...data, lastname: e.target.value })}
-                required
-              />
-            </div>
+                <Field data-invalid={!!error}>
+                  <FieldLabel htmlFor="lastname">Last Name</FieldLabel>
+                  <Input
+                    id="lastname"
+                    type="text"
+                    placeholder="Your last name"
+                    value={data.lastname}
+                    onChange={e => setData({ ...data, lastname: e.target.value })}
+                    required
+                  />
+                </Field>
 
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                value={data.email}
-                onChange={e => setData({ ...data, email: e.target.value })}
-                required
-              />
-            </div>
+                <Field data-invalid={!!error}>
+                  <FieldLabel htmlFor="email">Email</FieldLabel>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    value={data.email}
+                    onChange={e => setData({ ...data, email: e.target.value })}
+                    required
+                  />
+                </Field>
 
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="********"
-                minLength={6}
-                value={data.password}
-                onChange={e => setData({ ...data, password: e.target.value })}
-                required
-              />
-            </div>
+                <Field data-invalid={!!error}>
+                  <FieldLabel htmlFor="password">Password</FieldLabel>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="********"
+                    minLength={6}
+                    value={data.password}
+                    onChange={e => setData({ ...data, password: e.target.value })}
+                    required
+                  />
+                </Field>
+              </FieldGroup>
+            </FieldSet>
 
-            {error && <InputError message={error} />}
+            {error && <FieldError>{error}</FieldError>}
             <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-500 text-white">
               Register
             </Button>
