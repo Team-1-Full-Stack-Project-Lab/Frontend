@@ -1,57 +1,7 @@
-import type { City, Country, State } from '@/types/location'
+import type { City, CitiesResponse, GetCitiesParams } from '@/types'
 import { getToken } from './authService'
 import { handleResponse } from '@/utils/helpers'
 import { BACKEND_URL } from '@/config/api'
-
-export interface CityResponse {
-  id: number
-  name: string
-  nameAscii: string
-  country?: Country
-  state?: State
-  latitude: number
-  longitude: number
-  timezone: string
-  googlePlaceId?: string
-  population: number
-  isCapital: boolean
-  isFeatured: boolean
-}
-
-export interface CitiesResponse {
-  content: CityResponse[]
-  pageable: {
-    pageNumber: number
-    pageSize: number
-    sort: {
-      empty: boolean
-      sorted: boolean
-      unsorted: boolean
-    }
-    offset: number
-  }
-  last: boolean
-  totalPages: number
-  totalElements: number
-  size: number
-  number: number
-  sort: {
-    empty: boolean
-    sorted: boolean
-    unsorted: boolean
-  }
-  first: boolean
-  numberOfElements: number
-}
-
-export interface GetCitiesParams {
-  name?: string
-  country?: number
-  state?: number
-  featured?: boolean
-  page?: number
-  size?: number
-}
 
 export async function getCities(params?: GetCitiesParams): Promise<City[]> {
   const searchParams = new URLSearchParams()

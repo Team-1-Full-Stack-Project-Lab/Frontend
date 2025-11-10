@@ -2,22 +2,7 @@ import { BACKEND_URL, TOKEN_COOKIE_NAME, TOKEN_EXPIRY_DAYS } from '@/config/api'
 import { handleResponse } from '@/utils/helpers'
 import Cookies from 'js-cookie'
 import { getUserProfile } from './userService'
-
-export interface LoginRequest {
-  email: string
-  password: string
-}
-
-export interface RegisterRequest {
-  email: string
-  firstName: string
-  lastName: string
-  password: string
-}
-
-export interface AuthResponse {
-  token: string
-}
+import type { LoginRequest, RegisterRequest, AuthResponse } from '@/types'
 
 export async function login(data: LoginRequest) {
   const res = await fetch(`${BACKEND_URL}/auth/login`, {

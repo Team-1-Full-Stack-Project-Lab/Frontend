@@ -19,7 +19,8 @@ import { DateRangePicker } from '@/components/DateRangePicker'
 import { createTrip } from '@/services/tripService'
 import { ApiException } from '@/utils/exceptions'
 import type { ValidationError } from '@/types/api'
-import { getCities, type GetCitiesParams } from '@/services/cityService'
+import { getCities } from '@/services/cityService'
+import type { GetCitiesParams } from '@/types'
 
 interface CreateTripDialogProps {
   trigger?: React.ReactNode

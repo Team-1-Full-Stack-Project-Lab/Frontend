@@ -1,18 +1,10 @@
 import { BACKEND_URL } from '@/config/api'
 import { getToken } from './authService'
 import { handleResponse } from '@/utils/helpers'
+import type { UserResponse, UpdateUserRequest } from '@/types'
 
-export interface UserProfile {
-  id: number
-  email: string
-  firstName: string
-  lastName: string
-}
-export interface UpdateUserProfile {
-  email: string
-  firstName: string
-  lastName: string
-}
+export type UserProfile = UserResponse
+export type UpdateUserProfile = UpdateUserRequest
 
 export async function getUserProfile() {
   const token = getToken()

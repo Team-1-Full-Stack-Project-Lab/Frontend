@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import * as authService from '@/services/authService'
 import * as userService from '@/services/userService'
-import type { AuthState } from '@/types/auth'
+import type { AuthState, LoginRequest, RegisterRequest, UpdateUserRequest } from '@/types'
 
 const initialState: AuthState = {
   user: null,
@@ -11,7 +11,7 @@ const initialState: AuthState = {
   error: null,
 }
 
-export const loginUser = createAsyncThunk('auth/login', async (data: authService.LoginRequest, { rejectWithValue }) => {
+export const loginUser = createAsyncThunk('auth/login', async (data: LoginRequest, { rejectWithValue }) => {
   try {
     const res = await authService.login(data)
     return res.token
@@ -21,18 +21,15 @@ export const loginUser = createAsyncThunk('auth/login', async (data: authService
   }
 })
 
-export const registerUser = createAsyncThunk(
-  'auth/register',
-  async (data: authService.RegisterRequest, { rejectWithValue }) => {
-    try {
-      const res = await authService.register(data)
-      return res.token
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error'
-      return rejectWithValue(message)
-    }
+export const registerUser = createAsyncThunk('auth/register', async (data: RegisterRequest, { rejectWithValue }) => {
+  try {
+    const res = await authService.register(data)
+    return res.token
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    return rejectWithValue(message)
   }
-)
+})
 
 export const checkAuth = createAsyncThunk('auth/checkAuth', async (_, { rejectWithValue }) => {
   try {
@@ -56,7 +53,7 @@ export const deleteUserAccount = createAsyncThunk('user/deleteAccount', async (_
 
 export const updateUserProfile = createAsyncThunk(
   'user/updateProfile',
-  async (data: userService.UpdateUserProfile, { rejectWithValue }) => {
+  async (data: UpdateUserRequest, { rejectWithValue }) => {
     try {
       const user = await userService.updateUserProfile(data)
       return user

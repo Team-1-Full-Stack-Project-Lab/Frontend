@@ -1,35 +1,7 @@
-import type { Trip } from '@/types/trips'
+import type { Trip, CreateTripRequest, UpdateTripRequest, TripResponse, TripsResponse } from '@/types'
 import { getToken } from './authService'
 import { handleResponse } from '@/utils/helpers'
 import { BACKEND_URL } from '@/config/api'
-
-export interface CreateTripRequest {
-  name?: string
-  cityId?: number
-  startDate?: string
-  endDate?: string
-}
-
-export interface UpdateTripRequest {
-  name?: string
-  cityId?: number
-  startDate?: string
-  endDate?: string
-}
-
-export interface TripResponse {
-  id: number
-  name: string
-  cityId: number
-  cityName: string
-  countryName: string
-  startDate: string
-  finishDate: string
-}
-
-export interface TripsResponse {
-  trips: TripResponse[]
-}
 
 export async function getTrips(): Promise<Trip[]> {
   const res = await fetch(`${BACKEND_URL}/trips/itineraries`, {

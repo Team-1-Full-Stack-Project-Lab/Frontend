@@ -19,7 +19,8 @@ import { updateTrip } from '@/services/tripService'
 import { ApiException } from '@/utils/exceptions'
 import type { ValidationError } from '@/types/api'
 import type { Trip } from '@/types/trips'
-import { getCities, type GetCitiesParams } from '@/services/cityService'
+import { getCities } from '@/services/cityService'
+import type { GetCitiesParams } from '@/types'
 import { parseISO } from 'date-fns'
 
 interface EditTripDialogProps {
