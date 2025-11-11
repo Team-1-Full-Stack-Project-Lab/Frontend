@@ -15,11 +15,10 @@ import { Input } from '@/components/ui/input'
 import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@/components/ui/field'
 import { SearchableSelect, type SearchableSelectOption } from '@/components/SearchableSelect'
 import { DateRangePicker } from '@/components/DateRangePicker'
-import { updateTrip } from '@/services/tripService'
 import { ApiException } from '@/utils/exceptions'
 import type { ValidationError } from '@/types/api'
 import type { Trip } from '@/types/trips'
-import { getCities } from '@/services/cityService'
+import { useServices } from '@/hooks/useServices'
 import type { GetCitiesParams } from '@/types'
 import { parseISO } from 'date-fns'
 
@@ -31,6 +30,8 @@ interface EditTripDialogProps {
 }
 
 export function EditTripDialog({ trip, open, onOpenChange, onSuccess }: EditTripDialogProps) {
+  const { tripService, cityService } = useServices()
+
   const [citiesOptions, setCitiesOptions] = useState<SearchableSelectOption[]>([])
   const [searchQuery, setSearchQuery] = useState<string>()
   const [name, setName] = useState(trip.name)
@@ -42,7 +43,7 @@ export function EditTripDialog({ trip, open, onOpenChange, onSuccess }: EditTrip
   const [errors, setErrors] = useState<ValidationError>({})
 
   const loadCities = async (params?: GetCitiesParams) => {
-    const cities = await getCities(params)
+    const cities = await cityService.getCities(params)
     setCitiesOptions(
       cities.map(city => ({
         value: city.id.toString(),
@@ -55,7 +56,7 @@ export function EditTripDialog({ trip, open, onOpenChange, onSuccess }: EditTrip
     e.preventDefault()
 
     try {
-      await updateTrip(trip.id, {
+      await tripService.updateTrip(trip.id, {
         name,
         cityId,
         startDate: date?.from?.toISOString(),
@@ -77,6 +78,7 @@ export function EditTripDialog({ trip, open, onOpenChange, onSuccess }: EditTrip
 
   useEffect(() => {
     loadCities({ featured: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -89,6 +91,7 @@ export function EditTripDialog({ trip, open, onOpenChange, onSuccess }: EditTrip
     }, 300)
 
     return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery])
 
   return (

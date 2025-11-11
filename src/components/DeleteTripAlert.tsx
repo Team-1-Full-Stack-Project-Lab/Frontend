@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import type { Trip } from '@/types/trips'
-import { deleteTrip } from '@/services/tripService'
+import { useServices } from '@/hooks/useServices'
 
 interface DeleteTripDialogProps {
   trip: Trip
@@ -21,9 +21,11 @@ interface DeleteTripDialogProps {
 }
 
 export function DeleteTripAlert({ trip, open, onOpenChange, onSuccess }: DeleteTripDialogProps) {
+  const { tripService } = useServices()
+
   const handleDelete = async () => {
     try {
-      await deleteTrip(trip.id)
+      await tripService.deleteTrip(trip.id)
       onSuccess?.()
     } catch (_error) {
       toast.error('Failed to delete trip. Please try again.')

@@ -1,7 +1,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import { CreateTripDialog } from '@/components/CreateTripDialog'
-import { getTrips } from '@/services/tripService'
+import { useServices } from '@/hooks/useServices'
 import type { Stay } from '@/types/stays'
 import { Plus, Check } from 'lucide-react'
 import { useState, useEffect } from 'react'
@@ -13,13 +13,15 @@ interface SaveToTripPopoverProps {
 }
 
 export function SaveToTripPopover({ stay, children, onSaved }: SaveToTripPopoverProps) {
-  const [trips, setTrips] = useState(getTrips())
+  const { tripService } = useServices()
+
+  const [trips, setTrips] = useState(tripService.getTrips())
   const [savedToIds, setSavedToIds] = useState<Set<string>>(new Set())
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
     if (open) {
-      const currentTrips = getTrips()
+      const currentTrips = tripService.getTrips()
       setTrips(currentTrips)
 
       // Check which trips already have this stay
@@ -31,6 +33,7 @@ export function SaveToTripPopover({ stay, children, onSaved }: SaveToTripPopover
       })
       setSavedToIds(saved)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, stay.id])
 
   const handleAddToTrip = (tripId: string) => {
@@ -42,7 +45,7 @@ export function SaveToTripPopover({ stay, children, onSaved }: SaveToTripPopover
   }
 
   const handleNewTripCreated = () => {
-    const updated = getTrips()
+    const updated = tripService.getTrips()
     setTrips(updated)
     onSaved?.()
   }

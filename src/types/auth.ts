@@ -46,3 +46,9 @@ export interface AuthState {
   loading: boolean
   error: string | null
 }
+
+export interface UserGraphQL {
+  email: string
+  firstName: string
+  lastName: string
+}

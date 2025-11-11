@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import * as authService from '@/services/authService'
-import * as userService from '@/services/userService'
+import * as authService from '@/services/rest/authService'
+import * as userService from '@/services/rest/userService'
 import type { AuthState, LoginRequest, RegisterRequest, UpdateUserRequest } from '@/types'
 
 const initialState: AuthState = {
