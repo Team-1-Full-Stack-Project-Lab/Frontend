@@ -8,3 +8,8 @@ export async function handleResponse<T>(res: Response): Promise<T> {
   }
   return (await res.json()) as T
 }
+
+export function toLocalDate(isoDateTime?: string): string | undefined {
+  if (!isoDateTime) return undefined
+  return isoDateTime.split('T')[0]
+}

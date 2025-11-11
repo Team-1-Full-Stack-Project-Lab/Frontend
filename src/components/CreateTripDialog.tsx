@@ -16,10 +16,9 @@ import { Input } from '@/components/ui/input'
 import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@/components/ui/field'
 import { SearchableSelect, type SearchableSelectOption } from '@/components/SearchableSelect'
 import { DateRangePicker } from '@/components/DateRangePicker'
-import { createTrip } from '@/services/tripService'
 import { ApiException } from '@/utils/exceptions'
 import type { ValidationError } from '@/types/api'
-import { getCities } from '@/services/cityService'
+import { useServices } from '@/hooks/useServices'
 import type { GetCitiesParams } from '@/types'
 
 interface CreateTripDialogProps {
@@ -28,6 +27,8 @@ interface CreateTripDialogProps {
 }
 
 export function CreateTripDialog({ trigger, onSuccess }: CreateTripDialogProps) {
+  const { tripService, cityService } = useServices()
+
   const [open, setOpen] = useState(false)
   const [citiesOptions, setCitiesOptions] = useState<SearchableSelectOption[]>([])
   const [searchQuery, setSearchQuery] = useState<string>()
@@ -37,7 +38,7 @@ export function CreateTripDialog({ trigger, onSuccess }: CreateTripDialogProps) 
   const [errors, setErrors] = useState<ValidationError>({})
 
   const loadCities = async (params?: GetCitiesParams) => {
-    const cities = await getCities(params)
+    const cities = await cityService.getCities(params)
     setCitiesOptions(
       cities.map(city => ({
         value: city.id.toString(),
@@ -50,7 +51,7 @@ export function CreateTripDialog({ trigger, onSuccess }: CreateTripDialogProps) 
     e.preventDefault()
 
     try {
-      await createTrip({
+      await tripService.createTrip({
         name,
         cityId,
         startDate: date?.from?.toISOString(),
@@ -73,6 +74,7 @@ export function CreateTripDialog({ trigger, onSuccess }: CreateTripDialogProps) 
 
   useEffect(() => {
     loadCities({ featured: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -85,6 +87,7 @@ export function CreateTripDialog({ trigger, onSuccess }: CreateTripDialogProps) 
     }, 300)
 
     return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery])
 
   return (

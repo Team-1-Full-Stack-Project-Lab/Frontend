@@ -39,3 +39,13 @@ export interface DeleteTripResponse {
   success: boolean
   message: string
 }
+
+export interface TripGraphQL {
+  id: string
+  name: string
+  cityId: string
+  cityName: string
+  countryName: string
+  startDate: string
+  finishDate: string
+}

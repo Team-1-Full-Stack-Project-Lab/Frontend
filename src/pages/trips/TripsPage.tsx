@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Calendar, Search } from 'lucide-react'
 import { CreateTripDialog } from '@/components/CreateTripDialog'
-import { getTrips } from '@/services/tripService'
+import { getTrips } from '@/services/rest/tripService'
 import type { Trip } from '@/types/trips'
 import { Card } from '@/components/ui/card'
 import { Link } from 'react-router-dom'
