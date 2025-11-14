@@ -1,3 +1,5 @@
+import type { StayUnitGraphQL } from './stays'
+
 export interface Trip {
   id: number
   name: string
@@ -81,15 +83,6 @@ export interface TripStayUnitGraphQL {
   stayUnit: StayUnitGraphQL | null
   startDate: string
   endDate: string
-}
-
-export interface StayUnitGraphQL {
-  id: string
-  stayNumber: string
-  numberOfBeds: number
-  capacity: number
-  pricePerNight: number
-  roomType: string
 }
 
 export interface TripStayUnitsListGraphQL {
