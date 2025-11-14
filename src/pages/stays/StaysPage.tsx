@@ -1,182 +1,120 @@
-import { useMemo, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import { HeroSearch } from '@/components/HeroSearch'
-import MapCard from '@/components/MapCard'
 import RentalCard from '@/components/RentalCard'
-import SearchBar from '@/components/SearchBar'
-import FilterPanel from '@/components/FilterPanel'
-import PriceFilter from '@/components/PriceFilter'
-
-function useQuery() {
-  const { search } = useLocation()
-  return useMemo(() => new URLSearchParams(search), [search])
-}
+import MapCard from '@/components/MapCard'
+import { useServices } from '@/hooks/useServices'
+import type { Stay } from '@/types'
+import { useQuery } from '@/hooks/useQuery'
 
 export default function StaysPage() {
   const query = useQuery()
-  const destination = query.get('destination') || ''
+  const destination = query.get('destination')
   const travelers = query.get('travelers') || '1'
   const from = query.get('from')
   const to = query.get('to')
 
-  type Current = { destination: string; travelers: string; from?: string | null; to?: string | null }
-  const [current, setCurrent] = useState<Current>({ destination, travelers, from, to })
+  const { stayService, cityService } = useServices()
+  const [stays, setStays] = useState<Stay[]>([])
+  const [loading, setLoading] = useState(true)
+  const [cityName, setCityName] = useState<string>('')
+  const [page, setPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
 
-  const rentals = [
-    {
-      id: 'r1',
-      title: 'Cabañas Pewma Futrono',
-      location: 'Futrono',
-      pricePerNight: '$129 total',
-      price: 129,
-      tag: '$65 per night',
-      images: ['/background.webp', '/paris-france-eiffel-tower-romantic-sunset.jpg'],
-      filters: ['Cabaña', 'Desayuno incluido', 'Futrono'],
-    },
-    {
-      id: 'r2',
-      title: 'Entre Rios Lodge',
-      location: 'Futrono',
-      pricePerNight: '$609 total',
-      price: 609,
-      tag: '$304 per night',
-      images: ['/background.webp', '/tokyo-japan-cherry-blossoms-city-skyline.jpg'],
-      filters: ['Hotel', 'Alberca'],
-    },
-    {
-      id: 'r3',
-      title: 'Lago Azul Retreat',
-      location: 'Futrono',
-      pricePerNight: '$180 total',
-      price: 180,
-      tag: '$90 per night',
-      images: ['/background.webp'],
-      filters: ['Cabaña', 'Pago durante la estancia'],
-    },
-    {
-      id: 'r4',
-      title: 'Casa del Bosque',
-      location: 'Futrono',
-      pricePerNight: '$210 total',
-      price: 210,
-      tag: '$105 per night',
-      images: ['/paris-france-eiffel-tower-romantic-sunset.jpg'],
-      filters: ['Tina de hidromasaje', 'Cabaña'],
-    },
-    {
-      id: 'r5',
-      title: 'Vista Hermosa',
-      location: 'Futrono',
-      pricePerNight: '$150 total',
-      price: 150,
-      tag: '$75 per night',
-      images: ['/tokyo-japan-cherry-blossoms-city-skyline.jpg'],
-      filters: ['Desayuno incluido', 'Hotel'],
-    },
-    {
-      id: 'r6',
-      title: 'Cabañas del Sur',
-      location: 'Futrono',
-      pricePerNight: '$99 total',
-      price: 99,
-      tag: '$50 per nignt',
-      images: ['/iceland-northern-lights-aurora-mountains.jpg'],
-      filters: ['Acepta mascotas', 'Cabaña'],
-    },
-  ]
+  useEffect(() => {
+    const loadStays = async () => {
+      if (!destination) {
+        setLoading(false)
+        return
+      }
 
-  const [queryStr, setQueryStr] = useState('')
-  const [activeFilters, setActiveFilters] = useState<string[]>([])
-  const [priceMin, setPriceMin] = useState<number | null>(null)
-  const [priceMax, setPriceMax] = useState<number | null>(null)
+      try {
+        setLoading(true)
+        const response = await stayService.getStaysByCity(parseInt(destination), { page, size: 20 })
+        setStays(response.content)
+        setTotalPages(response.totalPages)
 
-  const filtered = rentals.filter(r => {
-    const matchesText = r.title.toLowerCase().includes(queryStr.toLowerCase())
-    if (!matchesText) return false
-
-    if (activeFilters.length > 0) {
-      const hasAny = r.filters?.some((f: string) => activeFilters.includes(f))
-      if (!hasAny) return false
+        const city = await cityService.getCityById(parseInt(destination))
+        setCityName(`${city.name}, ${city.country?.name || ''}`)
+      } catch (error) {
+        console.error('Failed to load stays:', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
-    if (priceMin !== null && r.price < priceMin) return false
-    if (priceMax !== null && r.price > priceMax) return false
-
-    return true
-  })
+    loadStays()
+  }, [destination, page, stayService, cityService])
 
   return (
-    <div className="mx-auto max-w-6xl p-6">
-      <div className="flex-1">
+    <div className="mx-auto max-w-7xl p-6">
+      <div className="mb-8">
         <HeroSearch
-          initialDestination={destination}
+          initialDestination={destination || undefined}
           initialFrom={from ?? undefined}
           initialTo={to ?? undefined}
           initialTravelers={travelers}
-          onChange={payload => setCurrent(payload)}
           inlineButton
           buttonOnlyIcon
           compact
         />
+      </div>
 
-        <div className="mt-6 flex items-start gap-6">
-          <div className="w-72 flex-shrink-0">
-            <MapCard place={current.destination || undefined} />
-            <div className="mt-4 border-t border-muted-foreground/30" />
-
-            <div className="mt-4">
-              <SearchBar value={queryStr} onChange={setQueryStr} />
+      <div className="flex flex-col lg:flex-row gap-6">
+        {cityName && (
+          <aside className="hidden lg:block w-80 flex-shrink-0">
+            <div className="sticky top-6">
+              <MapCard place={cityName} />
             </div>
-            <div className="mt-4 border-t border-muted-foreground/30" />
+          </aside>
+        )}
 
-            <div className="mt-4">
-              <FilterPanel
-                activeFilters={activeFilters}
-                onToggle={f => {
-                  setActiveFilters(prev => (prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]))
-                }}
-              />
-            </div>
-
-            <div className="mt-4 border-t border-muted-foreground/30" />
-
-            <div className="mt-4">
-              <PriceFilter
-                prices={rentals.map(r => r.price)}
-                min={priceMin ?? 80}
-                max={priceMax ?? 650}
-                onChange={(min: number, max: number) => {
-                  setPriceMin(min)
-                  setPriceMax(max)
-                }}
-              />
-            </div>
+        <div className="flex-1 min-w-0">
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold">{cityName ? `Stays in ${cityName}` : 'Search Results'}</h1>
           </div>
 
-          <div className="flex-1">
-            <h1 className="mb-4 text-2xl font-semibold">Trips Search</h1>
-
-            <section className="mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-medium">Properties</h2>
-                <div className="text-sm text-muted-foreground">{filtered.length} Properties</div>
-              </div>
-
-              <div className="grid gap-4">
-                {filtered.map(r => (
-                  <div key={r.id}>
-                    <RentalCard
-                      title={r.title}
-                      location={r.location}
-                      pricePerNight={r.pricePerNight}
-                      tag={r.tag}
-                      images={r.images}
-                    />
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-lg text-muted-foreground">Loading stays...</div>
+            </div>
+          ) : stays.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <p className="text-lg text-muted-foreground">No stays found in this city.</p>
+              <p className="mt-2 text-sm text-muted-foreground">Try searching for a different destination.</p>
+            </div>
+          ) : (
+            <>
+              <div className="grid gap-6">
+                {stays.map(stay => (
+                  <div key={stay.id}>
+                    <RentalCard stay={stay} />
                   </div>
                 ))}
               </div>
-            </section>
-          </div>
+
+              {totalPages > 1 && (
+                <div className="mt-8 flex items-center justify-center gap-4">
+                  <button
+                    onClick={() => setPage(p => Math.max(0, p - 1))}
+                    disabled={page === 0}
+                    className="px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-sm text-muted-foreground">
+                    Page {page + 1} of {totalPages}
+                  </span>
+                  <button
+                    onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                    disabled={page === totalPages - 1}
+                    className="px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

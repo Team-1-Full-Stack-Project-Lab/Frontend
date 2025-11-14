@@ -106,69 +106,60 @@ export function HeroSearch({
 
   if (compact) {
     return (
-      <div className="w-full">
-        <div className="flex items-center gap-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 border rounded-lg px-4 py-2 bg-white">
-              <MapPin className="h-5 w-5 text-muted-foreground" />
-              <SearchableSelect
-                options={citiesOptions}
-                value={destination}
-                onValueChange={setDestination}
-                placeholder="¿A dónde quieres ir?"
-                className="min-w-0 flex-1"
-                onQueryChange={q => setSearchQuery(q)}
-              />
-            </div>
-          </div>
-
-          <div className="flex-1">
-            <div className="border rounded-lg px-4 py-2 bg-white">
-              <DateRangePicker date={date} onDateChange={setDate} />
-            </div>
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2 border rounded-lg px-4 py-2 bg-white">
-              <Users className="h-5 w-5 text-muted-foreground" />
-              <Input
-                id="travelers"
-                type="number"
-                min="1"
-                value={travelers}
-                onChange={e => setTravelers(e.target.value)}
-                className="w-40 h-8"
-              />
-            </div>
-          </div>
-
-          <div>
-            <Button
-              className="ml-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full w-12 h-12 flex items-center justify-center shadow-lg"
-              onClick={() => {
-                const hasDestination = Boolean(destination)
-                const hasDateRange = Boolean(date?.from && date?.to)
-
-                if (!hasDestination || !hasDateRange) {
-                  setError('Please select a destination and a trip date range before searching.')
-                  setOpen(true)
-                  return
-                }
-
-                setError(null)
-                const params = new URLSearchParams()
-                if (destination) params.set('destination', destination)
-                if (travelers) params.set('travelers', travelers)
-                if (date?.from) params.set('from', new Date(date.from).toISOString())
-                if (date?.to) params.set('to', new Date(date.to).toISOString())
-
-                navigate(`/stays?${params.toString()}`)
-              }}
-            >
-              <Search className="h-5 w-5" />
-            </Button>
-          </div>
+      <div className="flex flex-col md:flex-row w-full items-stretch md:items-center gap-3 md:gap-4">
+        <div className="relative flex-1">
+          <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <SearchableSelect
+            className="!pl-10"
+            options={citiesOptions}
+            value={destination}
+            onValueChange={setDestination}
+            placeholder="Where to?"
+            onQueryChange={q => setSearchQuery(q)}
+          />
         </div>
+
+        <div className="relative flex-1">
+          <DateRangePicker date={date} onDateChange={setDate} />
+        </div>
+
+        <div className="relative flex-1">
+          <Users className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            id="travelers"
+            type="number"
+            min="1"
+            value={travelers}
+            onChange={e => setTravelers(e.target.value)}
+            className="pl-10 w-full h-10"
+          />
+        </div>
+
+        <Button
+          className="w-full md:w-12 md:h-12 md:ml-2 h-10 bg-primary text-primary-foreground hover:bg-primary/90 flex items-center justify-center shadow-lg"
+          onClick={() => {
+            const hasDestination = Boolean(destination)
+            const hasDateRange = Boolean(date?.from && date?.to)
+
+            if (!hasDestination || !hasDateRange) {
+              setError('Please select a destination and a trip date range before searching.')
+              setOpen(true)
+              return
+            }
+
+            setError(null)
+            const params = new URLSearchParams()
+            if (destination) params.set('destination', destination)
+            if (travelers) params.set('travelers', travelers)
+            if (date?.from) params.set('from', new Date(date.from).toISOString())
+            if (date?.to) params.set('to', new Date(date.to).toISOString())
+
+            navigate(`/stays?${params.toString()}`)
+          }}
+        >
+          <Search className="h-5 w-5 md:mr-0 mr-2" />
+          <span className="md:hidden">Search</span>
+        </Button>
 
         <AlertDialog open={open} onOpenChange={setOpen}>
           <AlertDialogContent className="sm:max-w-[425px]">

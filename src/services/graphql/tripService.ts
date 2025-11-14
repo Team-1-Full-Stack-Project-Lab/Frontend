@@ -1,6 +1,15 @@
 import { gql } from '@apollo/client'
 import { apolloClient } from '@/config/apolloClient'
-import type { Trip, CreateTripRequest, UpdateTripRequest, TripGraphQL as TripGQL } from '@/types'
+import type {
+  Trip,
+  CreateTripRequest,
+  UpdateTripRequest,
+  TripGraphQL as TripGQL,
+  TripStayUnit,
+  TripStayUnitGraphQL,
+  TripStayUnitsListGraphQL,
+  AddStayUnitRequest,
+} from '@/types'
 import { toLocalDate } from '@/utils/helpers'
 
 const GET_TRIPS_QUERY = gql`
@@ -50,6 +59,69 @@ const UPDATE_TRIP_MUTATION = gql`
 const DELETE_TRIP_MUTATION = gql`
   mutation DeleteItinerary($id: ID!) {
     deleteItinerary(id: $id) {
+      success
+      message
+    }
+  }
+`
+
+const GET_TRIP_STAY_UNITS_QUERY = gql`
+  query GetItineraryStayUnits($tripId: ID!) {
+    getItineraryStayUnits(tripId: $tripId) {
+      tripStayUnits {
+        trip {
+          id
+          name
+          cityId
+          cityName
+          countryName
+          startDate
+          finishDate
+        }
+        stayUnit {
+          id
+          stayNumber
+          numberOfBeds
+          capacity
+          pricePerNight
+          roomType
+        }
+        startDate
+        endDate
+      }
+    }
+  }
+`
+
+const ADD_STAY_UNIT_TO_TRIP_MUTATION = gql`
+  mutation AddStayUnitToItinerary($tripId: ID!, $stayUnitId: ID!, $startDate: Date!, $endDate: Date!) {
+    addStayUnitToItinerary(tripId: $tripId, stayUnitId: $stayUnitId, startDate: $startDate, endDate: $endDate) {
+      trip {
+        id
+        name
+        cityId
+        cityName
+        countryName
+        startDate
+        finishDate
+      }
+      stayUnit {
+        id
+        stayNumber
+        numberOfBeds
+        capacity
+        pricePerNight
+        roomType
+      }
+      startDate
+      endDate
+    }
+  }
+`
+
+const REMOVE_STAY_UNIT_FROM_TRIP_MUTATION = gql`
+  mutation RemoveStayUnitFromItinerary($tripId: ID!, $stayUnitId: ID!) {
+    removeStayUnitFromItinerary(tripId: $tripId, stayUnitId: $stayUnitId) {
       success
       message
     }
@@ -142,4 +214,97 @@ export async function deleteTrip(id: number): Promise<boolean> {
   })
 
   return data?.deleteItinerary.success || false
+}
+
+export async function getTripStayUnits(tripId: number): Promise<TripStayUnit[]> {
+  const { data } = await apolloClient.query<{
+    getItineraryStayUnits: TripStayUnitsListGraphQL
+  }>({
+    query: GET_TRIP_STAY_UNITS_QUERY,
+    variables: { tripId: tripId.toString() },
+    fetchPolicy: 'network-only',
+  })
+
+  if (!data) throw new Error('Failed to fetch trip stay units')
+
+  return data.getItineraryStayUnits.tripStayUnits
+    .filter(tsu => tsu.trip && tsu.stayUnit)
+    .map(tsu => ({
+      trip: {
+        id: parseInt(tsu.trip!.id),
+        name: tsu.trip!.name,
+        cityId: parseInt(tsu.trip!.cityId),
+        cityName: tsu.trip!.cityName,
+        countryName: tsu.trip!.countryName,
+        startDate: tsu.trip!.startDate,
+        finishDate: tsu.trip!.finishDate,
+      },
+      stayUnit: {
+        id: parseInt(tsu.stayUnit!.id),
+        stayNumber: tsu.stayUnit!.stayNumber,
+        numberOfBeds: tsu.stayUnit!.numberOfBeds,
+        capacity: tsu.stayUnit!.capacity,
+        pricePerNight: tsu.stayUnit!.pricePerNight,
+        roomType: tsu.stayUnit!.roomType,
+      },
+      startDate: tsu.startDate,
+      endDate: tsu.endDate,
+    }))
+}
+
+export async function addStayUnitToTrip(tripId: number, data: AddStayUnitRequest): Promise<TripStayUnit> {
+  const { data: result } = await apolloClient.mutate<{
+    addStayUnitToItinerary: TripStayUnitGraphQL
+  }>({
+    mutation: ADD_STAY_UNIT_TO_TRIP_MUTATION,
+    variables: {
+      tripId: tripId.toString(),
+      stayUnitId: data.stayUnitId.toString(),
+      startDate: toLocalDate(data.startDate),
+      endDate: toLocalDate(data.endDate),
+    },
+  })
+
+  if (!result) throw new Error('Failed to add stay unit to trip')
+
+  const tsu = result.addStayUnitToItinerary
+  if (!tsu.trip || !tsu.stayUnit) {
+    throw new Error('Invalid response: missing trip or stayUnit data')
+  }
+
+  return {
+    trip: {
+      id: parseInt(tsu.trip.id),
+      name: tsu.trip.name,
+      cityId: parseInt(tsu.trip.cityId),
+      cityName: tsu.trip.cityName,
+      countryName: tsu.trip.countryName,
+      startDate: tsu.trip.startDate,
+      finishDate: tsu.trip.finishDate,
+    },
+    stayUnit: {
+      id: parseInt(tsu.stayUnit.id),
+      stayNumber: tsu.stayUnit.stayNumber,
+      numberOfBeds: tsu.stayUnit.numberOfBeds,
+      capacity: tsu.stayUnit.capacity,
+      pricePerNight: tsu.stayUnit.pricePerNight,
+      roomType: tsu.stayUnit.roomType,
+    },
+    startDate: tsu.startDate,
+    endDate: tsu.endDate,
+  }
+}
+
+export async function removeStayUnitFromTrip(tripId: number, stayUnitId: number): Promise<boolean> {
+  const { data } = await apolloClient.mutate<{
+    removeStayUnitFromItinerary: { success: boolean; message: string }
+  }>({
+    mutation: REMOVE_STAY_UNIT_FROM_TRIP_MUTATION,
+    variables: {
+      tripId: tripId.toString(),
+      stayUnitId: stayUnitId.toString(),
+    },
+  })
+
+  return data?.removeStayUnitFromItinerary.success || false
 }

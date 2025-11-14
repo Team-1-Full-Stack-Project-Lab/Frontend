@@ -9,5 +9,6 @@ export function useServices() {
     userService: services[apiMode].user,
     tripService: services[apiMode].trip,
     cityService: services[apiMode].city,
+    stayService: services[apiMode].stay,
   }
 }
