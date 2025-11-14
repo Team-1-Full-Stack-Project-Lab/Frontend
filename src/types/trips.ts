@@ -49,3 +49,49 @@ export interface TripGraphQL {
   startDate: string
   finishDate: string
 }
+
+export interface StayUnitSimple {
+  id: number
+  stayNumber: string
+  numberOfBeds: number
+  capacity: number
+  pricePerNight: number
+  roomType: string
+}
+
+export interface TripStayUnit {
+  trip: TripResponse
+  stayUnit: StayUnitSimple
+  startDate: string
+  endDate: string
+}
+
+export interface TripStayUnitsResponse {
+  tripStayUnits: TripStayUnit[]
+}
+
+export interface AddStayUnitRequest {
+  stayUnitId: number
+  startDate: string
+  endDate: string
+}
+
+export interface TripStayUnitGraphQL {
+  trip: TripGraphQL | null
+  stayUnit: StayUnitGraphQL | null
+  startDate: string
+  endDate: string
+}
+
+export interface StayUnitGraphQL {
+  id: string
+  stayNumber: string
+  numberOfBeds: number
+  capacity: number
+  pricePerNight: number
+  roomType: string
+}
+
+export interface TripStayUnitsListGraphQL {
+  tripStayUnits: TripStayUnitGraphQL[]
+}

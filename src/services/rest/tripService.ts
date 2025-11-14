@@ -1,4 +1,13 @@
-import type { Trip, CreateTripRequest, UpdateTripRequest, TripResponse, TripsResponse } from '@/types'
+import type {
+  Trip,
+  CreateTripRequest,
+  UpdateTripRequest,
+  TripResponse,
+  TripsResponse,
+  TripStayUnit,
+  TripStayUnitsResponse,
+  AddStayUnitRequest,
+} from '@/types'
 import { getToken } from './authService'
 import { handleResponse } from '@/utils/helpers'
 import { BACKEND_URL } from '@/config/api'
@@ -73,6 +82,47 @@ export async function updateTrip(id: number, data: UpdateTripRequest): Promise<T
 
 export async function deleteTrip(id: number): Promise<boolean> {
   const res = await fetch(`${BACKEND_URL}/trips/itineraries/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`,
+    },
+    credentials: 'include',
+  })
+
+  return res.ok
+}
+
+export async function getTripStayUnits(tripId: number): Promise<TripStayUnit[]> {
+  const res = await fetch(`${BACKEND_URL}/trips/itineraries/${tripId}/stayunits`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`,
+    },
+    credentials: 'include',
+  })
+
+  const result = await handleResponse<TripStayUnitsResponse>(res)
+  return result.tripStayUnits
+}
+
+export async function addStayUnitToTrip(tripId: number, data: AddStayUnitRequest): Promise<TripStayUnit> {
+  const res = await fetch(`${BACKEND_URL}/trips/itineraries/${tripId}/stayunits`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify(data),
+    credentials: 'include',
+  })
+
+  return handleResponse<TripStayUnit>(res)
+}
+
+export async function removeStayUnitFromTrip(tripId: number, stayUnitId: number): Promise<boolean> {
+  const res = await fetch(`${BACKEND_URL}/trips/itineraries/${tripId}/stayunits/${stayUnitId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
