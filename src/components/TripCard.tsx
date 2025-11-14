@@ -9,11 +9,21 @@ interface TripCardProps {
   trip: Trip
   onEditTrip: (trip: Trip) => void
   onDeleteTrip: (trip: Trip) => void
+  onClick?: (trip: Trip) => void
 }
 
-export function TripCard({ trip, onEditTrip, onDeleteTrip }: TripCardProps) {
+export function TripCard({ trip, onEditTrip, onDeleteTrip, onClick }: TripCardProps) {
+  const handleCardClick = () => {
+    if (onClick) {
+      onClick(trip)
+    }
+  }
+
   return (
-    <Card className="flex flex-col overflow-hidden h-56 bg-gradient-to-b from-blue-500 to-blue-950 p-0 cursor-pointer">
+    <Card
+      className="flex flex-col overflow-hidden h-56 bg-gradient-to-b from-blue-500 to-blue-950 p-0 cursor-pointer hover:shadow-lg transition-shadow"
+      onClick={handleCardClick}
+    >
       <CardHeader className="p-2 flex flex-row justify-end">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

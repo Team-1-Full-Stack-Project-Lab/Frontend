@@ -9,11 +9,13 @@ import { Button } from '@/components/ui/button'
 import { TripCard } from '@/components/TripCard'
 import { EditTripDialog } from '@/components/EditTripDialog'
 import { DeleteTripAlert } from '@/components/DeleteTripAlert'
+import { TripStayUnitsDialog } from '@/components/TripStayUnitsDialog'
 
 export default function TripsPage() {
   const [trips, setTrips] = useState<Trip[]>([])
   const [editingTrip, setEditingTrip] = useState<Trip>()
   const [deletingTrip, setDeletingTrip] = useState<Trip>()
+  const [viewingTrip, setViewingTrip] = useState<Trip | null>(null)
 
   const loadTrips = async () => {
     setTrips(await getTrips())
@@ -37,7 +39,13 @@ export default function TripsPage() {
           <div className="mb-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {trips.map(trip => (
-                <TripCard key={trip.id} trip={trip} onEditTrip={setEditingTrip} onDeleteTrip={setDeletingTrip} />
+                <TripCard
+                  key={trip.id}
+                  trip={trip}
+                  onEditTrip={setEditingTrip}
+                  onDeleteTrip={setDeletingTrip}
+                  onClick={setViewingTrip}
+                />
               ))}
             </div>
           </div>
@@ -80,6 +88,12 @@ export default function TripsPage() {
             }}
           />
         )}
+
+        <TripStayUnitsDialog
+          trip={viewingTrip}
+          open={!!viewingTrip}
+          onOpenChange={open => !open && setViewingTrip(null)}
+        />
       </div>
     </>
   )

@@ -20,7 +20,6 @@ type Props = {
 export default function RentalCard({ stay }: Props) {
   const imgs = ['/background.webp'] // Placeholder images
   const [index, setIndex] = useState(0)
-  const [showSuccess, setShowSuccess] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const prev = () => setIndex(i => (i - 1 + imgs.length) % imgs.length)
@@ -31,18 +30,8 @@ export default function RentalCard({ stay }: Props) {
   const cityName = stay.city?.name || 'Unknown'
   const countryName = stay.city?.country?.name || ''
 
-  const handleSaved = () => {
-    setShowSuccess(true)
-    setTimeout(() => setShowSuccess(false), 2500)
-  }
-
   return (
     <>
-      {showSuccess && (
-        <div className="fixed top-4 right-4 z-50 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 shadow-lg animate-in fade-in slide-in-from-top-5">
-          <p className="font-medium">Saved to trip!</p>
-        </div>
-      )}
       <Card className="w-full max-w-full flex-row flex items-stretch gap-0 p-0 rounded-lg h-52">
         <div className="w-2/5 shrink-0 h-full relative overflow-hidden">
           <img src={imgs[index]} alt={stay.name} className="h-full w-full object-cover rounded-l-lg" />
@@ -166,7 +155,7 @@ export default function RentalCard({ stay }: Props) {
                                   <div className="text-xl font-bold text-primary">${unit.pricePerNight.toFixed(2)}</div>
                                   <div className="text-xs text-muted-foreground">per night</div>
                                 </div>
-                                <AddUnitToTripPopover unit={unit} onSaved={handleSaved}>
+                                <AddUnitToTripPopover unit={unit}>
                                   <Button size="sm" variant="outline" className="gap-2">
                                     <Plus className="h-4 w-4" />
                                     Add to Trip
