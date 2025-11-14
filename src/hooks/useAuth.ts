@@ -4,18 +4,18 @@ import { loginUser, logoutUser, registerUser, checkAuth, deleteUserAccount, upda
 
 export function useAuth() {
   const dispatch = useAppDispatch()
-  const { user, token, isAuthenticated, loading, error } = useAppSelector(state => state.auth)
+  const { user, token, isAuthenticated, loading } = useAppSelector(state => state.auth)
 
   const login = useCallback(
     (email: string, password: string) => {
-      dispatch(loginUser({ email, password }))
+      return dispatch(loginUser({ email, password }))
     },
     [dispatch]
   )
 
   const register = useCallback(
     (email: string, firstName: string, lastName: string, password: string) => {
-      dispatch(registerUser({ email, firstName, lastName, password }))
+      return dispatch(registerUser({ email, firstName, lastName, password }))
     },
     [dispatch]
   )
@@ -32,16 +32,18 @@ export function useAuth() {
     dispatch(deleteUserAccount())
   }, [dispatch])
 
-  const updateProfile = useCallback((email: string, firstName: string, lastName: string) => {
-    dispatch(updateUserProfile({ email, firstName, lastName }))
-  }, [dispatch])
+  const updateProfile = useCallback(
+    (email: string, firstName: string, lastName: string) => {
+      dispatch(updateUserProfile({ email, firstName, lastName }))
+    },
+    [dispatch]
+  )
 
   return {
     user,
     token,
     isAuthenticated,
     loading,
-    error,
     login,
     register,
     logout,

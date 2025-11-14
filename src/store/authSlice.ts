@@ -8,7 +8,6 @@ const initialState: AuthState = {
   token: authService.getToken() || null,
   isAuthenticated: authService.isAuthenticated(),
   loading: false,
-  error: null,
 }
 
 export const loginUser = createAsyncThunk('auth/login', async (data: LoginRequest, { rejectWithValue }) => {
@@ -79,29 +78,25 @@ const authSlice = createSlice({
     builder
       .addCase(loginUser.pending, state => {
         state.loading = true
-        state.error = null
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false
         state.token = action.payload
         state.isAuthenticated = true
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUser.rejected, state => {
         state.loading = false
-        state.error = action.payload as string
       })
       .addCase(registerUser.pending, state => {
         state.loading = true
-        state.error = null
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false
         state.token = action.payload
         state.isAuthenticated = true
       })
-      .addCase(registerUser.rejected, (state, action) => {
+      .addCase(registerUser.rejected, state => {
         state.loading = false
-        state.error = action.payload as string
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.user = action.payload
@@ -114,26 +109,22 @@ const authSlice = createSlice({
       })
       .addCase(deleteUserAccount.pending, state => {
         state.loading = true
-        state.error = null
       })
       .addCase(deleteUserAccount.fulfilled, state => {
         state.loading = false
       })
-      .addCase(deleteUserAccount.rejected, (state, action) => {
+      .addCase(deleteUserAccount.rejected, state => {
         state.loading = false
-        state.error = action.payload as string
       })
       .addCase(updateUserProfile.pending, state => {
         state.loading = true
-        state.error = null
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.loading = false
         state.user = action.payload
       })
-      .addCase(updateUserProfile.rejected, (state, action) => {
+      .addCase(updateUserProfile.rejected, state => {
         state.loading = false
-        state.error = action.payload as string
       })
   },
 })
