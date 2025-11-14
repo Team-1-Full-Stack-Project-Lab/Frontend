@@ -116,15 +116,17 @@ export async function getCities(params?: GetCitiesParams): Promise<City[]> {
     population: city.population,
     isCapital: city.isCapital,
     isFeatured: city.isFeatured,
-    country: {
-      id: parseInt(city.country.id),
-      name: city.country.name,
-      iso2Code: city.country.iso2Code,
-      iso3Code: city.country.iso3Code,
-      phoneCode: city.country.phoneCode || '',
-      currencyCode: city.country.currencyCode || '',
-      currencySymbol: city.country.currencySymbol || '',
-    },
+    country: city.country
+      ? {
+          id: parseInt(city.country.id),
+          name: city.country.name,
+          iso2Code: city.country.iso2Code,
+          iso3Code: city.country.iso3Code,
+          phoneCode: city.country.phoneCode || '',
+          currencyCode: city.country.currencyCode || '',
+          currencySymbol: city.country.currencySymbol || '',
+        }
+      : undefined,
     state: city.state
       ? {
           id: parseInt(city.state.id),
@@ -158,15 +160,17 @@ export async function getCityById(id: number): Promise<City> {
     population: city.population,
     isCapital: city.isCapital,
     isFeatured: city.isFeatured,
-    country: {
-      id: parseInt(city.country.id),
-      name: city.country.name,
-      iso2Code: city.country.iso2Code,
-      iso3Code: city.country.iso3Code,
-      phoneCode: city.country.phoneCode || '',
-      currencyCode: city.country.currencyCode || '',
-      currencySymbol: city.country.currencySymbol || '',
-    },
+    country: city.country
+      ? {
+          id: parseInt(city.country.id),
+          name: city.country.name,
+          iso2Code: city.country.iso2Code,
+          iso3Code: city.country.iso3Code,
+          phoneCode: city.country.phoneCode || '',
+          currencyCode: city.country.currencyCode || '',
+          currencySymbol: city.country.currencySymbol || '',
+        }
+      : undefined,
     state: city.state
       ? {
           id: parseInt(city.state.id),

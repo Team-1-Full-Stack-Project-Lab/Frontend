@@ -234,15 +234,17 @@ function mapStayFromGraphQL(stay: StayGraphQL): Stay {
           population: stay.city.population,
           isCapital: stay.city.isCapital,
           isFeatured: stay.city.isFeatured,
-          country: {
-            id: parseInt(stay.city.country.id),
-            name: stay.city.country.name,
-            iso2Code: stay.city.country.iso2Code,
-            iso3Code: stay.city.country.iso3Code,
-            phoneCode: stay.city.country.phoneCode || '',
-            currencyCode: stay.city.country.currencyCode || '',
-            currencySymbol: stay.city.country.currencySymbol || '',
-          },
+          country: stay.city.country
+            ? {
+                id: parseInt(stay.city.country.id),
+                name: stay.city.country.name,
+                iso2Code: stay.city.country.iso2Code,
+                iso3Code: stay.city.country.iso3Code,
+                phoneCode: stay.city.country.phoneCode || '',
+                currencyCode: stay.city.country.currencyCode || '',
+                currencySymbol: stay.city.country.currencySymbol || '',
+              }
+            : undefined,
           state: stay.city.state
             ? {
                 id: parseInt(stay.city.state.id),

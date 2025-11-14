@@ -94,8 +94,8 @@ const GET_TRIP_STAY_UNITS_QUERY = gql`
 `
 
 const ADD_STAY_UNIT_TO_TRIP_MUTATION = gql`
-  mutation AddStayUnitToItinerary($tripId: ID!, $stayUnitId: ID!, $startDate: Date!, $endDate: Date!) {
-    addStayUnitToItinerary(tripId: $tripId, stayUnitId: $stayUnitId, startDate: $startDate, endDate: $endDate) {
+  mutation AddStayUnitToItinerary($tripId: ID!, $request: AddStayUnitRequest!) {
+    addStayUnitToItinerary(tripId: $tripId, request: $request) {
       trip {
         id
         name
@@ -253,15 +253,19 @@ export async function getTripStayUnits(tripId: number): Promise<TripStayUnit[]> 
 }
 
 export async function addStayUnitToTrip(tripId: number, data: AddStayUnitRequest): Promise<TripStayUnit> {
+  const request = {
+    stayUnitId: data.stayUnitId.toString(),
+    startDate: toLocalDate(data.startDate),
+    endDate: toLocalDate(data.endDate),
+  }
+
   const { data: result } = await apolloClient.mutate<{
     addStayUnitToItinerary: TripStayUnitGraphQL
   }>({
     mutation: ADD_STAY_UNIT_TO_TRIP_MUTATION,
     variables: {
       tripId: tripId.toString(),
-      stayUnitId: data.stayUnitId.toString(),
-      startDate: toLocalDate(data.startDate),
-      endDate: toLocalDate(data.endDate),
+      request,
     },
   })
 

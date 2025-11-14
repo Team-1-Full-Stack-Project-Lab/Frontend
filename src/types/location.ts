@@ -68,7 +68,7 @@ export interface CityGraphQL {
   population: number
   isCapital: boolean
   isFeatured: boolean
-  country: {
+  country?: {
     id: string
     name: string
     iso2Code: string
