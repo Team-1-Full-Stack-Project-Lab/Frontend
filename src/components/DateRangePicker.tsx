@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
-interface DateRangePickerProps {
+interface DateRangePickerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string
   date?: DateRange
   onDateChange?: (date: DateRange | undefined) => void
@@ -19,6 +19,7 @@ export function DateRangePicker({
   date,
   onDateChange,
   placeholder = 'Pick a date range',
+  ...props
 }: DateRangePickerProps) {
   const [selectedDate, setSelectedDate] = useState<DateRange | undefined>(date)
 
@@ -37,6 +38,7 @@ export function DateRangePicker({
             !selectedDate && 'text-muted-foreground',
             className
           )}
+          {...props}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {selectedDate?.from ? (

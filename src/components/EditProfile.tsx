@@ -1,3 +1,4 @@
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,49 +11,36 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useState, useEffect } from "react";
-import type { UserData } from "@/shared/types";
+import { useState, type FormEvent } from "react"
+import { useAuth } from "@/hooks/useAuth"
+import type { User } from "@/types/auth"
 
 interface EditProfileProps {
-  userData: UserData | null;
-  onUpdate: (updatedUserData: UserData) => void;
+  user: User | null;
 }
 
-export function EditProfile({ userData, onUpdate, userId }: EditProfileProps & { userId: number }) {
-  const [firstName2, setFirstName] = useState("");
-  const [lastName2, setLastName] = useState("");
-  const [, setError] = useState<string | null>(null);
+export function EditProfile({ user }: EditProfileProps) {
+  const { updateProfile } = useAuth()
+  const [open, setOpen] = useState(false)
 
-  useEffect(() => {
-    if (userData) {
-      setFirstName(userData.firstName);
-      setLastName(userData.lastName);
-    }
-  }, [userData]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
+    const email = user?.email || ""
+    const formData = new FormData(e.target as HTMLFormElement)
+    const firstName = formData.get("firstName") as string
+    const lastName = formData.get("lastName") as string
     try {
-      const response = await fetch(`http://localhost:8080/user/profile/edit/${userId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName: firstName2,
-          lastName: lastName2
-        })
-      });
-      if (!response.ok) {
-        throw new Error("Failed to update profile.");
-      }
-      const updatedUserData: UserData = await response.json();
-      onUpdate(updatedUserData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred.");
+      updateProfile(email, firstName, lastName)
+      setOpen(false)
+      toast.success("Profile updated successfully")
+    } catch (error) {
+      console.error("Error updating profile:", error)
+      setOpen(false)
+      toast.error("Failed to update profile. Please try again.")
     }
   };
   return (
-    <Dialog >
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" className="text-blue-600 hover:text-blue-500">Edit</Button>
       </DialogTrigger>
@@ -69,17 +57,17 @@ export function EditProfile({ userData, onUpdate, userId }: EditProfileProps & {
               <Label htmlFor="name" className="text-right">
                 First Name
               </Label>
-              <Input id="name" defaultValue={userData?.firstName} onChange={(e) => setFirstName(e.target.value)} className="col-span-3" />
+              <Input id="firstName" name="firstName" defaultValue={user?.firstName} className="col-span-3" required />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="lastname" className="text-right">
+              <Label htmlFor="lastName" className="text-right">
                 Last Name
               </Label>
-              <Input id="lastname" defaultValue={userData?.lastName} onChange={(e) => setLastName(e.target.value)} className="col-span-3" />
+              <Input id="lastName" name="lastName" defaultValue={user?.lastName} className="col-span-3" required />
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-500" onClick={() => window.location.reload()}>Save</Button>
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-500" >Save</Button>
           </DialogFooter>
         </form>
       </DialogContent>

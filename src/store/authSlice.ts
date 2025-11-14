@@ -1,24 +1,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import * as authService from '@/services/authService'
-import type { UserData } from '@/shared/types'
+import { services } from '@/services'
+import { API_MODE } from '@/config/api'
+import type { AuthState, LoginRequest, RegisterRequest, UpdateUserRequest } from '@/types'
 
-interface AuthState {
-  user: UserData | null
-  token: string | null
-  isAuthenticated: boolean
-  loading: boolean
-  error: string | null
-}
+const apiMode = API_MODE as keyof typeof services
+const authService = services[apiMode].auth
+const userService = services[apiMode].user
 
 const initialState: AuthState = {
   user: null,
   token: authService.getToken() || null,
   isAuthenticated: authService.isAuthenticated(),
   loading: false,
-  error: null,
 }
 
-export const loginUser = createAsyncThunk('auth/login', async (data: authService.LoginRequest, { rejectWithValue }) => {
+export const loginUser = createAsyncThunk('auth/login', async (data: LoginRequest, { rejectWithValue }) => {
   try {
     const res = await authService.login(data)
     return res.token
@@ -28,18 +24,15 @@ export const loginUser = createAsyncThunk('auth/login', async (data: authService
   }
 })
 
-export const registerUser = createAsyncThunk(
-  'auth/register',
-  async (data: authService.RegisterRequest, { rejectWithValue }) => {
-    try {
-      const res = await authService.register(data)
-      return res.token
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error'
-      return rejectWithValue(message)
-    }
+export const registerUser = createAsyncThunk('auth/register', async (data: RegisterRequest, { rejectWithValue }) => {
+  try {
+    const res = await authService.register(data)
+    return res.token
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    return rejectWithValue(message)
   }
-)
+})
 
 export const checkAuth = createAsyncThunk('auth/checkAuth', async (_, { rejectWithValue }) => {
   try {
@@ -50,6 +43,29 @@ export const checkAuth = createAsyncThunk('auth/checkAuth', async (_, { rejectWi
     return rejectWithValue(message)
   }
 })
+
+export const deleteUserAccount = createAsyncThunk('user/deleteAccount', async (_, { rejectWithValue }) => {
+  try {
+    const user = await userService.deleteUserAccount()
+    return user
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    return rejectWithValue(message)
+  }
+})
+
+export const updateUserProfile = createAsyncThunk(
+  'user/updateProfile',
+  async (data: UpdateUserRequest, { rejectWithValue }) => {
+    try {
+      const user = await userService.updateUserProfile(data)
+      return user
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      return rejectWithValue(message)
+    }
+  }
+)
 
 const authSlice = createSlice({
   name: 'auth',
@@ -66,16 +82,25 @@ const authSlice = createSlice({
     builder
       .addCase(loginUser.pending, state => {
         state.loading = true
-        state.error = null
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false
         state.token = action.payload
         state.isAuthenticated = true
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUser.rejected, state => {
         state.loading = false
-        state.error = action.payload as string
+      })
+      .addCase(registerUser.pending, state => {
+        state.loading = true
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false
+        state.token = action.payload
+        state.isAuthenticated = true
+      })
+      .addCase(registerUser.rejected, state => {
+        state.loading = false
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.user = action.payload
@@ -85,6 +110,25 @@ const authSlice = createSlice({
         authService.logout()
         state.user = null
         state.isAuthenticated = false
+      })
+      .addCase(deleteUserAccount.pending, state => {
+        state.loading = true
+      })
+      .addCase(deleteUserAccount.fulfilled, state => {
+        state.loading = false
+      })
+      .addCase(deleteUserAccount.rejected, state => {
+        state.loading = false
+      })
+      .addCase(updateUserProfile.pending, state => {
+        state.loading = true
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.loading = false
+        state.user = action.payload
+      })
+      .addCase(updateUserProfile.rejected, state => {
+        state.loading = false
       })
   },
 })

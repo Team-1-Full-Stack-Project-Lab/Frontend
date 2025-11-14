@@ -35,9 +35,11 @@ export default function MainLayout() {
           </Link>
 
           <nav className="hidden lg:flex space-x-4">
-            <Link to="/trips" className="text-gray-800 hover:text-blue-600 font-medium">
-              Trips
-            </Link>
+            {isAuthenticated && (
+              <Link to="/trips" className="text-gray-800 hover:text-blue-600 font-medium">
+                Trips
+              </Link>
+            )}
 
             <div className="border-l border-gray-300 h-6 my-auto" />
             {user ? (
@@ -62,13 +64,15 @@ export default function MainLayout() {
         {menuOpen && (
           <div className="lg:hidden bg-white border-t border-gray-200 shadow-md">
             <nav className="container mx-auto px-4 py-3 flex flex-col space-y-3">
-              <Link
-                to="/trips"
-                className="text-gray-800 hover:text-blue-600 font-medium"
-                onClick={() => setMenuOpen(false)}
-              >
-                Trips
-              </Link>
+              {isAuthenticated && (
+                <Link
+                  to="/trips"
+                  className="text-gray-800 hover:text-blue-600 font-medium"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Trips
+                </Link>
+              )}
 
               <hr className="border-gray-300" />
               {user ? (
