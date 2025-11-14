@@ -1,7 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import * as authService from '@/services/rest/authService'
-import * as userService from '@/services/rest/userService'
+import { services } from '@/services'
+import { API_MODE } from '@/config/api'
 import type { AuthState, LoginRequest, RegisterRequest, UpdateUserRequest } from '@/types'
+
+const apiMode = API_MODE as keyof typeof services
+const authService = services[apiMode].auth
+const userService = services[apiMode].user
 
 const initialState: AuthState = {
   user: null,

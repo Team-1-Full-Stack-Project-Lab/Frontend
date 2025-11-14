@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Calendar, Search } from 'lucide-react'
 import { CreateTripDialog } from '@/components/CreateTripDialog'
-import { getTrips } from '@/services/rest/tripService'
+import { useServices } from '@/hooks/useServices'
 import type { Trip } from '@/types/trips'
 import { Card } from '@/components/ui/card'
 import { Link } from 'react-router-dom'
@@ -12,17 +12,19 @@ import { DeleteTripAlert } from '@/components/DeleteTripAlert'
 import { TripStayUnitsDialog } from '@/components/TripStayUnitsDialog'
 
 export default function TripsPage() {
+  const { tripService } = useServices()
   const [trips, setTrips] = useState<Trip[]>([])
   const [editingTrip, setEditingTrip] = useState<Trip>()
   const [deletingTrip, setDeletingTrip] = useState<Trip>()
   const [viewingTrip, setViewingTrip] = useState<Trip | null>(null)
 
   const loadTrips = async () => {
-    setTrips(await getTrips())
+    setTrips(await tripService.getTrips())
   }
 
   useEffect(() => {
     loadTrips()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
