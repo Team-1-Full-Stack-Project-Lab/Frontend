@@ -9,7 +9,7 @@ import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@/component
 
 export default function RegisterPage() {
   const navigate = useNavigate()
-  const { register, loading, error, isAuthenticated } = useAuth()
+  const { register, loading, isAuthenticated } = useAuth()
 
   const [data, setData] = useState({
     firstname: '',
@@ -17,10 +17,17 @@ export default function RegisterPage() {
     email: '',
     password: '',
   })
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    register(data.email, data.firstname, data.lastname, data.password)
+    setError(null)
+
+    try {
+      await register(data.email, data.firstname, data.lastname, data.password).unwrap()
+    } catch (err) {
+      setError(err as string)
+    }
   }
 
   useEffect(() => {

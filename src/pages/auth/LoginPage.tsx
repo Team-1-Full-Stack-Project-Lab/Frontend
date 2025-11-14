@@ -9,16 +9,23 @@ import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@/component
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { login, loading, error, isAuthenticated } = useAuth()
+  const { login, loading, isAuthenticated } = useAuth()
 
   const [data, setData] = useState({
     email: '',
     password: '',
   })
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    login(data.email, data.password)
+    setError(null)
+
+    try {
+      await login(data.email, data.password).unwrap()
+    } catch (err) {
+      setError(err as string)
+    }
   }
 
   useEffect(() => {
