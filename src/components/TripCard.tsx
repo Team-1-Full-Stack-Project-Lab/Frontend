@@ -38,13 +38,22 @@ export function TripCard({ trip, onEditTrip, onDeleteTrip, onClick }: TripCardPr
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={() => onEditTrip(trip)} className="cursor-pointer">
+            <DropdownMenuItem
+              onClick={e => {
+                e.stopPropagation()
+                onEditTrip(trip)
+              }}
+              className="cursor-pointer"
+            >
               <Pencil className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
 
             <DropdownMenuItem
-              onClick={() => onDeleteTrip(trip)}
+              onClick={e => {
+                e.stopPropagation()
+                onDeleteTrip(trip)
+              }}
               className="cursor-pointer text-red-600 focus:text-red-600"
             >
               <Trash2 className="mr-2 h-4 w-4" />
