@@ -28,3 +28,16 @@ export async function getCities(params?: GetCitiesParams): Promise<City[]> {
 
   return result.content
 }
+
+export async function getCityById(id: number): Promise<City> {
+  const res = await fetch(`${BACKEND_URL}/cities/${id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`,
+    },
+    credentials: 'include',
+  })
+
+  return handleResponse<City>(res)
+}
