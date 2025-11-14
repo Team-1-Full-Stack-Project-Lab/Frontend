@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card'
 import { MapPin, Users, Search } from 'lucide-react'
 import { DateRangePicker } from './DateRangePicker'
 import type { DateRange } from 'react-day-picker'
-import { SearchableSelect } from './SearchableSelect'
+import { SearchableSelect, type SearchableSelectOption } from './SearchableSelect'
 import {
   AlertDialog,
   AlertDialogContent,
@@ -18,6 +18,8 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog'
+import { useServices } from '@/hooks/useServices'
+import type { GetCitiesParams } from '@/types'
 
 type HeroSearchProps = {
   initialDestination?: string
@@ -40,6 +42,8 @@ export function HeroSearch({
   buttonOnlyIcon = false,
   compact = false,
 }: HeroSearchProps) {
+  const { cityService } = useServices()
+
   const [destination, setDestination] = useState<string>(() => initialDestination ?? '')
   const [date, setDate] = useState<DateRange | undefined>(() => {
     if (initialFrom || initialTo) {
@@ -54,6 +58,18 @@ export function HeroSearch({
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
+  const [citiesOptions, setCitiesOptions] = useState<SearchableSelectOption[]>([])
+  const [searchQuery, setSearchQuery] = useState<string>()
+
+  const loadCities = async (params?: GetCitiesParams) => {
+    const cities = await cityService.getCities(params)
+    setCitiesOptions(
+      cities.map(city => ({
+        value: city.id.toString(),
+        label: `${city.name}, ${city.country?.name || ''}`,
+      }))
+    )
+  }
 
   useEffect(() => {
     if (onChange) {
@@ -67,20 +83,23 @@ export function HeroSearch({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [destination, travelers, date])
 
-  const cities = [
-    { value: 'paris', label: 'Paris, France' },
-    { value: 'tokyo', label: 'Tokyo, Japan' },
-    { value: 'new-york', label: 'New York, USA' },
-    { value: 'london', label: 'London, UK' },
-    { value: 'sydney', label: 'Sydney, Australia' },
-    { value: 'rome', label: 'Rome, Italy' },
-    { value: 'barcelona', label: 'Barcelona, Spain' },
-    { value: 'dubai', label: 'Dubai, UAE' },
-    { value: 'bali', label: 'Bali, Indonesia' },
-    { value: 'cape-town', label: 'Cape Town, South Africa' },
-    { value: 'reykjavik', label: 'Reykjavik, Iceland' },
-    { value: 'santiago-chile', label: 'Santiago de Chile, Chile' },
-  ]
+  useEffect(() => {
+    loadCities({ featured: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (!searchQuery || searchQuery.trim() === '') {
+        loadCities({ featured: true })
+      } else {
+        loadCities({ name: searchQuery })
+      }
+    }, 300)
+
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery])
 
   // Keep 3 columns and place the inline button inside the travelers column
   const gridCols = 'md:grid-cols-3'
@@ -93,11 +112,12 @@ export function HeroSearch({
             <div className="flex items-center gap-2 border rounded-lg px-4 py-2 bg-white">
               <MapPin className="h-5 w-5 text-muted-foreground" />
               <SearchableSelect
-                options={cities}
+                options={citiesOptions}
                 value={destination}
                 onValueChange={setDestination}
                 placeholder="¿A dónde quieres ir?"
                 className="min-w-0 flex-1"
+                onQueryChange={q => setSearchQuery(q)}
               />
             </div>
           </div>
@@ -179,10 +199,11 @@ export function HeroSearch({
             <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <SearchableSelect
               className="!pl-10"
-              options={cities}
+              options={citiesOptions}
               value={destination}
               onValueChange={setDestination}
               placeholder="Where to?"
+              onQueryChange={q => setSearchQuery(q)}
             />
           </div>
         </div>
@@ -216,7 +237,11 @@ export function HeroSearch({
             {inlineButton && (
               <div className="ml-3">
                 <Button
-                  className={buttonOnlyIcon ? 'p-2 w-12 h-10 flex items-center justify-center' : 'w-full bg-primary text-primary-foreground hover:bg-primary/90'}
+                  className={
+                    buttonOnlyIcon
+                      ? 'p-2 w-12 h-10 flex items-center justify-center'
+                      : 'w-full bg-primary text-primary-foreground hover:bg-primary/90'
+                  }
                   size={buttonOnlyIcon ? 'sm' : 'lg'}
                   onClick={() => {
                     const hasDestination = Boolean(destination)
