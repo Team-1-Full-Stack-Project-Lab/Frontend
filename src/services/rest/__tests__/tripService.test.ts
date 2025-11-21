@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { getTrips, createTrip, updateTrip, deleteTrip } from './tripService'
+import { getTrips, createTrip, updateTrip, deleteTrip } from '../tripService'
 import type { TripsResponse, TripResponse, CreateTripRequest, UpdateTripRequest } from '@/types'
 
 /**
  * LEARNING: Testing API Services
- * 
+ *
  * When testing services that make HTTP requests, we need to:
  * 1. Mock the fetch function to avoid real API calls
  * 2. Test that requests are made with correct parameters
@@ -24,7 +24,7 @@ vi.mock('@/config/api', () => ({
 
 // Mock the handleResponse utility
 vi.mock('@/utils/helpers', () => ({
-  handleResponse: vi.fn((res) => res.json()),
+  handleResponse: vi.fn(res => res.json()),
 }))
 
 describe('tripService', () => {
