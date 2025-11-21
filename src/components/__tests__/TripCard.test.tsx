@@ -34,19 +34,25 @@ describe('TripCard', () => {
   describe('Rendering', () => {
     it('should render trip name', () => {
       // LEARNING: Basic rendering test
-      render(<TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />)
+      render(
+        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
+      )
 
       expect(screen.getByText('Summer Vacation')).toBeInTheDocument()
     })
 
     it('should render trip destination', () => {
-      render(<TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />)
+      render(
+        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
+      )
 
       expect(screen.getByText('Paris, France')).toBeInTheDocument()
     })
 
     it('should render formatted dates', () => {
-      render(<TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />)
+      render(
+        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
+      )
 
       // LEARNING: Test date formatting
       // July 1 - July 10, 2024
@@ -55,7 +61,7 @@ describe('TripCard', () => {
 
     it('should render location and calendar icons', () => {
       const { container } = render(
-        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />
+        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
       )
 
       // LEARNING: Testing for SVG icons (lucide-react uses SVG)
@@ -67,7 +73,9 @@ describe('TripCard', () => {
 
   describe('Dropdown Menu', () => {
     it('should show dropdown menu button', () => {
-      render(<TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />)
+      render(
+        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
+      )
 
       // LEARNING: Find button by role and accessibility
       const menuButton = screen.getByRole('button')
@@ -77,7 +85,9 @@ describe('TripCard', () => {
     it('should show edit and delete options when menu is opened', async () => {
       const user = userEvent.setup()
 
-      render(<TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />)
+      render(
+        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
+      )
 
       // LEARNING: Open dropdown menu
       const menuButton = screen.getByRole('button')
@@ -93,7 +103,9 @@ describe('TripCard', () => {
     it('should call onEditTrip when edit is clicked', async () => {
       const user = userEvent.setup()
 
-      render(<TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />)
+      render(
+        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
+      )
 
       // LEARNING: Simulate user interaction flow
       // 1. Open menu
@@ -112,7 +124,9 @@ describe('TripCard', () => {
     it('should call onDeleteTrip when delete is clicked', async () => {
       const user = userEvent.setup()
 
-      render(<TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />)
+      render(
+        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
+      )
 
       // Open menu
       const menuButton = screen.getByRole('button')
@@ -130,7 +144,9 @@ describe('TripCard', () => {
     it('should not trigger callbacks when menu is just opened', async () => {
       const user = userEvent.setup()
 
-      render(<TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />)
+      render(
+        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
+      )
 
       // LEARNING: Test that callbacks are NOT called when they shouldn't be
       const menuButton = screen.getByRole('button')
@@ -145,7 +161,9 @@ describe('TripCard', () => {
     it('should handle different trip names', () => {
       const customTrip = { ...mockTrip, name: 'Weekend Getaway' }
 
-      render(<TripCard trip={customTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />)
+      render(
+        <TripCard trip={customTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
+      )
 
       expect(screen.getByText('Weekend Getaway')).toBeInTheDocument()
     })
@@ -153,7 +171,9 @@ describe('TripCard', () => {
     it('should handle different destinations', () => {
       const customTrip = { ...mockTrip, destination: 'Tokyo, Japan' }
 
-      render(<TripCard trip={customTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />)
+      render(
+        <TripCard trip={customTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
+      )
 
       expect(screen.getByText('Tokyo, Japan')).toBeInTheDocument()
     })
@@ -166,7 +186,9 @@ describe('TripCard', () => {
         endDate: '2025-01-05',
       }
 
-      render(<TripCard trip={customTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />)
+      render(
+        <TripCard trip={customTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
+      )
 
       // Crosses year boundary
       expect(screen.getByText(/Dec 25 - Jan 5, 2025/)).toBeInTheDocument()
@@ -176,7 +198,7 @@ describe('TripCard', () => {
   describe('Styling and Classes', () => {
     it('should have gradient background', () => {
       const { container } = render(
-        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />
+        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
       )
 
       // LEARNING: Test CSS classes for styling
@@ -186,7 +208,7 @@ describe('TripCard', () => {
 
     it('should be clickable (cursor-pointer)', () => {
       const { container } = render(
-        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} />
+        <TripCard trip={mockTrip} onEditTrip={mockOnEditTrip} onDeleteTrip={mockOnDeleteTrip} onClick={() => {}} />
       )
 
       const card = container.querySelector('.cursor-pointer')

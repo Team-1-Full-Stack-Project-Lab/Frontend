@@ -13,7 +13,7 @@ import type { TripsResponse, TripResponse, CreateTripRequest, UpdateTripRequest 
  */
 
 // Mock the auth service to provide a fake token
-vi.mock('./authService', () => ({
+vi.mock('../authService', () => ({
   getToken: () => 'fake-token-12345',
 }))
 
@@ -62,10 +62,10 @@ describe('tripService', () => {
       }
 
       // LEARNING: Setup fetch mock to return our mock data
-      ;(globalThis.fetch as any).mockResolvedValueOnce({
+      vi.mocked(globalThis.fetch).mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
-      })
+      } as Response)
 
       const result = await getTrips()
 
@@ -78,6 +78,7 @@ describe('tripService', () => {
             'Content-Type': 'application/json',
             Authorization: 'Bearer fake-token-12345',
           }),
+          credentials: 'include',
         })
       )
 
@@ -94,10 +95,10 @@ describe('tripService', () => {
     })
 
     it('should return empty array when no trips exist', async () => {
-      ;(globalThis.fetch as any).mockResolvedValueOnce({
+      vi.mocked(globalThis.fetch).mockResolvedValueOnce({
         ok: true,
         json: async () => ({ trips: [] }),
-      })
+      } as Response)
 
       const result = await getTrips()
       expect(result).toEqual([])
@@ -123,10 +124,10 @@ describe('tripService', () => {
         finishDate: '2024-08-15',
       }
 
-      ;(globalThis.fetch as any).mockResolvedValueOnce({
+      vi.mocked(globalThis.fetch).mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
-      })
+      } as Response)
 
       const result = await createTrip(mockRequest)
 
@@ -140,6 +141,7 @@ describe('tripService', () => {
             Authorization: 'Bearer fake-token-12345',
           }),
           body: JSON.stringify(mockRequest),
+          credentials: 'include',
         })
       )
 
@@ -172,10 +174,10 @@ describe('tripService', () => {
         finishDate: '2024-09-10',
       }
 
-      ;(globalThis.fetch as any).mockResolvedValueOnce({
+      vi.mocked(globalThis.fetch).mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
-      })
+      } as Response)
 
       const result = await updateTrip(tripId, mockRequest)
 
@@ -185,6 +187,7 @@ describe('tripService', () => {
         expect.objectContaining({
           method: 'PUT',
           body: JSON.stringify(mockRequest),
+          credentials: 'include',
         })
       )
 
@@ -196,9 +199,9 @@ describe('tripService', () => {
     it('should delete a trip and return true on success', async () => {
       const tripId = 1
 
-      ;(globalThis.fetch as any).mockResolvedValueOnce({
+      vi.mocked(globalThis.fetch).mockResolvedValueOnce({
         ok: true,
-      })
+      } as Response)
 
       const result = await deleteTrip(tripId)
 
@@ -207,6 +210,7 @@ describe('tripService', () => {
         `http://localhost:3000/trips/itineraries/${tripId}`,
         expect.objectContaining({
           method: 'DELETE',
+          credentials: 'include',
         })
       )
 
@@ -214,9 +218,9 @@ describe('tripService', () => {
     })
 
     it('should return false when delete fails', async () => {
-      ;(globalThis.fetch as any).mockResolvedValueOnce({
+      vi.mocked(globalThis.fetch).mockResolvedValueOnce({
         ok: false,
-      })
+      } as Response)
 
       const result = await deleteTrip(999)
       expect(result).toBe(false)

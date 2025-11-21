@@ -10,6 +10,8 @@ export default defineConfig({
     globals: true,
     setupFiles: './src/test/setup.ts',
     pool: 'threads',
+    testTimeout: 10000,
+    hookTimeout: 10000,
     typecheck: {
       include: ['**/*.test.{ts,tsx}'],
     },

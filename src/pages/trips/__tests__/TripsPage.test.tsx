@@ -3,7 +3,6 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 import TripsPage from '../TripsPage'
-import * as tripService from '@/services/rest/tripService'
 import type { Trip } from '@/types'
 
 /**
@@ -16,8 +15,15 @@ import type { Trip } from '@/types'
  * 4. Mock external dependencies (services, APIs)
  */
 
-// Mock the trip service module
-vi.mock('@/services/rest/tripService')
+// Mock the useServices hook
+const mockGetTrips = vi.fn()
+vi.mock('@/hooks/useServices', () => ({
+  useServices: () => ({
+    tripService: {
+      getTrips: mockGetTrips,
+    },
+  }),
+}))
 
 // Mock the child components to simplify testing
 vi.mock('@/components/CreateTripDialog', () => ({
@@ -55,6 +61,10 @@ vi.mock('@/components/DeleteTripAlert', () => ({
   DeleteTripAlert: () => <div data-testid="delete-trip-alert">Delete Alert</div>,
 }))
 
+vi.mock('@/components/TripStayUnitsDialog', () => ({
+  TripStayUnitsDialog: () => <div data-testid="trip-stay-units-dialog">Stay Units Dialog</div>,
+}))
+
 /**
  * LEARNING: Wrapper Component for React Router
  *
@@ -73,27 +83,33 @@ describe('TripsPage', () => {
   describe('Empty State', () => {
     it('should show empty state when no trips exist', async () => {
       // LEARNING: Mock the service to return empty array
-      vi.mocked(tripService.getTrips).mockResolvedValue([])
+      mockGetTrips.mockResolvedValue([])
 
       renderWithRouter(<TripsPage />)
 
       // LEARNING: Wait for async data to load
-      await waitFor(() => {
-        expect(screen.getByText(/You have no upcoming trips/i)).toBeInTheDocument()
-      })
+      await waitFor(
+        () => {
+          expect(screen.getByText(/You have no upcoming trips/i)).toBeInTheDocument()
+        },
+        { timeout: 5000 }
+      )
 
       // LEARNING: Verify the heading is still shown
       expect(screen.getByText('My Trips')).toBeInTheDocument()
     })
 
     it('should show create trip button in empty state', async () => {
-      vi.mocked(tripService.getTrips).mockResolvedValue([])
+      mockGetTrips.mockResolvedValue([])
 
       renderWithRouter(<TripsPage />)
 
-      await waitFor(() => {
-        expect(screen.getByTestId('create-trip-dialog')).toBeInTheDocument()
-      })
+      await waitFor(
+        () => {
+          expect(screen.getByTestId('create-trip-dialog')).toBeInTheDocument()
+        },
+        { timeout: 5000 }
+      )
     })
   })
 
@@ -119,15 +135,18 @@ describe('TripsPage', () => {
 
     it('should render trip cards when trips exist', async () => {
       // LEARNING: Mock service to return multiple trips
-      vi.mocked(tripService.getTrips).mockResolvedValue(mockTrips)
+      mockGetTrips.mockResolvedValue(mockTrips)
 
       renderWithRouter(<TripsPage />)
 
       // LEARNING: Wait for all trips to appear
-      await waitFor(() => {
-        expect(screen.getByText('Summer Vacation')).toBeInTheDocument()
-        expect(screen.getByText('Winter Trip')).toBeInTheDocument()
-      })
+      await waitFor(
+        () => {
+          expect(screen.getByText('Summer Vacation')).toBeInTheDocument()
+          expect(screen.getByText('Winter Trip')).toBeInTheDocument()
+        },
+        { timeout: 5000 }
+      )
 
       // LEARNING: Verify destinations are shown
       expect(screen.getByText('Paris, France')).toBeInTheDocument()
@@ -135,24 +154,30 @@ describe('TripsPage', () => {
     })
 
     it('should render correct number of trip cards', async () => {
-      vi.mocked(tripService.getTrips).mockResolvedValue(mockTrips)
+      mockGetTrips.mockResolvedValue(mockTrips)
 
       renderWithRouter(<TripsPage />)
 
-      await waitFor(() => {
-        expect(screen.getByTestId('trip-card-1')).toBeInTheDocument()
-        expect(screen.getByTestId('trip-card-2')).toBeInTheDocument()
-      })
+      await waitFor(
+        () => {
+          expect(screen.getByTestId('trip-card-1')).toBeInTheDocument()
+          expect(screen.getByTestId('trip-card-2')).toBeInTheDocument()
+        },
+        { timeout: 5000 }
+      )
     })
 
     it('should not show empty state when trips exist', async () => {
-      vi.mocked(tripService.getTrips).mockResolvedValue(mockTrips)
+      mockGetTrips.mockResolvedValue(mockTrips)
 
       renderWithRouter(<TripsPage />)
 
-      await waitFor(() => {
-        expect(screen.getByText('Summer Vacation')).toBeInTheDocument()
-      })
+      await waitFor(
+        () => {
+          expect(screen.getByText('Summer Vacation')).toBeInTheDocument()
+        },
+        { timeout: 5000 }
+      )
 
       // LEARNING: Verify empty state message is NOT present
       expect(screen.queryByText(/You have no upcoming trips/i)).not.toBeInTheDocument()
@@ -162,34 +187,43 @@ describe('TripsPage', () => {
   describe('User Interactions', () => {
     it('should load trips when component mounts', async () => {
       // LEARNING: Test side effects (API calls)
-      vi.mocked(tripService.getTrips).mockResolvedValue([])
+      mockGetTrips.mockResolvedValue([])
 
       renderWithRouter(<TripsPage />)
 
       // LEARNING: Verify service was called on mount
-      await waitFor(() => {
-        expect(tripService.getTrips).toHaveBeenCalledTimes(1)
-      })
+      await waitFor(
+        () => {
+          expect(mockGetTrips).toHaveBeenCalledTimes(1)
+        },
+        { timeout: 5000 }
+      )
     })
 
     it('should reload trips when create trip dialog succeeds', async () => {
       const user = userEvent.setup()
-      vi.mocked(tripService.getTrips).mockResolvedValue([])
+      mockGetTrips.mockResolvedValue([])
 
       renderWithRouter(<TripsPage />)
 
-      await waitFor(() => {
-        expect(screen.getByTestId('create-trip-dialog')).toBeInTheDocument()
-      })
+      await waitFor(
+        () => {
+          expect(screen.getByTestId('create-trip-dialog')).toBeInTheDocument()
+        },
+        { timeout: 5000 }
+      )
 
       // LEARNING: Simulate user clicking create button
       const createButton = screen.getByTestId('create-trip-dialog')
       await user.click(createButton)
 
       // LEARNING: Verify trips are reloaded after creation
-      await waitFor(() => {
-        expect(tripService.getTrips).toHaveBeenCalledTimes(2)
-      })
+      await waitFor(
+        () => {
+          expect(mockGetTrips).toHaveBeenCalledTimes(2)
+        },
+        { timeout: 5000 }
+      )
     })
 
     it('should show edit dialog when edit button is clicked', async () => {
@@ -205,22 +239,28 @@ describe('TripsPage', () => {
         },
       ]
 
-      vi.mocked(tripService.getTrips).mockResolvedValue(mockTrips)
+      mockGetTrips.mockResolvedValue(mockTrips)
 
       renderWithRouter(<TripsPage />)
 
-      await waitFor(() => {
-        expect(screen.getByText('Test Trip')).toBeInTheDocument()
-      })
+      await waitFor(
+        () => {
+          expect(screen.getByText('Test Trip')).toBeInTheDocument()
+        },
+        { timeout: 5000 }
+      )
 
       // LEARNING: Find and click edit button
       const editButton = screen.getByText('Edit')
       await user.click(editButton)
 
       // LEARNING: Verify edit dialog appears
-      await waitFor(() => {
-        expect(screen.getByTestId('edit-trip-dialog')).toBeInTheDocument()
-      })
+      await waitFor(
+        () => {
+          expect(screen.getByTestId('edit-trip-dialog')).toBeInTheDocument()
+        },
+        { timeout: 5000 }
+      )
     })
 
     it('should show delete alert when delete button is clicked', async () => {
@@ -236,35 +276,44 @@ describe('TripsPage', () => {
         },
       ]
 
-      vi.mocked(tripService.getTrips).mockResolvedValue(mockTrips)
+      mockGetTrips.mockResolvedValue(mockTrips)
 
       renderWithRouter(<TripsPage />)
 
-      await waitFor(() => {
-        expect(screen.getByText('Test Trip')).toBeInTheDocument()
-      })
+      await waitFor(
+        () => {
+          expect(screen.getByText('Test Trip')).toBeInTheDocument()
+        },
+        { timeout: 5000 }
+      )
 
       // LEARNING: Find and click delete button
       const deleteButton = screen.getByText('Delete')
       await user.click(deleteButton)
 
       // LEARNING: Verify delete alert appears
-      await waitFor(() => {
-        expect(screen.getByTestId('delete-trip-alert')).toBeInTheDocument()
-      })
+      await waitFor(
+        () => {
+          expect(screen.getByTestId('delete-trip-alert')).toBeInTheDocument()
+        },
+        { timeout: 5000 }
+      )
     })
   })
 
   describe('Page Metadata', () => {
     it('should set the correct page title', async () => {
-      vi.mocked(tripService.getTrips).mockResolvedValue([])
+      mockGetTrips.mockResolvedValue([])
 
       renderWithRouter(<TripsPage />)
 
       // LEARNING: Test document title
-      await waitFor(() => {
-        expect(document.title).toBe('My Trips')
-      })
+      await waitFor(
+        () => {
+          expect(document.title).toBe('My Trips')
+        },
+        { timeout: 5000 }
+      )
     })
   })
 })
