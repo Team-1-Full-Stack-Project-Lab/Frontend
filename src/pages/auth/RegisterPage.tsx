@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/useAuth'
 import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@/components/ui/field'
+import { ModeToggle } from '@/components/ModeToggle'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
@@ -38,7 +39,10 @@ export default function RegisterPage() {
     <>
       <title>New Account</title>
 
-      <Card className="w-full px-12 py-8">
+      <Card className="w-full px-12 py-8 relative">
+        <div className="absolute top-4 right-4 scale-75 origin-top-right">
+          <ModeToggle />
+        </div>
         <CardHeader>
           <CardTitle>Create an account</CardTitle>
           <CardDescription>Complete the fields to register as a new user</CardDescription>

@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
-import { MapPin, Users, Search } from 'lucide-react'
+import { MapPin, Search } from 'lucide-react'
 import { DateRangePicker } from './DateRangePicker'
 import type { DateRange } from 'react-day-picker'
 import { SearchableSelect, type SearchableSelectOption } from './SearchableSelect'
+import { TravelersSelector, type RoomData } from './TravelersSelector'
 import {
   AlertDialog,
   AlertDialogContent,
@@ -54,7 +54,16 @@ export function HeroSearch({
     }
     return undefined
   })
-  const [travelers, setTravelers] = useState<string>(() => initialTravelers ?? '1')
+  const [rooms, setRooms] = useState<RoomData[]>(() => {
+    if (initialTravelers) {
+      const count = parseInt(initialTravelers, 10)
+      if (!isNaN(count) && count > 0) {
+        return [{ adults: count, children: 0 }]
+      }
+    }
+    return [{ adults: 1, children: 0 }]
+  })
+  const travelers = rooms.reduce((acc, room) => acc + room.adults + room.children, 0).toString()
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
@@ -124,14 +133,9 @@ export function HeroSearch({
         </div>
 
         <div className="relative flex-1">
-          <Users className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            id="travelers"
-            type="number"
-            min="1"
-            value={travelers}
-            onChange={e => setTravelers(e.target.value)}
-            className="pl-10 w-full h-10"
+          <TravelersSelector
+            initialRooms={rooms}
+            onChange={(_, newRooms) => setRooms(newRooms)}
           />
         </div>
 
@@ -180,7 +184,7 @@ export function HeroSearch({
   }
 
   return (
-    <Card className="mx-auto w-full max-w-5xl bg-white p-6 shadow-2xl">
+    <Card className="mx-auto w-full max-w-5xl bg-white dark:bg-card p-6 shadow-2xl">
       <div className={`grid gap-4 ${gridCols}`}>
         <div className="space-y-2">
           <Label htmlFor="destination" className="text-sm font-medium">
@@ -214,14 +218,9 @@ export function HeroSearch({
           </Label>
           <div className="flex items-center">
             <div className="relative flex-1">
-              <Users className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                id="travelers"
-                type="number"
-                min="1"
-                value={travelers}
-                onChange={e => setTravelers(e.target.value)}
-                className="pl-10 w-full h-10"
+              <TravelersSelector
+                initialRooms={rooms}
+                onChange={(_, newRooms) => setRooms(newRooms)}
               />
             </div>
 

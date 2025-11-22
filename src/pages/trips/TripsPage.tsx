@@ -52,7 +52,7 @@ export default function TripsPage() {
             </div>
           </div>
         ) : (
-          <Card className="flex flex-col items-center w-full bg-gray-100 border-none shadow-none rounded-2xl py-10 text-center mb-6 gap-4">
+          <Card className="flex flex-col items-center w-full bg-muted border-none shadow-none rounded-2xl py-10 text-center mb-6 gap-4">
             <div className="bg-[#dbe7f3] p-3 rounded-full">
               <Calendar className="w-6 h-6 text-[#003580]" />
             </div>

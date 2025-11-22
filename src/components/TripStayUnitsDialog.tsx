@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Bed, Users, Calendar, MapPin, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -16,6 +17,7 @@ interface TripStayUnitsDialogProps {
 
 export function TripStayUnitsDialog({ trip, open, onOpenChange }: TripStayUnitsDialogProps) {
   const { tripService } = useServices()
+  const navigate = useNavigate()
   const [stayUnits, setStayUnits] = useState<TripStayUnit[]>([])
   const [loading, setLoading] = useState(false)
 
@@ -87,9 +89,12 @@ export function TripStayUnitsDialog({ trip, open, onOpenChange }: TripStayUnitsD
                   <Bed className="h-8 w-8 text-gray-400" />
                 </div>
                 <p className="text-lg text-muted-foreground mb-2">No accommodations added yet</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground mb-6">
                   Search for stays and add units to your trip to see them here
                 </p>
+                <Button onClick={() => navigate('/')}>
+                  Start Searching
+                </Button>
               </div>
             ) : (
               <>

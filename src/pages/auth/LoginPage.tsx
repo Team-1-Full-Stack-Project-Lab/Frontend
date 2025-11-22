@@ -6,6 +6,7 @@ import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/useAuth'
 import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@/components/ui/field'
+import { ModeToggle } from '@/components/ModeToggle'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -36,7 +37,10 @@ export default function LoginPage() {
     <>
       <title>Login</title>
 
-      <Card className="w-full px-12 py-8">
+      <Card className="w-full px-12 py-8 relative">
+        <div className="absolute top-4 right-4 scale-75 origin-top-right">
+          <ModeToggle />
+        </div>
         <CardHeader>
           <CardTitle>Login</CardTitle>
           <CardDescription>Enter your credentials to access your account</CardDescription>
