@@ -32,7 +32,7 @@ export default function MainLayout() {
       <header className="bg-white dark:bg-card shadow-md">
         <div className="w-full max-w-6xl mx-auto p-4 flex justify-between">
           <Link to="/">
-            <img src="/logo.svg" alt="Expedia" className="h-8 w-auto" />
+            <img src="/logo.svg" alt="Expedia" className="h-8 w-auto dark:invert" />
           </Link>
 
           <nav className="hidden lg:flex space-x-4 items-center">

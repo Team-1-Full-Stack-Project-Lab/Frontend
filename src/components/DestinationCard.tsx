@@ -18,7 +18,7 @@ export function DestinationCard({ image, title, location, rating, reviews, price
         <img
           src={image || '/placeholder.svg'}
           alt={title}
-          className="object-cover transition-transform duration-300 group-hover:scale-110"
+          className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
         />
       </div>
 
