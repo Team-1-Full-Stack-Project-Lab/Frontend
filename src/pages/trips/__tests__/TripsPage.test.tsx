@@ -5,17 +5,6 @@ import userEvent from '@testing-library/user-event'
 import TripsPage from '../TripsPage'
 import type { Trip } from '@/types'
 
-/**
- * LEARNING: Component Testing with React Testing Library
- *
- * Key principles:
- * 1. Test user behavior, not implementation details
- * 2. Query elements the way users would (by text, role, label)
- * 3. Test what the user sees and interacts with
- * 4. Mock external dependencies (services, APIs)
- */
-
-// Mock the useServices hook
 const mockGetTrips = vi.fn()
 vi.mock('@/hooks/useServices', () => ({
   useServices: () => ({
@@ -25,7 +14,6 @@ vi.mock('@/hooks/useServices', () => ({
   }),
 }))
 
-// Mock the child components to simplify testing
 vi.mock('@/components/CreateTripDialog', () => ({
   CreateTripDialog: ({ onSuccess }: { onSuccess: () => void }) => (
     <button onClick={onSuccess} data-testid="create-trip-dialog">
@@ -65,12 +53,6 @@ vi.mock('@/components/TripStayUnitsDialog', () => ({
   TripStayUnitsDialog: () => <div data-testid="trip-stay-units-dialog">Stay Units Dialog</div>,
 }))
 
-/**
- * LEARNING: Wrapper Component for React Router
- *
- * Many React apps use routing. We need to wrap our component
- * in a Router for tests, or we'll get errors.
- */
 const renderWithRouter = (component: React.ReactElement) => {
   return render(<BrowserRouter>{component}</BrowserRouter>)
 }
@@ -82,12 +64,9 @@ describe('TripsPage', () => {
 
   describe('Empty State', () => {
     it('should show empty state when no trips exist', async () => {
-      // LEARNING: Mock the service to return empty array
       mockGetTrips.mockResolvedValue([])
 
       renderWithRouter(<TripsPage />)
-
-      // LEARNING: Wait for async data to load
       await waitFor(
         () => {
           expect(screen.getByText(/You have no upcoming trips/i)).toBeInTheDocument()
@@ -95,7 +74,6 @@ describe('TripsPage', () => {
         { timeout: 5000 }
       )
 
-      // LEARNING: Verify the heading is still shown
       expect(screen.getByText('My Trips')).toBeInTheDocument()
     })
 
@@ -134,12 +112,10 @@ describe('TripsPage', () => {
     ]
 
     it('should render trip cards when trips exist', async () => {
-      // LEARNING: Mock service to return multiple trips
       mockGetTrips.mockResolvedValue(mockTrips)
 
       renderWithRouter(<TripsPage />)
 
-      // LEARNING: Wait for all trips to appear
       await waitFor(
         () => {
           expect(screen.getByText('Summer Vacation')).toBeInTheDocument()
@@ -148,7 +124,6 @@ describe('TripsPage', () => {
         { timeout: 5000 }
       )
 
-      // LEARNING: Verify destinations are shown
       expect(screen.getByText('Paris, France')).toBeInTheDocument()
       expect(screen.getByText('Tokyo, Japan')).toBeInTheDocument()
     })
@@ -179,19 +154,16 @@ describe('TripsPage', () => {
         { timeout: 5000 }
       )
 
-      // LEARNING: Verify empty state message is NOT present
       expect(screen.queryByText(/You have no upcoming trips/i)).not.toBeInTheDocument()
     })
   })
 
   describe('User Interactions', () => {
     it('should load trips when component mounts', async () => {
-      // LEARNING: Test side effects (API calls)
       mockGetTrips.mockResolvedValue([])
 
       renderWithRouter(<TripsPage />)
 
-      // LEARNING: Verify service was called on mount
       await waitFor(
         () => {
           expect(mockGetTrips).toHaveBeenCalledTimes(1)
@@ -213,11 +185,9 @@ describe('TripsPage', () => {
         { timeout: 5000 }
       )
 
-      // LEARNING: Simulate user clicking create button
       const createButton = screen.getByTestId('create-trip-dialog')
       await user.click(createButton)
 
-      // LEARNING: Verify trips are reloaded after creation
       await waitFor(
         () => {
           expect(mockGetTrips).toHaveBeenCalledTimes(2)
@@ -250,11 +220,9 @@ describe('TripsPage', () => {
         { timeout: 5000 }
       )
 
-      // LEARNING: Find and click edit button
       const editButton = screen.getByText('Edit')
       await user.click(editButton)
 
-      // LEARNING: Verify edit dialog appears
       await waitFor(
         () => {
           expect(screen.getByTestId('edit-trip-dialog')).toBeInTheDocument()
@@ -287,11 +255,9 @@ describe('TripsPage', () => {
         { timeout: 5000 }
       )
 
-      // LEARNING: Find and click delete button
       const deleteButton = screen.getByText('Delete')
       await user.click(deleteButton)
 
-      // LEARNING: Verify delete alert appears
       await waitFor(
         () => {
           expect(screen.getByTestId('delete-trip-alert')).toBeInTheDocument()
@@ -307,7 +273,6 @@ describe('TripsPage', () => {
 
       renderWithRouter(<TripsPage />)
 
-      // LEARNING: Test document title
       await waitFor(
         () => {
           expect(document.title).toBe('My Trips')

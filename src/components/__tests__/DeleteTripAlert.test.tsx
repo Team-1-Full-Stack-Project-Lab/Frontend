@@ -4,21 +4,8 @@ import userEvent from '@testing-library/user-event'
 import { DeleteTripAlert } from '../DeleteTripAlert'
 import type { Trip } from '@/types/trips'
 
-/**
- * LEARNING: Testing Destructive Action Alerts
- *
- * When testing delete/destructive actions:
- * 1. Test that warnings are displayed
- * 2. Test cancel behavior (should NOT trigger action)
- * 3. Test delete confirmation (should trigger action)
- * 4. Test that trip name is shown to user
- * 5. Test error handling
- */
-
-// Create mock functions
 const mockDeleteTrip = vi.fn()
 
-// Mock toast notifications
 vi.mock('sonner', () => ({
   toast: {
     error: vi.fn(),
@@ -26,7 +13,6 @@ vi.mock('sonner', () => ({
   },
 }))
 
-// Mock the useServices hook
 vi.mock('@/hooks/useServices', () => ({
   useServices: () => ({
     tripService: {
@@ -54,7 +40,6 @@ describe('DeleteTripAlert', () => {
       const mockOnOpenChange = vi.fn()
       render(<DeleteTripAlert trip={mockTrip} open={true} onOpenChange={mockOnOpenChange} />)
 
-      // LEARNING: Check for alert title
       expect(screen.getByText('Are you absolutely sure?')).toBeInTheDocument()
     })
 
@@ -76,7 +61,6 @@ describe('DeleteTripAlert', () => {
       const mockOnOpenChange = vi.fn()
       render(<DeleteTripAlert trip={mockTrip} open={true} onOpenChange={mockOnOpenChange} />)
 
-      // LEARNING: Check that trip name is displayed
       expect(screen.getByText(new RegExp(mockTrip.name))).toBeInTheDocument()
     })
 
@@ -109,7 +93,6 @@ describe('DeleteTripAlert', () => {
       render(<DeleteTripAlert trip={mockTrip} open={true} onOpenChange={mockOnOpenChange} />)
 
       const deleteButton = screen.getByRole('button', { name: /delete/i })
-      // LEARNING: Check for destructive styling class
       expect(deleteButton).toHaveClass('bg-destructive')
     })
   })
@@ -123,7 +106,6 @@ describe('DeleteTripAlert', () => {
       const cancelButton = screen.getByRole('button', { name: /cancel/i })
       await user.click(cancelButton)
 
-      // LEARNING: Verify cancel calls onOpenChange(false)
       expect(mockOnOpenChange).toHaveBeenCalledWith(false)
     })
 
@@ -135,7 +117,6 @@ describe('DeleteTripAlert', () => {
       const cancelButton = screen.getByRole('button', { name: /cancel/i })
       await user.click(cancelButton)
 
-      // LEARNING: Safety check - cancel should not delete
       expect(mockDeleteTrip).not.toHaveBeenCalled()
     })
 
@@ -164,7 +145,6 @@ describe('DeleteTripAlert', () => {
       const deleteButton = screen.getByRole('button', { name: /delete/i })
       await user.click(deleteButton)
 
-      // LEARNING: Verify deleteTrip was called with correct ID
       await waitFor(() => {
         expect(mockDeleteTrip).toHaveBeenCalledWith(mockTrip.id)
       })

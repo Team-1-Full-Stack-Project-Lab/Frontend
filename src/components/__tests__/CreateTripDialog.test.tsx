@@ -3,22 +3,9 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { CreateTripDialog } from '../CreateTripDialog'
 
-/**
- * LEARNING: Testing Dialog Components with Forms
- *
- * When testing dialog/modal components:
- * 1. Test dialog open/close behavior
- * 2. Test form field interactions
- * 3. Test validation errors
- * 4. Test successful submission
- * 5. Test API integration (with mocks)
- */
-
-// Create mock functions that we can control in tests
 const mockCreateTrip = vi.fn()
 const mockGetCities = vi.fn()
 
-// Mock toast notifications
 vi.mock('sonner', () => ({
   toast: {
     error: vi.fn(),
@@ -26,7 +13,6 @@ vi.mock('sonner', () => ({
   },
 }))
 
-// Mock the useServices hook to return our mock functions
 vi.mock('@/hooks/useServices', () => ({
   useServices: () => ({
     tripService: {
@@ -46,11 +32,8 @@ describe('CreateTripDialog', () => {
   ]
 
   beforeEach(() => {
-    // Reset all mocks before each test
     vi.clearAllMocks()
 
-    // Set default mock implementation
-    // LEARNING: This ensures getCities returns an array by default
     mockGetCities.mockResolvedValue(mockCities)
   })
 
@@ -58,7 +41,6 @@ describe('CreateTripDialog', () => {
     it('should render trigger button by default', () => {
       render(<CreateTripDialog />)
 
-      // LEARNING: Find button by text
       expect(screen.getByText('Create Trip')).toBeInTheDocument()
     })
 
@@ -73,10 +55,8 @@ describe('CreateTripDialog', () => {
       const user = userEvent.setup()
       render(<CreateTripDialog />)
 
-      // Click trigger button
       await user.click(screen.getByText('Create Trip'))
 
-      // LEARNING: Check for dialog content
       await waitFor(() => {
         expect(screen.getByText('Create a new trip')).toBeInTheDocument()
         expect(screen.getByText('Plan your trip by adding destinations and dates')).toBeInTheDocument()
@@ -87,18 +67,15 @@ describe('CreateTripDialog', () => {
       const user = userEvent.setup()
       render(<CreateTripDialog />)
 
-      // Open dialog
       await user.click(screen.getByText('Create Trip'))
 
       await waitFor(() => {
         expect(screen.getByText('Create a new trip')).toBeInTheDocument()
       })
 
-      // Click cancel button
       const cancelButton = screen.getByRole('button', { name: /cancel/i })
       await user.click(cancelButton)
 
-      // LEARNING: Query returns null if not found - good for checking absence
       await waitFor(() => {
         expect(screen.queryByText('Create a new trip')).not.toBeInTheDocument()
       })
@@ -112,7 +89,6 @@ describe('CreateTripDialog', () => {
 
       await user.click(screen.getByText('Create Trip'))
 
-      // LEARNING: Only verify the main accessible elements (Name input is properly labeled)
       await waitFor(() => {
         expect(screen.getByLabelText('Name')).toBeInTheDocument()
         expect(screen.getByText('Destination')).toBeInTheDocument()
@@ -150,7 +126,6 @@ describe('CreateTripDialog', () => {
 
       await user.click(screen.getByText('Create Trip'))
 
-      // LEARNING: Verify API call with specific parameters
       await waitFor(() => {
         expect(mockGetCities).toHaveBeenCalledWith({ featured: true })
       })
@@ -175,15 +150,12 @@ describe('CreateTripDialog', () => {
 
       await user.click(screen.getByText('Create Trip'))
 
-      // Fill in the form
       const nameInput = await screen.findByLabelText('Name')
       await user.type(nameInput, 'Summer Trip')
 
-      // Submit form
       const submitButton = screen.getByRole('button', { name: /create trip/i })
       await user.click(submitButton)
 
-      // LEARNING: Verify service was called
       await waitFor(() => {
         expect(mockCreateTrip).toHaveBeenCalled()
       })
@@ -239,7 +211,6 @@ describe('CreateTripDialog', () => {
       const submitButton = screen.getByRole('button', { name: /create trip/i })
       await user.click(submitButton)
 
-      // LEARNING: Verify dialog closes after success
       await waitFor(() => {
         expect(screen.queryByText('Create a new trip')).not.toBeInTheDocument()
       })
@@ -250,7 +221,6 @@ describe('CreateTripDialog', () => {
     it('should display validation errors from API', async () => {
       const user = userEvent.setup()
 
-      // Mock API error with validation errors
       const apiError = {
         name: 'ApiException',
         status: 400,
@@ -268,14 +238,11 @@ describe('CreateTripDialog', () => {
 
       await user.click(screen.getByText('Create Trip'))
 
-      // Try to submit without filling required fields
       const submitButton = await screen.findByRole('button', { name: /create trip/i })
       await user.click(submitButton)
 
-      // LEARNING: Wait for API call to complete and errors to appear
       await waitFor(
         () => {
-          // The errors should now appear in the form
           expect(mockCreateTrip).toHaveBeenCalled()
         },
         { timeout: 3000 }
@@ -298,21 +265,17 @@ describe('CreateTripDialog', () => {
 
       render(<CreateTripDialog />)
 
-      // Open and fill form
       await user.click(screen.getByText('Create Trip'))
       const nameInput = await screen.findByLabelText('Name')
       await user.type(nameInput, 'Summer Trip')
 
-      // Submit
       const submitButton = screen.getByRole('button', { name: /create trip/i })
       await user.click(submitButton)
 
-      // Wait for dialog to close
       await waitFor(() => {
         expect(screen.queryByText('Create a new trip')).not.toBeInTheDocument()
       })
 
-      // Open again and check form is empty
       await user.click(screen.getByText('Create Trip'))
 
       const newNameInput = await screen.findByLabelText('Name')

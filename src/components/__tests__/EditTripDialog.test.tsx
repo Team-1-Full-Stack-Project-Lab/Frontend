@@ -4,22 +4,9 @@ import userEvent from '@testing-library/user-event'
 import { EditTripDialog } from '../EditTripDialog'
 import type { Trip } from '@/types/trips'
 
-/**
- * LEARNING: Testing Edit Dialog Components
- *
- * When testing edit dialogs:
- * 1. Test that the form pre-fills with existing data
- * 2. Test that the dialog is controlled by parent (open/onOpenChange props)
- * 3. Test editing functionality and updates
- * 4. Test cancel behavior
- * 5. Test validation errors
- */
-
-// Create mock functions
 const mockUpdateTrip = vi.fn()
 const mockGetCities = vi.fn()
 
-// Mock toast notifications
 vi.mock('sonner', () => ({
   toast: {
     error: vi.fn(),
@@ -27,7 +14,6 @@ vi.mock('sonner', () => ({
   },
 }))
 
-// Mock the useServices hook
 vi.mock('@/hooks/useServices', () => ({
   useServices: () => ({
     tripService: {
@@ -64,7 +50,6 @@ describe('EditTripDialog', () => {
       const mockOnOpenChange = vi.fn()
       render(<EditTripDialog trip={mockTrip} open={true} onOpenChange={mockOnOpenChange} />)
 
-      // LEARNING: Check for dialog title
       expect(screen.getByText('Edit trip')).toBeInTheDocument()
       expect(screen.getByText("Update the details of your trip. Click save when you're done.")).toBeInTheDocument()
     })
@@ -82,7 +67,6 @@ describe('EditTripDialog', () => {
       const mockOnOpenChange = vi.fn()
       render(<EditTripDialog trip={mockTrip} open={true} onOpenChange={mockOnOpenChange} />)
 
-      // LEARNING: Check that the name input has the existing value
       const nameInput = screen.getByLabelText('Name') as HTMLInputElement
       expect(nameInput.value).toBe(mockTrip.name)
     })
@@ -96,7 +80,6 @@ describe('EditTripDialog', () => {
 
       const nameInput = screen.getByLabelText('Name')
 
-      // Clear and type new value
       await user.clear(nameInput)
       await user.type(nameInput, 'Updated Trip Name')
 
@@ -122,7 +105,6 @@ describe('EditTripDialog', () => {
       const saveButton = screen.getByRole('button', { name: /save/i })
       await user.click(saveButton)
 
-      // LEARNING: Verify updateTrip was called with correct ID
       await waitFor(() => {
         expect(mockUpdateTrip).toHaveBeenCalledWith(mockTrip.id, expect.any(Object))
       })
@@ -190,7 +172,6 @@ describe('EditTripDialog', () => {
       const cancelButton = screen.getByRole('button', { name: /cancel/i })
       await user.click(cancelButton)
 
-      // LEARNING: Verify cancel calls onOpenChange(false)
       expect(mockOnOpenChange).toHaveBeenCalledWith(false)
     })
   })
@@ -220,7 +201,6 @@ describe('EditTripDialog', () => {
       const saveButton = screen.getByRole('button', { name: /save/i })
       await user.click(saveButton)
 
-      // LEARNING: Wait for API call to complete
       await waitFor(
         () => {
           expect(mockUpdateTrip).toHaveBeenCalled()
@@ -234,7 +214,6 @@ describe('EditTripDialog', () => {
       const mockOnOpenChange = vi.fn()
       const { toast } = await import('sonner')
 
-      // Simulate network error (not validation error)
       mockUpdateTrip.mockRejectedValue(new Error('Network error'))
 
       render(<EditTripDialog trip={mockTrip} open={true} onOpenChange={mockOnOpenChange} />)
@@ -253,7 +232,6 @@ describe('EditTripDialog', () => {
       const mockOnOpenChange = vi.fn()
       render(<EditTripDialog trip={mockTrip} open={true} onOpenChange={mockOnOpenChange} />)
 
-      // Verify getCities was called
       expect(mockGetCities).toHaveBeenCalledWith({ featured: true })
     })
   })

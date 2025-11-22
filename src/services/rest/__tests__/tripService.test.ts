@@ -2,42 +2,24 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { getTrips, createTrip, updateTrip, deleteTrip } from '../tripService'
 import type { TripsResponse, TripResponse, CreateTripRequest, UpdateTripRequest } from '@/types'
 
-/**
- * LEARNING: Testing API Services
- *
- * When testing services that make HTTP requests, we need to:
- * 1. Mock the fetch function to avoid real API calls
- * 2. Test that requests are made with correct parameters
- * 3. Test that responses are properly transformed
- * 4. Test error handling
- */
-
-// Mock the auth service to provide a fake token
 vi.mock('../authService', () => ({
   getToken: () => 'fake-token-12345',
 }))
-
-// Mock the backend URL config
 vi.mock('@/config/api', () => ({
   BACKEND_URL: 'http://localhost:3000',
 }))
-
-// Mock the handleResponse utility
 vi.mock('@/utils/helpers', () => ({
   handleResponse: vi.fn(res => res.json()),
 }))
 
 describe('tripService', () => {
-  // Reset all mocks before each test
   beforeEach(() => {
     vi.clearAllMocks()
-    // Mock globalThis fetch
     globalThis.fetch = vi.fn()
   })
 
   describe('getTrips', () => {
     it('should fetch and transform trips data', async () => {
-      // LEARNING: Mock API response
       const mockResponse: TripsResponse = {
         trips: [
           {
@@ -61,7 +43,6 @@ describe('tripService', () => {
         ],
       }
 
-      // LEARNING: Setup fetch mock to return our mock data
       vi.mocked(globalThis.fetch).mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
@@ -69,7 +50,6 @@ describe('tripService', () => {
 
       const result = await getTrips()
 
-      // LEARNING: Verify fetch was called correctly
       expect(globalThis.fetch).toHaveBeenCalledWith(
         'http://localhost:3000/trips/itineraries',
         expect.objectContaining({
@@ -82,7 +62,6 @@ describe('tripService', () => {
         })
       )
 
-      // LEARNING: Verify data transformation
       expect(result).toHaveLength(2)
       expect(result[0]).toEqual({
         id: 1,
@@ -131,7 +110,6 @@ describe('tripService', () => {
 
       const result = await createTrip(mockRequest)
 
-      // LEARNING: Verify POST request
       expect(globalThis.fetch).toHaveBeenCalledWith(
         'http://localhost:3000/trips/itineraries',
         expect.objectContaining({
@@ -181,7 +159,6 @@ describe('tripService', () => {
 
       const result = await updateTrip(tripId, mockRequest)
 
-      // LEARNING: Verify PUT request with ID in URL
       expect(globalThis.fetch).toHaveBeenCalledWith(
         `http://localhost:3000/trips/itineraries/${tripId}`,
         expect.objectContaining({
@@ -205,7 +182,6 @@ describe('tripService', () => {
 
       const result = await deleteTrip(tripId)
 
-      // LEARNING: Verify DELETE request
       expect(globalThis.fetch).toHaveBeenCalledWith(
         `http://localhost:3000/trips/itineraries/${tripId}`,
         expect.objectContaining({
