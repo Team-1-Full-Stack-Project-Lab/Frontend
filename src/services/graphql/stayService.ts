@@ -27,6 +27,7 @@ const STAY_FRAGMENT = gql`
     address
     latitude
     longitude
+    description
     city {
       id
       name
@@ -71,6 +72,11 @@ const STAY_FRAGMENT = gql`
       capacity
       pricePerNight
       roomType
+    }
+    images {
+      id
+      link
+      stayId
     }
   }
 `
@@ -222,6 +228,7 @@ function mapStayFromGraphQL(stay: StayGraphQL): Stay {
     address: stay.address,
     latitude: stay.latitude,
     longitude: stay.longitude,
+    description: stay.description,
     city: stay.city
       ? {
           id: parseInt(stay.city.id),
@@ -274,6 +281,11 @@ function mapStayFromGraphQL(stay: StayGraphQL): Stay {
       capacity: unit.capacity,
       pricePerNight: unit.pricePerNight,
       roomType: unit.roomType,
+    })),
+    images: stay.images?.map(image => ({
+      id: parseInt(image.id),
+      link: image.link,
+      stayId: image.stayId ? parseInt(image.stayId) : undefined,
     })),
   }
 }
