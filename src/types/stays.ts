@@ -35,9 +35,9 @@ export interface Stay {
   images?: StayImageResponse[]
 }
 export interface StayImageResponse {
-  id: number;
-  link: string;
-  stayId?: number;
+  id: number
+  link: string
+  stayId?: number
 }
 
 export interface StayTypeGraphQL {
@@ -61,12 +61,19 @@ export interface StayUnitGraphQL {
   stay?: StayGraphQL
 }
 
+export interface StayImageGraphQL {
+  id: string
+  link: string
+  stayId?: string
+}
+
 export interface StayGraphQL {
   id: string
   name: string
   address: string
   latitude: number
   longitude: number
+  description: string
   city?: {
     id: string
     name: string
@@ -98,4 +105,5 @@ export interface StayGraphQL {
   stayType?: StayTypeGraphQL
   services?: ServiceGraphQL[]
   units?: StayUnitGraphQL[]
+  images?: StayImageGraphQL[]
 }
