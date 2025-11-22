@@ -27,10 +27,17 @@ export interface Stay {
   address: string
   latitude: number
   longitude: number
+  description: string
   city?: CityResponse
   stayType?: StayType
   services?: Service[]
   units?: StayUnit[]
+  images?: StayImageResponse[]
+}
+export interface StayImageResponse {
+  id: number;
+  link: string;
+  stayId?: number;
 }
 
 export interface StayTypeGraphQL {

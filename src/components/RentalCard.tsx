@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card'
-import { ChevronLeft, ChevronRight, MapPin, Bed, Users, Plus } from 'lucide-react'
+import { MapPin, Bed, Users, Plus } from 'lucide-react'
 import { useState } from 'react'
 import { AddUnitToTripPopover } from '@/components/AddUnitToTripPopover'
 import { Button } from '@/components/ui/button'
@@ -12,47 +12,42 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import type { Stay } from '@/types/stays'
+import { ImageCarousel } from '@/components/ImageCarousel'
+import { FullscreenImageCarousel } from '@/components/FullscreenImageCarousel'
 
 type Props = {
   stay: Stay
 }
 
 export default function RentalCard({ stay }: Props) {
-  const imgs = ['/background.webp'] // Placeholder images
-  const [index, setIndex] = useState(0)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-
-  const prev = () => setIndex(i => (i - 1 + imgs.length) % imgs.length)
-  const next = () => setIndex(i => (i + 1) % imgs.length)
+  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
+  const [fullscreenStartIndex, setFullscreenStartIndex] = useState(0)
 
   const lowestPrice = stay.units && stay.units.length > 0 ? Math.min(...stay.units.map(u => u.pricePerNight)) : 0
 
   const cityName = stay.city?.name || 'Unknown'
   const countryName = stay.city?.country?.name || ''
 
+  const handleImageClick = (index: number) => {
+    setFullscreenStartIndex(index)
+    setIsFullscreenOpen(true)
+  }
+
   return (
     <>
       <Card className="w-full max-w-full flex-row flex items-stretch gap-0 p-0 rounded-lg h-52">
-        <div className="w-2/5 shrink-0 h-full relative overflow-hidden">
-          <img src={imgs[index]} alt={stay.name} className="h-full w-full object-cover rounded-l-lg" />
-
-          {imgs.length > 1 && (
-            <>
-              <button
-                aria-label="prev"
-                onClick={prev}
-                className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-2 shadow hover:bg-white transition-colors"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                aria-label="next"
-                onClick={next}
-                className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-2 shadow hover:bg-white transition-colors"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </>
+        <div className="w-2/5 shrink-0 h-full relative overflow-hidden rounded-l-lg">
+          {stay.images && stay.images.length > 0 ? (
+            <ImageCarousel
+              images={stay.images}
+              altText={stay.name}
+              className="h-full"
+            />
+          ) : (
+            <div className="h-full w-full bg-muted flex items-center justify-center">
+              <p className="text-muted-foreground text-sm">No image</p>
+            </div>
           )}
         </div>
 
@@ -101,8 +96,20 @@ export default function RentalCard({ stay }: Props) {
                 </DialogHeader>
 
                 <div className="space-y-6 mt-4">
-                  <div className="relative w-full h-64 rounded-lg overflow-hidden">
-                    <img src={imgs[index]} alt={stay.name} className="w-full h-full object-cover" />
+                  {stay.images && stay.images.length > 0 && (
+                    <div className="relative w-full h-64 rounded-lg overflow-hidden">
+                      <ImageCarousel
+                        images={stay.images}
+                        altText={stay.name}
+                        className="h-full"
+                        onImageClick={handleImageClick}
+                      />
+                    </div>
+                  )}
+
+                  <div>
+                    <h3 className="font-semibold text-lg mb-2">Description</h3>
+                    <p className="text-muted-foreground">{stay.description}</p>
                   </div>
 
                   {stay.stayType && (
@@ -148,7 +155,7 @@ export default function RentalCard({ stay }: Props) {
                                     </span>
                                   </div>
                                 </div>
-                                <p className="text-xs text-muted-foreground">Unit #{unit.stayNumber}</p>
+                                <p className="text-xs text-muted-foreground">Unit: {unit.stayNumber}</p>
                               </div>
                               <div className="flex flex-col items-end gap-2">
                                 <div className="text-right">
@@ -174,6 +181,16 @@ export default function RentalCard({ stay }: Props) {
           </div>
         </div>
       </Card>
+
+      {stay.images && stay.images.length > 0 && (
+        <FullscreenImageCarousel
+          images={stay.images}
+          altText={stay.name}
+          isOpen={isFullscreenOpen}
+          onClose={() => setIsFullscreenOpen(false)}
+          initialIndex={fullscreenStartIndex}
+        />
+      )}
     </>
   )
 }
