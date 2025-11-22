@@ -27,6 +27,7 @@ export interface Stay {
   address: string
   latitude: number
   longitude: number
+  rating?: number
   city?: CityResponse
   stayType?: StayType
   services?: Service[]
@@ -60,6 +61,7 @@ export interface StayGraphQL {
   address: string
   latitude: number
   longitude: number
+  rating?: number
   city?: {
     id: string
     name: string
