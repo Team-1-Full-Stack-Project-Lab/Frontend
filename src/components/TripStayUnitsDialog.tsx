@@ -83,8 +83,8 @@ export function TripStayUnitsDialog({ trip, open, onOpenChange }: TripStayUnitsD
               </div>
             ) : stayUnits.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="bg-gray-100 p-4 rounded-full mb-4">
-                  <Bed className="h-8 w-8 text-gray-400" />
+                <div className="bg-muted p-4 rounded-full mb-4">
+                  <Bed className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <p className="text-lg text-muted-foreground mb-2">No accommodations added yet</p>
                 <p className="text-sm text-muted-foreground">
@@ -140,12 +140,12 @@ export function TripStayUnitsDialog({ trip, open, onOpenChange }: TripStayUnitsD
                                 </div>
                               </div>
 
-                              <div className="flex items-center gap-2 text-sm bg-blue-50 text-blue-700 px-3 py-2 rounded-md w-fit">
+                              <div className="flex items-center gap-2 text-sm bg-primary/10 text-primary px-3 py-2 rounded-md w-fit">
                                 <Calendar className="h-4 w-4" />
                                 <span>
                                   {format(parseISO(tsu.startDate), 'MMM d')} -{' '}
                                   {format(parseISO(tsu.endDate), 'MMM d, yyyy')}
-                                  <span className="ml-2 text-blue-600">
+                                  <span className="ml-2 text-primary font-medium">
                                     ({nights} {nights === 1 ? 'night' : 'nights'})
                                   </span>
                                 </span>

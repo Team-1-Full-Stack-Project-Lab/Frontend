@@ -123,7 +123,7 @@ export function AddUnitToTripPopover({ unit, children, onSaved }: AddUnitToTripP
                         key={trip.id}
                         onClick={() => !isSaved && handleTripClick(trip.id)}
                         disabled={isSaved}
-                        className="w-full px-4 py-2.5 hover:bg-gray-50 text-left flex items-center justify-between disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="w-full px-4 py-2.5 hover:bg-accent text-left flex items-center justify-between cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium truncate">{trip.name}</p>
@@ -142,7 +142,7 @@ export function AddUnitToTripPopover({ unit, children, onSaved }: AddUnitToTripP
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full gap-2 justify-start text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                        className="w-full gap-2 justify-start text-primary hover:text-primary hover:bg-accent"
                       >
                         <Plus className="h-4 w-4" />
                         Create new trip
@@ -169,7 +169,7 @@ export function AddUnitToTripPopover({ unit, children, onSaved }: AddUnitToTripP
               <DateRangePicker date={dateRange} onDateChange={setDateRange} />
             </div>
 
-            <div className="bg-gray-50 p-3 rounded-lg text-sm">
+            <div className="bg-muted p-3 rounded-lg text-sm">
               <div className="flex justify-between mb-1">
                 <span className="text-muted-foreground">Unit:</span>
                 <span className="font-medium">

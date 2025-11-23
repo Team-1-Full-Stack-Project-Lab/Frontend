@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Plane } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { ThemeToggle } from './ThemeToggle'
 
 export function Header() {
   return (
@@ -26,6 +27,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
             Sign In
           </Button>

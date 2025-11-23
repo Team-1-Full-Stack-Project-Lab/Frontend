@@ -42,7 +42,7 @@ export function EditProfile({ user }: EditProfileProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="text-blue-600 hover:text-blue-500">Edit</Button>
+        <Button variant="ghost" className="text-primary hover:text-primary">Edit</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
@@ -67,7 +67,7 @@ export function EditProfile({ user }: EditProfileProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-500" >Save</Button>
+            <Button type="submit">Save</Button>
           </DialogFooter>
         </form>
       </DialogContent>
