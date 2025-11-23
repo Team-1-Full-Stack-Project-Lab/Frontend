@@ -9,7 +9,7 @@ type Props = {
 export default function SearchBar({ value, onChange, placeholder = 'ej., Marriott' }: Props) {
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-2">Search by property name</label>
+      <label className="block text-sm font-medium text-foreground mb-2">Search by property name</label>
       <div className="flex items-center border rounded-lg px-3 py-2 w-full max-w-sm">
         <Search className="h-4 w-4 text-muted-foreground mr-2" />
         <input

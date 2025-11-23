@@ -78,7 +78,7 @@ export default function LoginPage() {
             </FieldSet>
 
             {error && <FieldError>{error}</FieldError>}
-            <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-500 text-white">
+            <Button type="submit" disabled={loading} className="w-full">
               Login
             </Button>
           </form>

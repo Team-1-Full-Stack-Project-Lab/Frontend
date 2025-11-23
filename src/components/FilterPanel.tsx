@@ -18,9 +18,9 @@ export default function FilterPanel({ activeFilters, onToggle }: Props) {
             type="checkbox"
             checked={activeFilters.includes('Acepta mascotas')}
             onChange={() => onToggle('Acepta mascotas')}
-            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 accent-primary rounded focus:ring-2 focus:ring-ring"
           />
-          <label htmlFor="filter-acepta-mascotas" className="ms-2 text-sm font-normal text-gray-900 dark:text-gray-300">
+          <label htmlFor="filter-acepta-mascotas" className="ms-2 text-sm font-normal text-foreground">
             Pets allowed
           </label>
         </div>
@@ -37,9 +37,9 @@ export default function FilterPanel({ activeFilters, onToggle }: Props) {
                 type="checkbox"
                 checked={activeFilters.includes(f)}
                 onChange={() => onToggle(f)}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                className="w-4 h-4 accent-primary rounded focus:ring-2 focus:ring-ring"
               />
-              <label htmlFor={id} className="ms-2 text-sm font-normal text-gray-900 dark:text-gray-300">
+              <label htmlFor={id} className="ms-2 text-sm font-normal text-foreground">
                 {f}
               </label>
             </div>

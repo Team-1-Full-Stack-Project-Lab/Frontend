@@ -180,7 +180,7 @@ export function HeroSearch({
   }
 
   return (
-    <Card className="mx-auto w-full max-w-5xl bg-white p-6 shadow-2xl">
+    <Card className="mx-auto w-full max-w-5xl bg-card p-6 shadow-2xl">
       <div className={`grid gap-4 ${gridCols}`}>
         <div className="space-y-2">
           <Label htmlFor="destination" className="text-sm font-medium">

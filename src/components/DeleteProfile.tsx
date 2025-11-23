@@ -47,9 +47,9 @@ export function DeleteProfile() {
           </DialogHeader>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline" >Cancel</Button>
+              <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit" className="bg-red-600 hover:bg-red-500" >Delete</Button>
+            <Button type="submit" variant="destructive">Delete</Button>
           </DialogFooter>
         </form>
       </DialogContent>

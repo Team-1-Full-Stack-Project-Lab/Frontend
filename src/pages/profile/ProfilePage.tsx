@@ -27,7 +27,7 @@ export default function ProfilePage() {
                 <EditProfile user={user} />
               </div>
 
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 Make sure this information matches your travel ID, like your passport or license.
               </p>
             </CardHeader>
@@ -36,19 +36,19 @@ export default function ProfilePage() {
               <div className="gap-y-4">
                 <div className="mb-4">
                   <p className="font-semibold">First Name</p>
-                  <p className="text-gray-500">{user?.firstName}</p>
+                  <p className="text-muted-foreground">{user?.firstName}</p>
                 </div>
 
                 <div className="mb-4">
                   <p className="font-semibold">Last Name</p>
-                  <p className="text-gray-500">{user?.lastName}</p>
+                  <p className="text-muted-foreground">{user?.lastName}</p>
                 </div>
               </div>
 
               <div>
                 <div className="mb-4">
                   <p className="font-semibold">Email</p>
-                  <p className="text-gray-500">{user?.email}</p>
+                  <p className="text-muted-foreground">{user?.email}</p>
                 </div>
               </div>
             </CardContent>

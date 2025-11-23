@@ -84,7 +84,7 @@ export default function RentalCard({ stay }: Props) {
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <button className="inline-block text-blue-600 hover:underline cursor-pointer">View details</button>
+                <button className="inline-block text-primary hover:underline cursor-pointer">View details</button>
               </DialogTrigger>
               <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
@@ -124,7 +124,7 @@ export default function RentalCard({ stay }: Props) {
                       <h3 className="font-semibold text-lg mb-3">Amenities & Services</h3>
                       <div className="flex flex-wrap gap-2">
                         {stay.services.map(service => (
-                          <span key={service.id} className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700">
+                          <span key={service.id} className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm">
                             {service.name}
                           </span>
                         ))}
