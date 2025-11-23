@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/helpers'
 import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router-dom'
 import { buttonVariants } from './ui/button'
 
