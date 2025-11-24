@@ -15,9 +15,7 @@ export default function MainLayout() {
     logout()
   }
 
-  const handleProfile = () => {
-    navigate('/profile')
-  }
+
 
   const handleSettings = () => {
     navigate('/settings')
@@ -46,7 +44,7 @@ export default function MainLayout() {
             <ThemeToggle />
             <div className="border-l border-border h-6" />
             {user ? (
-              <UserDropdown user={user} onLogout={handleLogout} onProfile={handleProfile} onSettings={handleSettings} />
+              <UserDropdown user={user} onLogout={handleLogout} onSettings={handleSettings} />
             ) : (
               <Link to="/login" className="text-foreground hover:text-primary font-medium">
                 Login
@@ -83,7 +81,6 @@ export default function MainLayout() {
                 <UserDropdown
                   user={user}
                   onLogout={handleLogout}
-                  onProfile={handleProfile}
                   onSettings={handleSettings}
                 />
               ) : (
