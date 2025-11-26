@@ -35,9 +35,14 @@ export default function MainLayout() {
 
           <nav className="hidden lg:flex items-center space-x-4">
             {isAuthenticated && (
-              <Link to="/trips" className="text-foreground hover:text-primary font-medium">
-                Trips
-              </Link>
+              <>
+                <Link to="/trips" className="text-foreground hover:text-primary font-medium">
+                  Trips
+                </Link>
+                <Link to="/help-center" className="text-foreground hover:text-primary font-medium">
+                  Help Center
+                </Link>
+              </>
             )}
 
             <div className="border-l border-border h-6" />
@@ -67,13 +72,22 @@ export default function MainLayout() {
           <div className="lg:hidden bg-card border-t border-border shadow-md">
             <nav className="container mx-auto px-4 py-3 flex flex-col space-y-3">
               {isAuthenticated && (
-                <Link
-                  to="/trips"
-                  className="text-foreground hover:text-primary font-medium"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Trips
-                </Link>
+                <>
+                  <Link
+                    to="/trips"
+                    className="text-foreground hover:text-primary font-medium"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Trips
+                  </Link>
+                  <Link
+                    to="/help-center"
+                    className="text-foreground hover:text-primary font-medium"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Help Center
+                  </Link>
+                </>
               )}
 
               <hr className="border-border" />

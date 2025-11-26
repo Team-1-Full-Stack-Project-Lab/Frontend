@@ -24,6 +24,9 @@ export function Header() {
           <Link to="#" className="text-sm font-medium text-white/90 transition-colors hover:text-white">
             My Trips
           </Link>
+          <Link to="/help-center" className="text-sm font-medium text-white/90 transition-colors hover:text-white">
+            Help Center
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
