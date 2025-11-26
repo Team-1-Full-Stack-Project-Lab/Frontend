@@ -17,11 +17,10 @@ interface UserDropdownProps {
     lastName: string
   }
   onLogout?: () => void
-  onProfile?: () => void
   onSettings?: () => void
 }
 
-export function UserDropdown({ user, onLogout, onProfile, onSettings }: UserDropdownProps) {
+export function UserDropdown({ user, onLogout, onSettings }: UserDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -37,10 +36,6 @@ export function UserDropdown({ user, onLogout, onProfile, onSettings }: UserDrop
           <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onProfile}>
-          <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
-        </DropdownMenuItem>
         <DropdownMenuItem onClick={onSettings}>
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>

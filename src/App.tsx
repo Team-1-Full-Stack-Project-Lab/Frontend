@@ -6,8 +6,8 @@ import StaysPage from './pages/stays/StaysPage'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 import AuthLayout from './layouts/AuthLayout'
-import ProfilePage from './pages/profile/ProfilePage'
 import ProtectedRoute from './layouts/ProtectedRoute'
+import SettingsPage from './pages/settings/SettingsPage'
 
 export default function App() {
   return (
@@ -17,9 +17,9 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/stays" element={<StaysPage />} />
 
-          <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedRoute />}>
             <Route path="/trips" element={<TripsPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/settings/*" element={<SettingsPage />} />
           </Route>
         </Route>
 
