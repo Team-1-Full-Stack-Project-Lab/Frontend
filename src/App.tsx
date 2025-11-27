@@ -8,6 +8,7 @@ import RegisterPage from './pages/auth/RegisterPage'
 import AuthLayout from './layouts/AuthLayout'
 import ProtectedRoute from './layouts/ProtectedRoute'
 import SettingsPage from './pages/settings/SettingsPage'
+import HelpCenterPage from './pages/helpcenter/HelpCenterPage'
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
             <Route path="/trips" element={<TripsPage />} />
             <Route path="/settings/*" element={<SettingsPage />} />
+            <Route path="/help-center" element={<HelpCenterPage />} />
           </Route>
         </Route>
 
