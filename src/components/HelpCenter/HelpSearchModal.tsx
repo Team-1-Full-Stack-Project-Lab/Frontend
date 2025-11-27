@@ -52,7 +52,7 @@ export function HelpSearchModal({
             </div>
           ) : (
             <div className="py-8 text-center text-muted-foreground">
-              No se encontraron resultados para "{query}"
+              No results found for "{query}"
             </div>
           )}
         </div>

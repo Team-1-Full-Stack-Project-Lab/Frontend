@@ -84,7 +84,7 @@ export function HelpArticleView({ isOpen, onClose, category }: HelpArticleViewPr
           {/* Footer */}
           <div className="border-t bg-muted/20 p-6">
             <div className="text-center">
-              <p className="mb-4 text-sm font-medium text-foreground">¿Te resultó útil este artículo?</p>
+              <p className="mb-4 text-sm font-medium text-foreground">Was this article helpful?</p>
               <div className="flex justify-center gap-3">
                 <Button variant="outline" className="h-10 w-10 rounded-full p-0">
                   👍

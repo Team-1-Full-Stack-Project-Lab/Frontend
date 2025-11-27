@@ -24,12 +24,12 @@ export function HelpSearchBar({ onSearch }: HelpSearchBarProps) {
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="¿En qué podemos ayudarte?"
+          placeholder="How can we help you?"
           className="h-12 border-input bg-background pl-10 text-base shadow-sm placeholder:text-muted-foreground focus-visible:ring-primary"
         />
       </div>
       <Button type="submit" size="lg" className="h-12 px-8 text-base font-medium">
-        Buscar
+        Search
       </Button>
     </form>
   )

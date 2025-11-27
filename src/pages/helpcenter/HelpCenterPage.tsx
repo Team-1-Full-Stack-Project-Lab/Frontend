@@ -20,130 +20,130 @@ import { useAuth } from '@/hooks/useAuth'
 const HELP_CATEGORIES = [
   {
     id: 'flights',
-    title: 'Vuelos',
+    title: 'Flights',
     icon: Plane,
     articles: [
       {
-        title: 'Reservación de vuelo con crédito de la aerolínea',
-        content: 'Cuando cancelas un vuelo, es posible que la aerolínea te ofrezca un crédito. Para canjear tu crédito, visita la sección Créditos en Cuenta y sigue las instrucciones.',
+        title: 'Flight reservation with airline credit',
+        content: 'When you cancel a flight, the airline might offer you a credit. To redeem your credit, visit the Account Credits section and follow the instructions.',
         links: [
-          { label: 'Ver mis créditos', url: '#' },
-          { label: 'Políticas de cancelación', url: '#' }
+          { label: 'View my credits', url: '#' },
+          { label: 'Cancellation policies', url: '#' }
         ]
       },
       {
-        title: 'Cambios y cancelaciones',
-        content: 'La mayoría de los boletos son no reembolsables, pero puedes cancelarlos dentro de las 24 horas posteriores a la compra para obtener un reembolso completo.',
+        title: 'Changes and cancellations',
+        content: 'Most tickets are non-refundable, but you can cancel them within 24 hours of purchase for a full refund.',
       }
     ]
   },
   {
     id: 'refunds',
-    title: 'Reembolsos y cargos',
+    title: 'Refunds and charges',
     icon: CreditCard,
     articles: [
       {
-        title: 'Estado de mi reembolso',
-        content: 'Los reembolsos pueden tardar hasta 7-10 días hábiles en aparecer en tu estado de cuenta.',
+        title: 'My refund status',
+        content: 'Refunds may take up to 7-10 business days to appear on your account statement.',
       }
     ]
   },
   {
     id: 'packages',
-    title: 'Paquetes',
+    title: 'Packages',
     icon: Map,
     articles: [
       {
-        title: 'Información de paquetes vacacionales',
-        content: 'Ahorra reservando vuelo y hotel juntos. Consulta nuestras ofertas de paquetes.',
+        title: 'Vacation package information',
+        content: 'Save by booking flight and hotel together. Check our package deals.',
       }
     ]
   },
   {
     id: 'stays',
-    title: 'Hospedaje',
+    title: 'Stays',
     icon: Building2,
     articles: [
       {
-        title: 'Check-in y Check-out',
-        content: 'Los horarios estándar son: Check-in 3:00 PM, Check-out 11:00 AM. Consulta tu confirmación para detalles específicos.',
+        title: 'Check-in and Check-out',
+        content: 'Standard times are: Check-in 3:00 PM, Check-out 11:00 AM. Check your confirmation for specific details.',
       }
     ]
   },
   {
     id: 'activities',
-    title: 'Actividades',
+    title: 'Activities',
     icon: Ticket,
     articles: [
       {
-        title: 'Reservar actividades',
-        content: 'Explora y reserva tours, entradas a museos y más experiencias locales.',
+        title: 'Book activities',
+        content: 'Explore and book tours, museum tickets, and more local experiences.',
       }
     ]
   },
   {
     id: 'cars',
-    title: 'Autos',
+    title: 'Cars',
     icon: Car,
     articles: [
       {
-        title: 'Renta de autos',
-        content: 'Requisitos: Licencia de conducir válida, tarjeta de crédito a nombre del conductor principal.',
+        title: 'Car rental',
+        content: 'Requirements: Valid driver\'s license, credit card in the main driver\'s name.',
       }
     ]
   },
   {
     id: 'account',
-    title: 'Cuentas',
+    title: 'Accounts',
     icon: UserCircle,
     articles: [
       {
-        title: 'Gestionar mi cuenta',
-        content: 'Actualiza tu perfil, cambia tu contraseña y gestiona tus preferencias de comunicación.',
+        title: 'Manage my account',
+        content: 'Update your profile, change your password, and manage your communication preferences.',
       }
     ]
   },
   {
     id: 'privacy',
-    title: 'Privacidad',
+    title: 'Privacy',
     icon: ShieldCheck,
     articles: [
       {
-        title: 'Política de privacidad',
-        content: 'Nos tomamos muy en serio tu privacidad. Lee cómo protegemos tus datos.',
+        title: 'Privacy policy',
+        content: 'We take your privacy very seriously. Read how we protect your data.',
       }
     ]
   },
   {
     id: 'security',
-    title: 'Seguridad',
+    title: 'Security',
     icon: ShieldCheck,
     articles: [
       {
-        title: 'Consejos de seguridad',
-        content: 'Mantén tu cuenta segura activando la autenticación de dos factores.',
+        title: 'Security tips',
+        content: 'Keep your account safe by enabling two-factor authentication.',
       }
     ]
   },
   {
     id: 'rewards',
-    title: 'Programa de lealtad',
+    title: 'Loyalty program',
     icon: Gift,
     articles: [
       {
-        title: 'Beneficios del programa',
-        content: 'Gana puntos por cada viaje y canjéalos por descuentos en futuras reservas.',
+        title: 'Program benefits',
+        content: 'Earn points for every trip and redeem them for discounts on future bookings.',
       }
     ]
   },
   {
     id: 'alerts',
-    title: 'Alertas de viaje',
+    title: 'Travel alerts',
     icon: AlertTriangle,
     articles: [
       {
-        title: 'Avisos importantes',
-        content: 'Mantente informado sobre restricciones de viaje, requisitos de visa y alertas sanitarias.',
+        title: 'Important notices',
+        content: 'Stay informed about travel restrictions, visa requirements, and health alerts.',
       }
     ]
   }
@@ -202,9 +202,9 @@ export default function HelpCenterPage() {
       <div className="w-full max-w-6xl mx-auto px-4">
         {/* Header Section */}
         <div className="mb-12 space-y-6">
-          <h1 className="text-3xl font-bold tracking-tight">Centro de ayuda</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Help Center</h1>
           <p className="text-xl font-medium text-muted-foreground">
-            Hola, {user?.firstName || 'Viajero'}
+            Hello, {user?.firstName || 'Traveler'}
           </p>
           
           <HelpSearchBar onSearch={handleSearch} />
@@ -212,7 +212,7 @@ export default function HelpCenterPage() {
 
         {/* Categories Grid */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-semibold tracking-tight">Consulta artículos de ayuda</h2>
+          <h2 className="text-2xl font-semibold tracking-tight">Browse help articles</h2>
           
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {HELP_CATEGORIES.map((category) => (
