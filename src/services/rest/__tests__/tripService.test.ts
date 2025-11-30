@@ -20,28 +20,46 @@ describe('tripService', () => {
 
   describe('getTrips', () => {
     it('should fetch and transform trips data', async () => {
-      const mockResponse: TripsResponse = {
-        trips: [
-          {
-            id: 1,
-            name: 'Summer Vacation',
-            cityId: 101,
-            cityName: 'Paris',
-            countryName: 'France',
-            startDate: '2024-07-01',
-            finishDate: '2024-07-10',
+      const mockResponse: TripsResponse = [
+        {
+          id: 1,
+          name: 'Summer Vacation',
+          city: {
+            id: 101,
+            name: 'Paris',
+            latitude: 0,
+            longitude: 0,
+            isCapital: true,
+            isFeatured: true,
+            country: {
+              id: 1,
+              name: 'France',
+              iso2Code: 'FR',
+            },
           },
-          {
-            id: 2,
-            name: 'Winter Trip',
-            cityId: 202,
-            cityName: 'Tokyo',
-            countryName: 'Japan',
-            startDate: '2024-12-20',
-            finishDate: '2024-12-28',
+          startDate: '2024-07-01',
+          endDate: '2024-07-10',
+        },
+        {
+          id: 2,
+          name: 'Winter Trip',
+          city: {
+            id: 202,
+            name: 'Tokyo',
+            latitude: 0,
+            longitude: 0,
+            isCapital: true,
+            isFeatured: true,
+            country: {
+              id: 2,
+              name: 'Japan',
+              iso2Code: 'JP',
+            },
           },
-        ],
-      }
+          startDate: '2024-12-20',
+          endDate: '2024-12-28',
+        },
+      ]
 
       vi.mocked(globalThis.fetch).mockResolvedValueOnce({
         ok: true,
@@ -76,7 +94,7 @@ describe('tripService', () => {
     it('should return empty array when no trips exist', async () => {
       vi.mocked(globalThis.fetch).mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ trips: [] }),
+        json: async () => [],
       } as Response)
 
       const result = await getTrips()
@@ -96,11 +114,21 @@ describe('tripService', () => {
       const mockResponse: TripResponse = {
         id: 3,
         name: 'Beach Vacation',
-        cityId: 303,
-        cityName: 'Honolulu',
-        countryName: 'USA',
+        city: {
+          id: 303,
+          name: 'Honolulu',
+          latitude: 0,
+          longitude: 0,
+          isCapital: false,
+          isFeatured: true,
+          country: {
+            id: 3,
+            name: 'USA',
+            iso2Code: 'US',
+          },
+        },
         startDate: '2024-08-01',
-        finishDate: '2024-08-15',
+        endDate: '2024-08-15',
       }
 
       vi.mocked(globalThis.fetch).mockResolvedValueOnce({
@@ -145,11 +173,21 @@ describe('tripService', () => {
       const mockResponse: TripResponse = {
         id: tripId,
         name: 'Updated Trip Name',
-        cityId: 101,
-        cityName: 'Paris',
-        countryName: 'France',
+        city: {
+          id: 101,
+          name: 'Paris',
+          latitude: 0,
+          longitude: 0,
+          isCapital: true,
+          isFeatured: true,
+          country: {
+            id: 1,
+            name: 'France',
+            iso2Code: 'FR',
+          },
+        },
         startDate: '2024-09-01',
-        finishDate: '2024-09-10',
+        endDate: '2024-09-10',
       }
 
       vi.mocked(globalThis.fetch).mockResolvedValueOnce({

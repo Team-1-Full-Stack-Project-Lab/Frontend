@@ -24,13 +24,13 @@ export async function getTrips(): Promise<Trip[]> {
 
   const result = await handleResponse<TripsResponse>(res)
 
-  return result.trips.map(trip => ({
+  return result.map(trip => ({
     id: trip.id,
     name: trip.name,
-    cityId: trip.cityId,
-    destination: `${trip.cityName}, ${trip.countryName}`,
+    cityId: trip.city?.id || 0,
+    destination: trip.city ? `${trip.city.name}, ${trip.country?.name || ''}` : 'Unknown',
     startDate: trip.startDate,
-    endDate: trip.finishDate,
+    endDate: trip.endDate,
   }))
 }
 
@@ -50,10 +50,10 @@ export async function createTrip(data: CreateTripRequest): Promise<Trip> {
   return {
     id: result.id,
     name: result.name,
-    cityId: result.cityId,
-    destination: `${result.cityName}, ${result.countryName}`,
+    cityId: result.city?.id || 0,
+    destination: result.city ? `${result.city.name}, ${result.country?.name || ''}` : 'Unknown',
     startDate: result.startDate,
-    endDate: result.finishDate,
+    endDate: result.endDate,
   }
 }
 
@@ -73,10 +73,10 @@ export async function updateTrip(id: number, data: UpdateTripRequest): Promise<T
   return {
     id: result.id,
     name: result.name,
-    cityId: result.cityId,
-    destination: `${result.cityName}, ${result.countryName}`,
+    cityId: result.city?.id || 0,
+    destination: result.city ? `${result.city.name}, ${result.country?.name || ''}` : 'Unknown',
     startDate: result.startDate,
-    endDate: result.finishDate,
+    endDate: result.endDate,
   }
 }
 

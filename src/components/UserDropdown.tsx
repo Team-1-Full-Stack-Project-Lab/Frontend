@@ -11,7 +11,6 @@ import { Button } from './ui/button'
 
 interface UserDropdownProps {
   user: {
-    id: number
     email: string
     firstName: string
     lastName: string

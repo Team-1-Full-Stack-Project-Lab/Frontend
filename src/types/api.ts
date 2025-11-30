@@ -26,20 +26,6 @@ export interface Pageable {
 
 export interface PageResponse<T> {
   content: T[]
-  pageable: Pageable
-  last: boolean
-  totalPages: number
-  totalElements: number
-  size: number
-  number: number
-  sort: Sort
-  first: boolean
-  numberOfElements: number
-  empty: boolean
-}
-
-export interface SimplePage<T> {
-  content: T[]
   totalElements: number
   totalPages: number
   number: number

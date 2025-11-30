@@ -1,5 +1,4 @@
 export interface User {
-  id: number
   email: string
   firstName: string
   lastName: string
@@ -28,7 +27,6 @@ export interface AuthResponse {
 }
 
 export interface UserResponse {
-  id: number
   email: string
   firstName: string
   lastName: string

@@ -11,12 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import type { Stay } from '@/types/stays'
+import type { StayResponse } from '@/types/stays'
 import { ImageCarousel } from '@/components/ImageCarousel'
 import { FullscreenImageCarousel } from '@/components/FullscreenImageCarousel'
 
 type Props = {
-  stay: Stay
+  stay: StayResponse
 }
 
 export default function RentalCard({ stay }: Props) {
@@ -39,11 +39,7 @@ export default function RentalCard({ stay }: Props) {
       <Card className="w-full max-w-full flex-row flex items-stretch gap-0 p-0 rounded-lg h-52">
         <div className="w-2/5 shrink-0 h-full relative overflow-hidden rounded-l-lg">
           {stay.images && stay.images.length > 0 ? (
-            <ImageCarousel
-              images={stay.images}
-              altText={stay.name}
-              className="h-full"
-            />
+            <ImageCarousel images={stay.images} altText={stay.name} className="h-full" />
           ) : (
             <div className="h-full w-full bg-muted flex items-center justify-center">
               <p className="text-muted-foreground text-sm">No image</p>
@@ -124,7 +120,10 @@ export default function RentalCard({ stay }: Props) {
                       <h3 className="font-semibold text-lg mb-3">Amenities & Services</h3>
                       <div className="flex flex-wrap gap-2">
                         {stay.services.map(service => (
-                          <span key={service.id} className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm">
+                          <span
+                            key={service.id}
+                            className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm"
+                          >
                             {service.name}
                           </span>
                         ))}

@@ -16,7 +16,7 @@ const GET_USER_QUERY = gql`
 `
 
 const UPDATE_USER_MUTATION = gql`
-  mutation UpdateUser($request: UserUpdateRequestGraphQL!) {
+  mutation UpdateUser($request: UserUpdateRequest!) {
     updateUser(request: $request) {
       email
       firstName
@@ -28,25 +28,24 @@ const UPDATE_USER_MUTATION = gql`
 const DELETE_USER_MUTATION = gql`
   mutation DeleteUser {
     deleteUser {
-      success
-      message
+      _empty
     }
   }
 `
 
 export async function getUserProfile(): Promise<UserProfile> {
-  const { data } = await apolloClient.query<{ getUser: Omit<UserProfile, 'id'> }>({
+  const { data } = await apolloClient.query<{ getUser: UserProfile }>({
     query: GET_USER_QUERY,
     fetchPolicy: 'network-only',
   })
 
   if (!data) throw new Error('Failed to fetch user profile')
 
-  return { ...data.getUser, id: 0 }
+  return data.getUser
 }
 
 export async function updateUserProfile(userData: UpdateUserProfile): Promise<UserProfile> {
-  const { data } = await apolloClient.mutate<{ updateUser: Omit<UserProfile, 'id'> }>({
+  const { data } = await apolloClient.mutate<{ updateUser: UserProfile }>({
     mutation: UPDATE_USER_MUTATION,
     variables: {
       request: {
@@ -58,17 +57,17 @@ export async function updateUserProfile(userData: UpdateUserProfile): Promise<Us
 
   if (!data) throw new Error('Failed to update user profile')
 
-  return { ...data.updateUser, id: 0 }
+  return data.updateUser
 }
 
 export async function deleteUserAccount(): Promise<void> {
   const { data } = await apolloClient.mutate<{
-    deleteUser: { success: boolean; message: string }
+    deleteUser: { _empty?: string }
   }>({
     mutation: DELETE_USER_MUTATION,
   })
 
-  if (!data?.deleteUser.success) {
-    throw new Error(data?.deleteUser.message || 'Failed to delete user account')
+  if (!data?.deleteUser) {
+    throw new Error('Failed to delete user account')
   }
 }

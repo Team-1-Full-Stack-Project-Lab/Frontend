@@ -1,34 +1,45 @@
 import type { PageResponse, PaginationParams } from './api'
 
-export interface Country {
+export interface RegionResponse {
+  id: number
+  name: string
+  code?: string
+  countries?: CountryResponse[]
+}
+
+export interface CountryResponse {
   id: number
   name: string
   iso2Code: string
-  iso3Code: string
-  phoneCode: string
-  currencyCode: string
-  currencySymbol: string
+  iso3Code?: string
+  phoneCode?: string
+  currencyCode?: string
+  currencySymbol?: string
+  region?: RegionResponse
+  states?: StateResponse[]
+  cities?: CityResponse[]
 }
 
-export interface State {
+export interface StateResponse {
   id: number
   name: string
-  code: string
-  latitude: number
-  longitude: number
+  code?: string
+  country?: CountryResponse
+  latitude?: number
+  longitude?: number
 }
 
-export interface City {
+export interface CityResponse {
   id: number
   name: string
-  nameAscii: string
-  country?: Country
-  state?: State
+  nameAscii?: string
+  country?: CountryResponse
+  state?: StateResponse
   latitude: number
   longitude: number
-  timezone: string
+  timezone?: string
   googlePlaceId?: string
-  population: number
+  population?: number
   isCapital: boolean
   isFeatured: boolean
 }
@@ -38,21 +49,6 @@ export interface GetCitiesParams extends PaginationParams {
   country?: number
   state?: number
   featured?: boolean
-}
-
-export interface CityResponse {
-  id: number
-  name: string
-  nameAscii: string
-  country?: Country
-  state?: State
-  latitude: number
-  longitude: number
-  timezone: string
-  googlePlaceId?: string
-  population: number
-  isCapital: boolean
-  isFeatured: boolean
 }
 
 export type CitiesResponse = PageResponse<CityResponse>

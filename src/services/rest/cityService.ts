@@ -1,9 +1,9 @@
-import type { City, CitiesResponse, GetCitiesParams } from '@/types'
+import type { CityResponse, CitiesResponse, GetCitiesParams } from '@/types'
 import { getToken } from './authService'
 import { handleResponse } from '@/utils/helpers'
 import { BACKEND_URL } from '@/config/api'
 
-export async function getCities(params?: GetCitiesParams): Promise<City[]> {
+export async function getCities(params?: GetCitiesParams): Promise<CityResponse[]> {
   const searchParams = new URLSearchParams()
 
   if (params) {
@@ -29,7 +29,7 @@ export async function getCities(params?: GetCitiesParams): Promise<City[]> {
   return result.content
 }
 
-export async function getCityById(id: number): Promise<City> {
+export async function getCityById(id: number): Promise<CityResponse> {
   const res = await fetch(`${BACKEND_URL}/cities/${id}`, {
     method: 'GET',
     headers: {
@@ -39,5 +39,5 @@ export async function getCityById(id: number): Promise<City> {
     credentials: 'include',
   })
 
-  return handleResponse<City>(res)
+  return handleResponse<CityResponse>(res)
 }

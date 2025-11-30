@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 import { apolloClient } from '@/config/apolloClient'
-import type { City, GetCitiesParams, CityGraphQL } from '@/types'
+import type { CityResponse, GetCitiesParams, CityGraphQL } from '@/types'
 
 const GET_CITIES_QUERY = gql`
   query GetAllCities($name: String, $country: ID, $state: ID, $featured: Boolean, $page: Int, $size: Int) {
@@ -76,7 +76,7 @@ const GET_CITY_BY_ID_QUERY = gql`
   }
 `
 
-export async function getCities(params?: GetCitiesParams): Promise<City[]> {
+export async function getCities(params?: GetCitiesParams): Promise<CityResponse[]> {
   const variables: Record<string, unknown> = {
     page: 0,
     size: 20,
@@ -139,7 +139,7 @@ export async function getCities(params?: GetCitiesParams): Promise<City[]> {
   }))
 }
 
-export async function getCityById(id: number): Promise<City> {
+export async function getCityById(id: number): Promise<CityResponse> {
   const { data } = await apolloClient.query<{ getCityById: CityGraphQL }>({
     query: GET_CITY_BY_ID_QUERY,
     variables: { id: id.toString() },

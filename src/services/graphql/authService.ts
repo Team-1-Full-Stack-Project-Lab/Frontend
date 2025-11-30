@@ -74,7 +74,7 @@ export async function getCurrentUser() {
 
   if (!data) throw new Error('Failed to fetch user profile')
 
-  return { ...data.getUser, id: 0 }
+  return data.getUser
 }
 
 export function logout() {

@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { CreateTripDialog } from '@/components/CreateTripDialog'
 import { DateRangePicker } from '@/components/DateRangePicker'
 import { useServices } from '@/hooks/useServices'
-import type { StayUnit } from '@/types/stays'
+import type { StayUnitResponse } from '@/types/stays'
 import type { Trip } from '@/types/trips'
 import type { DateRange } from 'react-day-picker'
 import { Plus, Check } from 'lucide-react'
@@ -12,7 +12,7 @@ import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 
 interface AddUnitToTripPopoverProps {
-  unit: StayUnit
+  unit: StayUnitResponse
   children: React.ReactNode
   onSaved?: () => void
 }

@@ -1,4 +1,5 @@
-import type { StayUnitGraphQL } from './stays'
+import type { StayUnitGraphQL, StayUnitResponse } from './stays'
+import type { CityResponse, CountryResponse } from './location'
 
 export interface Trip {
   id: number
@@ -26,16 +27,13 @@ export interface UpdateTripRequest {
 export interface TripResponse {
   id: number
   name: string
-  cityId: number
-  cityName: string
-  countryName: string
+  city?: CityResponse
+  country?: CountryResponse
   startDate: string
-  finishDate: string
+  endDate: string
 }
 
-export interface TripsResponse {
-  trips: TripResponse[]
-}
+export type TripsResponse = TripResponse[]
 
 export interface DeleteTripResponse {
   success: boolean
@@ -45,25 +43,23 @@ export interface DeleteTripResponse {
 export interface TripGraphQL {
   id: string
   name: string
-  cityId: string
-  cityName: string
-  countryName: string
+  city: {
+    id: string
+    name: string
+    country: {
+      name: string
+    }
+  }
+  country: {
+    name: string
+  }
   startDate: string
-  finishDate: string
-}
-
-export interface StayUnitSimple {
-  id: number
-  stayNumber: string
-  numberOfBeds: number
-  capacity: number
-  pricePerNight: number
-  roomType: string
+  endDate: string
 }
 
 export interface TripStayUnit {
   trip: TripResponse
-  stayUnit: StayUnitSimple
+  stayUnit: StayUnitResponse
   startDate: string
   endDate: string
 }

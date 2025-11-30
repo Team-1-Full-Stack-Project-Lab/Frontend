@@ -1,27 +1,27 @@
 import type { CityResponse } from './location'
 
-export interface StayType {
+export interface StayTypeResponse {
   id: number
   name: string
 }
 
-export interface Service {
+export interface ServiceResponse {
   id: number
   name: string
   icon?: string
 }
 
-export interface StayUnit {
+export interface StayUnitResponse {
   id: number
   stayNumber: string
   numberOfBeds: number
   capacity: number
   pricePerNight: number
   roomType: string
-  stay?: Stay
+  stay?: StayResponse
 }
 
-export interface Stay {
+export interface StayResponse {
   id: number
   name: string
   address: string
@@ -29,11 +29,12 @@ export interface Stay {
   longitude: number
   description: string
   city?: CityResponse
-  stayType?: StayType
-  services?: Service[]
-  units?: StayUnit[]
+  stayType?: StayTypeResponse
+  services?: ServiceResponse[]
+  units?: StayUnitResponse[]
   images?: StayImageResponse[]
 }
+
 export interface StayImageResponse {
   id: number
   link: string
