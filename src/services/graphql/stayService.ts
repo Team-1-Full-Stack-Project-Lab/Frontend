@@ -1,13 +1,22 @@
 import { gql } from '@apollo/client'
 import { apolloClient } from '@/config/apolloClient'
-import type { StayResponse, StayGraphQL, StayTypeResponse, ServiceResponse, StayUnitResponse } from '@/types'
-import type { PageResponse, PaginationParams } from '@/types/api'
-
-export interface SearchNearbyParams extends PaginationParams {
-  latitude: number
-  longitude: number
-  radius?: number
-}
+import type {
+  Stay,
+  StayUnit,
+  StayType,
+  Service,
+  Page,
+  StayGraphQL,
+  PaginationParams,
+  SearchNearbyParams,
+} from '@/types'
+import {
+  stayFromGraphQL,
+  stayUnitFromGraphQL,
+  stayTypeFromGraphQL,
+  serviceFromGraphQL,
+  pageFromResponse,
+} from '@/mappers'
 
 interface StayPageGraphQL {
   content: StayGraphQL[]
@@ -221,76 +230,7 @@ const SEARCH_AVAILABLE_UNITS_QUERY = gql`
   }
 `
 
-function mapStayFromGraphQL(stay: StayGraphQL): StayResponse {
-  return {
-    id: parseInt(stay.id),
-    name: stay.name,
-    address: stay.address,
-    latitude: stay.latitude,
-    longitude: stay.longitude,
-    description: stay.description,
-    city: stay.city
-      ? {
-          id: parseInt(stay.city.id),
-          name: stay.city.name,
-          nameAscii: stay.city.nameAscii,
-          latitude: stay.city.latitude,
-          longitude: stay.city.longitude,
-          timezone: stay.city.timezone,
-          googlePlaceId: stay.city.googlePlaceId,
-          population: stay.city.population,
-          isCapital: stay.city.isCapital,
-          isFeatured: stay.city.isFeatured,
-          country: stay.city.country
-            ? {
-                id: parseInt(stay.city.country.id),
-                name: stay.city.country.name,
-                iso2Code: stay.city.country.iso2Code,
-                iso3Code: stay.city.country.iso3Code,
-                phoneCode: stay.city.country.phoneCode || '',
-                currencyCode: stay.city.country.currencyCode || '',
-                currencySymbol: stay.city.country.currencySymbol || '',
-              }
-            : undefined,
-          state: stay.city.state
-            ? {
-                id: parseInt(stay.city.state.id),
-                name: stay.city.state.name,
-                code: stay.city.state.code,
-                latitude: stay.city.state.latitude || 0,
-                longitude: stay.city.state.longitude || 0,
-              }
-            : undefined,
-        }
-      : undefined,
-    stayType: stay.stayType
-      ? {
-          id: parseInt(stay.stayType.id),
-          name: stay.stayType.name,
-        }
-      : undefined,
-    services: stay.services?.map(service => ({
-      id: parseInt(service.id),
-      name: service.name,
-      icon: service.icon,
-    })),
-    units: stay.units?.map(unit => ({
-      id: parseInt(unit.id),
-      stayNumber: unit.stayNumber,
-      numberOfBeds: unit.numberOfBeds,
-      capacity: unit.capacity,
-      pricePerNight: unit.pricePerNight,
-      roomType: unit.roomType,
-    })),
-    images: stay.images?.map(image => ({
-      id: parseInt(image.id),
-      link: image.link,
-      stayId: image.stayId ? parseInt(image.stayId) : undefined,
-    })),
-  }
-}
-
-export async function getAllStays(params?: PaginationParams): Promise<PageResponse<StayResponse>> {
+export async function getAllStays(params?: PaginationParams): Promise<Page<Stay>> {
   const { data } = await apolloClient.query<{ getAllStays: StayPageGraphQL }>({
     query: GET_ALL_STAYS_QUERY,
     variables: {
@@ -302,19 +242,22 @@ export async function getAllStays(params?: PaginationParams): Promise<PageRespon
 
   if (!data) throw new Error('Failed to fetch stays')
 
-  return {
-    content: data.getAllStays.content.map(mapStayFromGraphQL),
-    totalElements: data.getAllStays.totalElements,
-    totalPages: data.getAllStays.totalPages,
-    number: data.getAllStays.number,
-    size: data.getAllStays.size,
-    first: data.getAllStays.first,
-    last: data.getAllStays.last,
-    empty: data.getAllStays.empty,
-  }
+  return pageFromResponse(
+    {
+      content: data.getAllStays.content,
+      totalElements: data.getAllStays.totalElements,
+      totalPages: data.getAllStays.totalPages,
+      number: data.getAllStays.number,
+      size: data.getAllStays.size,
+      first: data.getAllStays.first,
+      last: data.getAllStays.last,
+      empty: data.getAllStays.empty,
+    },
+    dto => stayFromGraphQL(dto, true)
+  )
 }
 
-export async function getStayById(id: number): Promise<StayResponse> {
+export async function getStayById(id: number): Promise<Stay> {
   const { data } = await apolloClient.query<{ getStayById: StayGraphQL | null }>({
     query: GET_STAY_BY_ID_QUERY,
     variables: { id: id.toString() },
@@ -323,10 +266,10 @@ export async function getStayById(id: number): Promise<StayResponse> {
 
   if (!data?.getStayById) throw new Error('Stay not found')
 
-  return mapStayFromGraphQL(data.getStayById)
+  return stayFromGraphQL(data.getStayById)
 }
 
-export async function getStaysByCity(cityId: number, params?: PaginationParams): Promise<PageResponse<StayResponse>> {
+export async function getStaysByCity(cityId: number, params?: PaginationParams): Promise<Page<Stay>> {
   const { data } = await apolloClient.query<{ getStaysByCity: StayPageGraphQL }>({
     query: GET_STAYS_BY_CITY_QUERY,
     variables: {
@@ -339,25 +282,28 @@ export async function getStaysByCity(cityId: number, params?: PaginationParams):
 
   if (!data) throw new Error('Failed to fetch stays')
 
-  return {
-    content: data.getStaysByCity.content.map(mapStayFromGraphQL),
-    totalElements: data.getStaysByCity.totalElements,
-    totalPages: data.getStaysByCity.totalPages,
-    number: data.getStaysByCity.number,
-    size: data.getStaysByCity.size,
-    first: data.getStaysByCity.first,
-    last: data.getStaysByCity.last,
-    empty: data.getStaysByCity.empty,
-  }
+  return pageFromResponse(
+    {
+      content: data.getStaysByCity.content,
+      totalElements: data.getStaysByCity.totalElements,
+      totalPages: data.getStaysByCity.totalPages,
+      number: data.getStaysByCity.number,
+      size: data.getStaysByCity.size,
+      first: data.getStaysByCity.first,
+      last: data.getStaysByCity.last,
+      empty: data.getStaysByCity.empty,
+    },
+    dto => stayFromGraphQL(dto, true)
+  )
 }
 
-export async function searchStaysNearby(params: SearchNearbyParams): Promise<PageResponse<StayResponse>> {
+export async function searchStaysNearby(params: SearchNearbyParams): Promise<Page<Stay>> {
   const { data } = await apolloClient.query<{ searchStaysNearby: StayPageGraphQL }>({
     query: SEARCH_STAYS_NEARBY_QUERY,
     variables: {
       latitude: params.latitude,
       longitude: params.longitude,
-      radius: params.radius,
+      radius: params.radiusKm,
       page: params.page,
       size: params.size,
     },
@@ -366,20 +312,22 @@ export async function searchStaysNearby(params: SearchNearbyParams): Promise<Pag
 
   if (!data) throw new Error('Failed to search nearby stays')
 
-  return {
-    content: data.searchStaysNearby.content.map(mapStayFromGraphQL),
-    totalElements: data.searchStaysNearby.totalElements,
-    totalPages: data.searchStaysNearby.totalPages,
-    number: data.searchStaysNearby.number,
-    size: data.searchStaysNearby.size,
-    first: data.searchStaysNearby.first,
-    last: data.searchStaysNearby.last,
-    empty: data.searchStaysNearby.empty,
-  }
+  return pageFromResponse(
+    {
+      content: data.searchStaysNearby.content,
+      totalElements: data.searchStaysNearby.totalElements,
+      totalPages: data.searchStaysNearby.totalPages,
+      number: data.searchStaysNearby.number,
+      size: data.searchStaysNearby.size,
+      first: data.searchStaysNearby.first,
+      last: data.searchStaysNearby.last,
+      empty: data.searchStaysNearby.empty,
+    },
+    dto => stayFromGraphQL(dto, true)
+  )
 }
 
-// StayType endpoints
-export async function getAllStayTypes(name?: string): Promise<StayTypeResponse[]> {
+export async function getAllStayTypes(name?: string): Promise<StayType[]> {
   const { data } = await apolloClient.query<{ getAllStayTypes: Array<{ id: string; name: string }> }>({
     query: GET_ALL_STAY_TYPES_QUERY,
     variables: { name },
@@ -388,13 +336,10 @@ export async function getAllStayTypes(name?: string): Promise<StayTypeResponse[]
 
   if (!data) throw new Error('Failed to fetch stay types')
 
-  return data.getAllStayTypes.map(type => ({
-    id: parseInt(type.id),
-    name: type.name,
-  }))
+  return data.getAllStayTypes.map(stayTypeFromGraphQL)
 }
 
-export async function getStayTypeById(id: number): Promise<StayTypeResponse> {
+export async function getStayTypeById(id: number): Promise<StayType> {
   const { data } = await apolloClient.query<{ getStayTypeById: { id: string; name: string } | null }>({
     query: GET_STAY_TYPE_BY_ID_QUERY,
     variables: { id: id.toString() },
@@ -403,14 +348,10 @@ export async function getStayTypeById(id: number): Promise<StayTypeResponse> {
 
   if (!data?.getStayTypeById) throw new Error('Stay type not found')
 
-  return {
-    id: parseInt(data.getStayTypeById.id),
-    name: data.getStayTypeById.name,
-  }
+  return stayTypeFromGraphQL(data.getStayTypeById)
 }
 
-// Service endpoints
-export async function getAllServices(name?: string): Promise<ServiceResponse[]> {
+export async function getAllServices(name?: string): Promise<Service[]> {
   const { data } = await apolloClient.query<{
     getAllServices: Array<{ id: string; name: string; icon?: string }>
   }>({
@@ -421,14 +362,10 @@ export async function getAllServices(name?: string): Promise<ServiceResponse[]> 
 
   if (!data) throw new Error('Failed to fetch services')
 
-  return data.getAllServices.map(service => ({
-    id: parseInt(service.id),
-    name: service.name,
-    icon: service.icon,
-  }))
+  return data.getAllServices.map(serviceFromGraphQL)
 }
 
-export async function getServiceById(id: number): Promise<ServiceResponse> {
+export async function getServiceById(id: number): Promise<Service> {
   const { data } = await apolloClient.query<{
     getServiceById: { id: string; name: string; icon?: string } | null
   }>({
@@ -439,15 +376,10 @@ export async function getServiceById(id: number): Promise<ServiceResponse> {
 
   if (!data?.getServiceById) throw new Error('Service not found')
 
-  return {
-    id: parseInt(data.getServiceById.id),
-    name: data.getServiceById.name,
-    icon: data.getServiceById.icon,
-  }
+  return serviceFromGraphQL(data.getServiceById)
 }
 
-// StayUnit endpoints
-export async function getStayUnitById(id: number): Promise<StayUnitResponse> {
+export async function getStayUnitById(id: number): Promise<StayUnit> {
   const { data } = await apolloClient.query<{
     getStayUnitById: {
       id: string
@@ -465,17 +397,10 @@ export async function getStayUnitById(id: number): Promise<StayUnitResponse> {
 
   if (!data?.getStayUnitById) throw new Error('Stay unit not found')
 
-  return {
-    id: parseInt(data.getStayUnitById.id),
-    stayNumber: data.getStayUnitById.stayNumber,
-    numberOfBeds: data.getStayUnitById.numberOfBeds,
-    capacity: data.getStayUnitById.capacity,
-    pricePerNight: data.getStayUnitById.pricePerNight,
-    roomType: data.getStayUnitById.roomType,
-  }
+  return stayUnitFromGraphQL(data.getStayUnitById, true)
 }
 
-export async function getStayUnitsByStayId(stayId: number): Promise<StayUnitResponse[]> {
+export async function getStayUnitsByStayId(stayId: number): Promise<StayUnit[]> {
   const { data } = await apolloClient.query<{
     getStayUnitsByStayId: Array<{
       id: string
@@ -493,21 +418,10 @@ export async function getStayUnitsByStayId(stayId: number): Promise<StayUnitResp
 
   if (!data) throw new Error('Failed to fetch stay units')
 
-  return data.getStayUnitsByStayId.map(unit => ({
-    id: parseInt(unit.id),
-    stayNumber: unit.stayNumber,
-    numberOfBeds: unit.numberOfBeds,
-    capacity: unit.capacity,
-    pricePerNight: unit.pricePerNight,
-    roomType: unit.roomType,
-  }))
+  return data.getStayUnitsByStayId.map(u => stayUnitFromGraphQL(u, true))
 }
 
-export async function searchAvailableUnits(
-  stayId: number,
-  minCapacity: number,
-  maxPrice: number
-): Promise<StayUnitResponse[]> {
+export async function searchAvailableUnits(stayId: number, minCapacity: number, maxPrice: number): Promise<StayUnit[]> {
   const { data } = await apolloClient.query<{
     searchAvailableUnits: Array<{
       id: string
@@ -529,12 +443,5 @@ export async function searchAvailableUnits(
 
   if (!data) throw new Error('Failed to search available units')
 
-  return data.searchAvailableUnits.map(unit => ({
-    id: parseInt(unit.id),
-    stayNumber: unit.stayNumber,
-    numberOfBeds: unit.numberOfBeds,
-    capacity: unit.capacity,
-    pricePerNight: unit.pricePerNight,
-    roomType: unit.roomType,
-  }))
+  return data.searchAvailableUnits.map(u => stayUnitFromGraphQL(u, true))
 }

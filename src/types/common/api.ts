@@ -44,3 +44,9 @@ export interface PaginationParams {
 export interface SearchPaginationParams extends PaginationParams {
   search?: string
 }
+
+export interface SearchNearbyParams extends PaginationParams {
+  latitude: number
+  longitude: number
+  radiusKm?: number
+}

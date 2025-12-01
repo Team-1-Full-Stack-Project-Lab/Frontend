@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { DeleteTripAlert } from '../DeleteTripAlert'
-import type { Trip } from '@/types/trips'
+import type { Trip } from '@/types'
 
 const mockDeleteTrip = vi.fn()
 
@@ -25,10 +25,11 @@ describe('DeleteTripAlert', () => {
   const mockTrip: Trip = {
     id: 1,
     name: 'Summer Trip to Paris',
-    cityId: 1,
+    city: { id: 1, name: 'Paris', latitude: 0, longitude: 0, isCapital: false, isFeatured: false },
     destination: 'Paris, France',
-    startDate: '2024-07-01T00:00:00Z',
-    endDate: '2024-07-10T00:00:00Z',
+    startDate: new Date('2024-07-01T00:00:00Z'),
+    endDate: new Date('2024-07-10T00:00:00Z'),
+    durationDays: 10,
   }
 
   beforeEach(() => {

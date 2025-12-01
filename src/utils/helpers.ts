@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import type { ApiError } from '@/types/api'
+import type { ApiError } from '@/types'
 import { ApiException } from './exceptions'
 
 export async function handleResponse<T>(res: Response): Promise<T> {

@@ -1,5 +1,24 @@
-import type { StayResponse, StayTypeResponse, ServiceResponse, StayUnitResponse } from '@/types'
-import type { PageResponse, PaginationParams } from '@/types/api'
+import type {
+  Stay,
+  StayUnit,
+  StayType,
+  Service,
+  Page,
+  StayResponse,
+  StayTypeResponse,
+  ServiceResponse,
+  StayUnitResponse,
+  PageResponse,
+  PaginationParams,
+  SearchNearbyParams,
+} from '@/types'
+import {
+  stayFromResponse,
+  stayUnitFromResponse,
+  stayTypeFromResponse,
+  serviceFromResponse,
+  pageFromResponse,
+} from '@/mappers'
 import { handleResponse } from '@/utils/helpers'
 import { BACKEND_URL } from '@/config/api'
 
@@ -7,13 +26,7 @@ export interface GetStaysParams extends PaginationParams {
   cityId?: number
 }
 
-export interface SearchNearbyParams extends PaginationParams {
-  latitude: number
-  longitude: number
-  radiusKm?: number
-}
-
-export async function getAllStays(params?: PaginationParams): Promise<PageResponse<StayResponse>> {
+export async function getAllStays(params?: PaginationParams): Promise<Page<Stay>> {
   const searchParams = new URLSearchParams()
   if (params?.page !== undefined) searchParams.append('page', params.page.toString())
   if (params?.size !== undefined) searchParams.append('size', params.size.toString())
@@ -25,10 +38,11 @@ export async function getAllStays(params?: PaginationParams): Promise<PageRespon
     },
   })
 
-  return handleResponse<PageResponse<StayResponse>>(res)
+  const result = await handleResponse<PageResponse<StayResponse>>(res)
+  return pageFromResponse(result, dto => stayFromResponse(dto, true))
 }
 
-export async function getStayById(id: number): Promise<StayResponse> {
+export async function getStayById(id: number): Promise<Stay> {
   const res = await fetch(`${BACKEND_URL}/stays/${id}`, {
     method: 'GET',
     headers: {
@@ -36,10 +50,11 @@ export async function getStayById(id: number): Promise<StayResponse> {
     },
   })
 
-  return handleResponse<StayResponse>(res)
+  const result = await handleResponse<StayResponse>(res)
+  return stayFromResponse(result)
 }
 
-export async function getStaysByCity(cityId: number, params?: PaginationParams): Promise<PageResponse<StayResponse>> {
+export async function getStaysByCity(cityId: number, params?: PaginationParams): Promise<Page<Stay>> {
   const searchParams = new URLSearchParams()
   if (params?.page !== undefined) searchParams.append('page', params.page.toString())
   if (params?.size !== undefined) searchParams.append('size', params.size.toString())
@@ -51,10 +66,11 @@ export async function getStaysByCity(cityId: number, params?: PaginationParams):
     },
   })
 
-  return handleResponse<PageResponse<StayResponse>>(res)
+  const result = await handleResponse<PageResponse<StayResponse>>(res)
+  return pageFromResponse(result, dto => stayFromResponse(dto, true))
 }
 
-export async function searchStaysNearby(params: SearchNearbyParams): Promise<PageResponse<StayResponse>> {
+export async function searchStaysNearby(params: SearchNearbyParams): Promise<Page<Stay>> {
   const searchParams = new URLSearchParams()
   searchParams.append('latitude', params.latitude.toString())
   searchParams.append('longitude', params.longitude.toString())
@@ -69,11 +85,11 @@ export async function searchStaysNearby(params: SearchNearbyParams): Promise<Pag
     },
   })
 
-  return handleResponse<PageResponse<StayResponse>>(res)
+  const result = await handleResponse<PageResponse<StayResponse>>(res)
+  return pageFromResponse(result, dto => stayFromResponse(dto, true))
 }
 
-// StayType endpoints
-export async function getAllStayTypes(name?: string): Promise<StayTypeResponse[]> {
+export async function getAllStayTypes(name?: string): Promise<StayType[]> {
   const searchParams = new URLSearchParams()
   if (name) searchParams.append('name', name)
 
@@ -84,10 +100,11 @@ export async function getAllStayTypes(name?: string): Promise<StayTypeResponse[]
     },
   })
 
-  return handleResponse<StayTypeResponse[]>(res)
+  const result = await handleResponse<StayTypeResponse[]>(res)
+  return result.map(stayTypeFromResponse)
 }
 
-export async function getStayTypeById(id: number): Promise<StayTypeResponse> {
+export async function getStayTypeById(id: number): Promise<StayType> {
   const res = await fetch(`${BACKEND_URL}/stay-types/${id}`, {
     method: 'GET',
     headers: {
@@ -95,11 +112,11 @@ export async function getStayTypeById(id: number): Promise<StayTypeResponse> {
     },
   })
 
-  return handleResponse<StayTypeResponse>(res)
+  const result = await handleResponse<StayTypeResponse>(res)
+  return stayTypeFromResponse(result)
 }
 
-// Service endpoints
-export async function getAllServices(name?: string): Promise<ServiceResponse[]> {
+export async function getAllServices(name?: string): Promise<Service[]> {
   const searchParams = new URLSearchParams()
   if (name) searchParams.append('name', name)
 
@@ -110,10 +127,11 @@ export async function getAllServices(name?: string): Promise<ServiceResponse[]> 
     },
   })
 
-  return handleResponse<ServiceResponse[]>(res)
+  const result = await handleResponse<ServiceResponse[]>(res)
+  return result.map(serviceFromResponse)
 }
 
-export async function getServiceById(id: number): Promise<ServiceResponse> {
+export async function getServiceById(id: number): Promise<Service> {
   const res = await fetch(`${BACKEND_URL}/services/${id}`, {
     method: 'GET',
     headers: {
@@ -121,11 +139,11 @@ export async function getServiceById(id: number): Promise<ServiceResponse> {
     },
   })
 
-  return handleResponse<ServiceResponse>(res)
+  const result = await handleResponse<ServiceResponse>(res)
+  return serviceFromResponse(result)
 }
 
-// StayUnit endpoints
-export async function getStayUnitById(id: number): Promise<StayUnitResponse> {
+export async function getStayUnitById(id: number): Promise<StayUnit> {
   const res = await fetch(`${BACKEND_URL}/stay-units/${id}`, {
     method: 'GET',
     headers: {
@@ -133,10 +151,11 @@ export async function getStayUnitById(id: number): Promise<StayUnitResponse> {
     },
   })
 
-  return handleResponse<StayUnitResponse>(res)
+  const result = await handleResponse<StayUnitResponse>(res)
+  return stayUnitFromResponse(result, true)
 }
 
-export async function getStayUnitsByStayId(stayId: number): Promise<StayUnitResponse[]> {
+export async function getStayUnitsByStayId(stayId: number): Promise<StayUnit[]> {
   const res = await fetch(`${BACKEND_URL}/stay-units/stay/${stayId}`, {
     method: 'GET',
     headers: {
@@ -144,14 +163,11 @@ export async function getStayUnitsByStayId(stayId: number): Promise<StayUnitResp
     },
   })
 
-  return handleResponse<StayUnitResponse[]>(res)
+  const result = await handleResponse<StayUnitResponse[]>(res)
+  return result.map(u => stayUnitFromResponse(u, true))
 }
 
-export async function searchAvailableUnits(
-  stayId: number,
-  minCapacity: number,
-  maxPrice: number
-): Promise<StayUnitResponse[]> {
+export async function searchAvailableUnits(stayId: number, minCapacity: number, maxPrice: number): Promise<StayUnit[]> {
   const searchParams = new URLSearchParams()
   searchParams.append('stayId', stayId.toString())
   searchParams.append('minCapacity', minCapacity.toString())
@@ -164,5 +180,6 @@ export async function searchAvailableUnits(
     },
   })
 
-  return handleResponse<StayUnitResponse[]>(res)
+  const result = await handleResponse<StayUnitResponse[]>(res)
+  return result.map(u => stayUnitFromResponse(u, true))
 }

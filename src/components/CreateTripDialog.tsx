@@ -17,9 +17,8 @@ import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@/component
 import { SearchableSelect, type SearchableSelectOption } from '@/components/SearchableSelect'
 import { DateRangePicker } from '@/components/DateRangePicker'
 import { ApiException } from '@/utils/exceptions'
-import type { ValidationError } from '@/types/api'
 import { useServices } from '@/hooks/useServices'
-import type { GetCitiesParams } from '@/types'
+import type { GetCitiesParams, ValidationError } from '@/types'
 
 interface CreateTripDialogProps {
   trigger?: React.ReactNode
@@ -38,9 +37,10 @@ export function CreateTripDialog({ trigger, onSuccess }: CreateTripDialogProps) 
   const [errors, setErrors] = useState<ValidationError>({})
 
   const loadCities = async (params?: GetCitiesParams) => {
-    const cities = await cityService.getCities(params)
+    const result = await cityService.getCities(params)
+    const citiesArray = Array.isArray(result) ? result : result.content
     setCitiesOptions(
-      cities.map(city => ({
+      citiesArray.map(city => ({
         value: city.id.toString(),
         label: `${city.name}, ${city.country?.name || ''}`,
       }))

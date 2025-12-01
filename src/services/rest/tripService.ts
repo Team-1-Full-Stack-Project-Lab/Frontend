@@ -1,13 +1,14 @@
 import type {
-  Trip,
   CreateTripRequest,
   UpdateTripRequest,
+  AddStayUnitRequest,
   TripResponse,
   TripsResponse,
+  TripStayUnitResponse,
+  Trip,
   TripStayUnit,
-  TripStayUnitsResponse,
-  AddStayUnitRequest,
 } from '@/types'
+import { tripFromResponse, tripStayUnitFromResponse } from '@/mappers'
 import { getToken } from './authService'
 import { handleResponse } from '@/utils/helpers'
 import { BACKEND_URL } from '@/config/api'
@@ -23,15 +24,7 @@ export async function getTrips(): Promise<Trip[]> {
   })
 
   const result = await handleResponse<TripsResponse>(res)
-
-  return result.map(trip => ({
-    id: trip.id,
-    name: trip.name,
-    cityId: trip.city?.id || 0,
-    destination: trip.city ? `${trip.city.name}, ${trip.country?.name || ''}` : 'Unknown',
-    startDate: trip.startDate,
-    endDate: trip.endDate,
-  }))
+  return result.map(tripFromResponse)
 }
 
 export async function createTrip(data: CreateTripRequest): Promise<Trip> {
@@ -46,15 +39,7 @@ export async function createTrip(data: CreateTripRequest): Promise<Trip> {
   })
 
   const result = await handleResponse<TripResponse>(res)
-
-  return {
-    id: result.id,
-    name: result.name,
-    cityId: result.city?.id || 0,
-    destination: result.city ? `${result.city.name}, ${result.country?.name || ''}` : 'Unknown',
-    startDate: result.startDate,
-    endDate: result.endDate,
-  }
+  return tripFromResponse(result)
 }
 
 export async function updateTrip(id: number, data: UpdateTripRequest): Promise<Trip> {
@@ -69,18 +54,10 @@ export async function updateTrip(id: number, data: UpdateTripRequest): Promise<T
   })
 
   const result = await handleResponse<TripResponse>(res)
-
-  return {
-    id: result.id,
-    name: result.name,
-    cityId: result.city?.id || 0,
-    destination: result.city ? `${result.city.name}, ${result.country?.name || ''}` : 'Unknown',
-    startDate: result.startDate,
-    endDate: result.endDate,
-  }
+  return tripFromResponse(result)
 }
 
-export async function deleteTrip(id: number): Promise<boolean> {
+export async function deleteTrip(id: number): Promise<void> {
   const res = await fetch(`${BACKEND_URL}/trips/itineraries/${id}`, {
     method: 'DELETE',
     headers: {
@@ -90,7 +67,9 @@ export async function deleteTrip(id: number): Promise<boolean> {
     credentials: 'include',
   })
 
-  return res.ok
+  if (!res.ok) {
+    throw new Error(`Failed to delete trip: ${res.statusText}`)
+  }
 }
 
 export async function getTripStayUnits(tripId: number): Promise<TripStayUnit[]> {
@@ -103,8 +82,8 @@ export async function getTripStayUnits(tripId: number): Promise<TripStayUnit[]> 
     credentials: 'include',
   })
 
-  const result = await handleResponse<TripStayUnitsResponse>(res)
-  return result.tripStayUnits
+  const result = await handleResponse<TripStayUnitResponse[]>(res)
+  return result.map(tripStayUnitFromResponse)
 }
 
 export async function addStayUnitToTrip(tripId: number, data: AddStayUnitRequest): Promise<TripStayUnit> {
@@ -118,10 +97,11 @@ export async function addStayUnitToTrip(tripId: number, data: AddStayUnitRequest
     credentials: 'include',
   })
 
-  return handleResponse<TripStayUnit>(res)
+  const result = await handleResponse<TripStayUnitResponse>(res)
+  return tripStayUnitFromResponse(result)
 }
 
-export async function removeStayUnitFromTrip(tripId: number, stayUnitId: number): Promise<boolean> {
+export async function removeStayUnitFromTrip(tripId: number, stayUnitId: number): Promise<void> {
   const res = await fetch(`${BACKEND_URL}/trips/itineraries/${tripId}/stayunits/${stayUnitId}`, {
     method: 'DELETE',
     headers: {
@@ -131,5 +111,7 @@ export async function removeStayUnitFromTrip(tripId: number, stayUnitId: number)
     credentials: 'include',
   })
 
-  return res.ok
+  if (!res.ok) {
+    throw new Error(`Failed to remove stay unit from trip: ${res.statusText}`)
+  }
 }

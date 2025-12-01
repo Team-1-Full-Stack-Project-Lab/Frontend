@@ -16,11 +16,8 @@ import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@/component
 import { SearchableSelect, type SearchableSelectOption } from '@/components/SearchableSelect'
 import { DateRangePicker } from '@/components/DateRangePicker'
 import { ApiException } from '@/utils/exceptions'
-import type { ValidationError } from '@/types/api'
-import type { Trip } from '@/types/trips'
 import { useServices } from '@/hooks/useServices'
-import type { GetCitiesParams } from '@/types'
-import { parseISO } from 'date-fns'
+import type { Trip, GetCitiesParams, ValidationError } from '@/types'
 
 interface EditTripDialogProps {
   trip: Trip
@@ -35,17 +32,18 @@ export function EditTripDialog({ trip, open, onOpenChange, onSuccess }: EditTrip
   const [citiesOptions, setCitiesOptions] = useState<SearchableSelectOption[]>([])
   const [searchQuery, setSearchQuery] = useState<string>()
   const [name, setName] = useState(trip.name)
-  const [cityId, setCityId] = useState<number | undefined>(trip.cityId)
+  const [cityId, setCityId] = useState<number | undefined>(trip.city?.id)
   const [date, setDate] = useState<DateRange | undefined>({
-    from: parseISO(trip.startDate),
-    to: parseISO(trip.endDate),
+    from: trip.startDate,
+    to: trip.endDate,
   })
   const [errors, setErrors] = useState<ValidationError>({})
 
   const loadCities = async (params?: GetCitiesParams) => {
-    const cities = await cityService.getCities(params)
+    const result = await cityService.getCities(params)
+    const citiesArray = Array.isArray(result) ? result : result.content
     setCitiesOptions(
-      cities.map(city => ({
+      citiesArray.map(city => ({
         value: city.id.toString(),
         label: `${city.name}, ${city.country?.name || ''}`,
       }))
@@ -123,8 +121,8 @@ export function EditTripDialog({ trip, open, onOpenChange, onSuccess }: EditTrip
                 <FieldLabel htmlFor="cityId">Destination</FieldLabel>
                 <SearchableSelect
                   options={
-                    trip.cityId && !citiesOptions.find(c => c.value === trip.cityId.toString())
-                      ? [{ value: trip.cityId.toString(), label: trip.destination }, ...citiesOptions]
+                    trip.city && !citiesOptions.find(c => c.value === trip.city?.id.toString())
+                      ? [{ value: trip.city.id.toString(), label: trip.destination }, ...citiesOptions]
                       : citiesOptions
                   }
                   value={cityId?.toString() || ''}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { StayImageResponse } from '@/types/stays'
+import type { StayImageResponse } from '@/types'
 import {
   Carousel,
   CarouselContent,
@@ -19,13 +19,7 @@ type Props = {
   initialIndex?: number
 }
 
-export function FullscreenImageCarousel({
-  images,
-  altText,
-  isOpen,
-  onClose,
-  initialIndex = 0
-}: Props) {
+export function FullscreenImageCarousel({ images, altText, isOpen, onClose, initialIndex = 0 }: Props) {
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(initialIndex)
 
@@ -78,13 +72,9 @@ export function FullscreenImageCarousel({
 
       <div className="w-full h-full max-w-7xl mx-auto">
         <div className="relative w-full h-full group">
-          <Carousel
-            setApi={setApi}
-            className="w-full h-full"
-            opts={{ loop: true }}
-          >
+          <Carousel setApi={setApi} className="w-full h-full" opts={{ loop: true }}>
             <CarouselContent>
-              {images.map((image) => (
+              {images.map(image => (
                 <CarouselItem key={image.id}>
                   <div className="flex items-center justify-center h-screen p-4">
                     <img
@@ -107,11 +97,7 @@ export function FullscreenImageCarousel({
         </div>
       </div>
 
-      <div
-        className="absolute inset-0 -z-10"
-        onClick={onClose}
-        aria-label="Close fullscreen"
-      />
+      <div className="absolute inset-0 -z-10" onClick={onClose} aria-label="Close fullscreen" />
     </div>
   )
 }

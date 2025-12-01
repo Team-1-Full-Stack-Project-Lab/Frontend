@@ -5,8 +5,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useServices } from '@/hooks/useServices'
-import type { Trip, TripStayUnit } from '@/types/trips'
-import { format, parseISO } from 'date-fns'
+import type { Trip, TripStayUnit } from '@/types'
+import { format } from 'date-fns'
 
 interface TripStayUnitsDialogProps {
   trip: Trip | null
@@ -72,7 +72,7 @@ export function TripStayUnitsDialog({ trip, open, onOpenChange }: TripStayUnitsD
               {trip.destination}
               <span className="mx-2">•</span>
               <Calendar className="h-4 w-4" />
-              {format(parseISO(trip.startDate), 'MMM d')} - {format(parseISO(trip.endDate), 'MMM d, yyyy')}
+              {format(trip.startDate, 'MMM d')} - {format(trip.endDate, 'MMM d, yyyy')}
             </DialogDescription>
           </DialogHeader>
 
@@ -143,8 +143,7 @@ export function TripStayUnitsDialog({ trip, open, onOpenChange }: TripStayUnitsD
                               <div className="flex items-center gap-2 text-sm bg-primary/10 text-primary px-3 py-2 rounded-md w-fit">
                                 <Calendar className="h-4 w-4" />
                                 <span>
-                                  {format(parseISO(tsu.startDate), 'MMM d')} -{' '}
-                                  {format(parseISO(tsu.endDate), 'MMM d, yyyy')}
+                                  {format(tsu.startDate, 'MMM d')} - {format(tsu.endDate, 'MMM d, yyyy')}
                                   <span className="ml-2 text-primary font-medium">
                                     ({nights} {nights === 1 ? 'night' : 'nights'})
                                   </span>

@@ -11,12 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import type { StayResponse } from '@/types/stays'
+import type { Stay } from '@/types'
 import { ImageCarousel } from '@/components/ImageCarousel'
 import { FullscreenImageCarousel } from '@/components/FullscreenImageCarousel'
 
 type Props = {
-  stay: StayResponse
+  stay: Stay
 }
 
 export default function RentalCard({ stay }: Props) {

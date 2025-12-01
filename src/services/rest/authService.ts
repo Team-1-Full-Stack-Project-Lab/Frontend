@@ -2,9 +2,9 @@ import { BACKEND_URL, TOKEN_COOKIE_NAME, TOKEN_EXPIRY_DAYS } from '@/config/api'
 import { handleResponse } from '@/utils/helpers'
 import Cookies from 'js-cookie'
 import { getUserProfile } from './userService'
-import type { LoginRequest, RegisterRequest, AuthResponse } from '@/types'
+import type { LoginRequest, RegisterRequest, AuthResponse, User } from '@/types'
 
-export async function login(data: LoginRequest) {
+export async function login(data: LoginRequest): Promise<AuthResponse> {
   const res = await fetch(`${BACKEND_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -23,7 +23,7 @@ export async function login(data: LoginRequest) {
   return result
 }
 
-export async function register(data: RegisterRequest) {
+export async function register(data: RegisterRequest): Promise<AuthResponse> {
   const res = await fetch(`${BACKEND_URL}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -41,18 +41,18 @@ export async function register(data: RegisterRequest) {
   return result
 }
 
-export async function getCurrentUser() {
+export async function getCurrentUser(): Promise<User> {
   return getUserProfile()
 }
 
-export function logout() {
+export function logout(): void {
   Cookies.remove(TOKEN_COOKIE_NAME)
 }
 
-export function getToken() {
+export function getToken(): string | undefined {
   return Cookies.get(TOKEN_COOKIE_NAME)
 }
 
-export function isAuthenticated() {
+export function isAuthenticated(): boolean {
   return !!getToken()
 }

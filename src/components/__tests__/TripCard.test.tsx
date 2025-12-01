@@ -2,16 +2,17 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TripCard } from '../TripCard'
-import type { Trip } from '@/types/trips'
+import type { Trip } from '@/types'
 
 describe('TripCard', () => {
   const mockTrip: Trip = {
     id: 1,
     name: 'Summer Vacation',
-    cityId: 101,
+    city: { id: 101, name: 'Paris', latitude: 0, longitude: 0, isCapital: false, isFeatured: false },
     destination: 'Paris, France',
-    startDate: '2024-07-01',
-    endDate: '2024-07-10',
+    startDate: new Date('2024-07-01'),
+    endDate: new Date('2024-07-10'),
+    durationDays: 10,
   }
 
   const mockOnEditTrip = vi.fn()
@@ -153,8 +154,9 @@ describe('TripCard', () => {
     it('should format different date ranges correctly', () => {
       const customTrip = {
         ...mockTrip,
-        startDate: '2024-12-25',
-        endDate: '2025-01-05',
+        startDate: new Date('2024-12-25'),
+        endDate: new Date('2025-01-05'),
+        durationDays: 12,
       }
 
       render(

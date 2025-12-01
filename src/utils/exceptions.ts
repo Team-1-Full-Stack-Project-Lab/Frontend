@@ -1,4 +1,4 @@
-import type { ApiError } from '@/types/api'
+import type { ApiError } from '@/types'
 
 export class ApiException extends Error {
   status: number

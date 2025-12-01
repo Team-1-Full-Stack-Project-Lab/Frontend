@@ -1,8 +1,8 @@
-import { format, parseISO } from 'date-fns'
+import { format } from 'date-fns'
 import { Calendar, MapPin, MoreVertical, Pencil, Trash2 } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import type { Trip } from '@/types/trips'
+import type { Trip } from '@/types'
 import { Button } from './ui/button'
 
 interface TripCardProps {
@@ -74,7 +74,7 @@ export function TripCard({ trip, onEditTrip, onDeleteTrip, onClick }: TripCardPr
         <div className="flex items-center gap-2 text-white/80 text-sm mb-2">
           <Calendar className="h-4 w-4" />
           <span>
-            {format(parseISO(trip.startDate), 'MMM d')} - {format(parseISO(trip.endDate), 'MMM d, yyyy')}
+            {format(trip.startDate, 'MMM d')} - {format(trip.endDate, 'MMM d, yyyy')}
           </span>
         </div>
       </CardContent>

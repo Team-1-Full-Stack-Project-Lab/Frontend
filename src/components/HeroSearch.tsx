@@ -62,9 +62,10 @@ export function HeroSearch({
   const [searchQuery, setSearchQuery] = useState<string>()
 
   const loadCities = async (params?: GetCitiesParams) => {
-    const cities = await cityService.getCities(params)
+    const result = await cityService.getCities(params)
+    const citiesArray = Array.isArray(result) ? result : result.content
     setCitiesOptions(
-      cities.map(city => ({
+      citiesArray.map(city => ({
         value: city.id.toString(),
         label: `${city.name}, ${city.country?.name || ''}`,
       }))

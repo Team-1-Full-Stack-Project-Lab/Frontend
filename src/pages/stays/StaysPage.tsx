@@ -3,7 +3,7 @@ import { HeroSearch } from '@/components/HeroSearch'
 import RentalCard from '@/components/RentalCard'
 import MapCard from '@/components/MapCard'
 import { useServices } from '@/hooks/useServices'
-import type { StayResponse } from '@/types'
+import type { Stay } from '@/types'
 import { useQuery } from '@/hooks/useQuery'
 
 export default function StaysPage() {
@@ -14,7 +14,7 @@ export default function StaysPage() {
   const to = query.get('to')
 
   const { stayService, cityService } = useServices()
-  const [stays, setStays] = useState<StayResponse[]>([])
+  const [stays, setStays] = useState<Stay[]>([])
   const [loading, setLoading] = useState(true)
   const [cityName, setCityName] = useState<string>('')
   const [page, setPage] = useState(0)

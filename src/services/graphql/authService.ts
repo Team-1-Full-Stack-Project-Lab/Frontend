@@ -2,7 +2,8 @@ import { gql } from '@apollo/client'
 import { apolloClient } from '@/config/apolloClient'
 import { TOKEN_COOKIE_NAME, TOKEN_EXPIRY_DAYS } from '@/config/api'
 import Cookies from 'js-cookie'
-import type { LoginRequest, RegisterRequest, AuthResponse } from '@/types'
+import type { LoginRequest, RegisterRequest, AuthResponse, UserGraphQL, User } from '@/types'
+import { userFromGraphQL } from '@/mappers'
 
 const LOGIN_MUTATION = gql`
   mutation Login($request: LoginRequest!) {
@@ -30,7 +31,7 @@ const GET_USER_QUERY = gql`
   }
 `
 
-export async function login(data: LoginRequest) {
+export async function login(data: LoginRequest): Promise<AuthResponse> {
   const { data: result } = await apolloClient.mutate<{ login: AuthResponse }>({
     mutation: LOGIN_MUTATION,
     variables: { request: data },
@@ -47,7 +48,7 @@ export async function login(data: LoginRequest) {
   return result.login
 }
 
-export async function register(data: RegisterRequest) {
+export async function register(data: RegisterRequest): Promise<AuthResponse> {
   const { data: result } = await apolloClient.mutate<{ register: AuthResponse }>({
     mutation: REGISTER_MUTATION,
     variables: { request: data },
@@ -64,9 +65,9 @@ export async function register(data: RegisterRequest) {
   return result.register
 }
 
-export async function getCurrentUser() {
+export async function getCurrentUser(): Promise<User> {
   const { data } = await apolloClient.query<{
-    getUser: { email: string; firstName: string; lastName: string }
+    getUser: UserGraphQL
   }>({
     query: GET_USER_QUERY,
     fetchPolicy: 'network-only',
@@ -74,18 +75,18 @@ export async function getCurrentUser() {
 
   if (!data) throw new Error('Failed to fetch user profile')
 
-  return data.getUser
+  return userFromGraphQL(data.getUser)
 }
 
-export function logout() {
+export function logout(): void {
   Cookies.remove(TOKEN_COOKIE_NAME)
   apolloClient.clearStore()
 }
 
-export function getToken() {
+export function getToken(): string | undefined {
   return Cookies.get(TOKEN_COOKIE_NAME)
 }
 
-export function isAuthenticated() {
+export function isAuthenticated(): boolean {
   return !!getToken()
 }

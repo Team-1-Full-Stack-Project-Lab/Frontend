@@ -96,18 +96,20 @@ describe('TripsPage', () => {
       {
         id: 1,
         name: 'Summer Vacation',
-        cityId: 101,
+        city: { id: 101, name: 'Paris', latitude: 0, longitude: 0, isCapital: false, isFeatured: false },
         destination: 'Paris, France',
-        startDate: '2024-07-01',
-        endDate: '2024-07-10',
+        startDate: new Date('2024-07-01'),
+        endDate: new Date('2024-07-10'),
+        durationDays: 10,
       },
       {
         id: 2,
         name: 'Winter Trip',
-        cityId: 202,
+        city: { id: 202, name: 'Tokyo', latitude: 0, longitude: 0, isCapital: false, isFeatured: false },
         destination: 'Tokyo, Japan',
-        startDate: '2024-12-20',
-        endDate: '2024-12-28',
+        startDate: new Date('2024-12-20'),
+        endDate: new Date('2024-12-28'),
+        durationDays: 9,
       },
     ]
 
@@ -202,10 +204,11 @@ describe('TripsPage', () => {
         {
           id: 1,
           name: 'Test Trip',
-          cityId: 1,
+          city: { id: 1, name: 'Test City', latitude: 0, longitude: 0, isCapital: false, isFeatured: false },
           destination: 'Test, Country',
-          startDate: '2024-01-01',
-          endDate: '2024-01-05',
+          startDate: new Date('2024-01-01'),
+          endDate: new Date('2024-01-05'),
+          durationDays: 5,
         },
       ]
 
@@ -237,10 +240,11 @@ describe('TripsPage', () => {
         {
           id: 1,
           name: 'Test Trip',
-          cityId: 1,
+          city: { id: 1, name: 'Test City', latitude: 0, longitude: 0, isCapital: false, isFeatured: false },
           destination: 'Test, Country',
-          startDate: '2024-01-01',
-          endDate: '2024-01-05',
+          startDate: new Date('2024-01-01'),
+          endDate: new Date('2024-01-05'),
+          durationDays: 5,
         },
       ]
 

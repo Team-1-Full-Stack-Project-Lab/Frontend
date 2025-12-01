@@ -1,15 +1,15 @@
 import { gql } from '@apollo/client'
 import { apolloClient } from '@/config/apolloClient'
 import type {
-  Trip,
   CreateTripRequest,
   UpdateTripRequest,
-  TripGraphQL as TripGQL,
-  TripStayUnit,
-  TripStayUnitGraphQL,
   AddStayUnitRequest,
+  TripGraphQL,
+  TripStayUnitGraphQL,
+  Trip,
+  TripStayUnit,
 } from '@/types'
-import { toLocalDate } from '@/utils/helpers'
+import { tripFromGraphQL, tripStayUnitFromGraphQL, dateToLocalString } from '@/mappers'
 
 const GET_TRIPS_QUERY = gql`
   query GetUserItineraries {
@@ -158,7 +158,7 @@ const REMOVE_STAY_UNIT_FROM_TRIP_MUTATION = gql`
 
 export async function getTrips(): Promise<Trip[]> {
   const { data } = await apolloClient.query<{
-    getUserItineraries: TripGQL[]
+    getUserItineraries: TripGraphQL[]
   }>({
     query: GET_TRIPS_QUERY,
     fetchPolicy: 'network-only',
@@ -166,82 +166,59 @@ export async function getTrips(): Promise<Trip[]> {
 
   if (!data) throw new Error('Failed to fetch trips')
 
-  return data.getUserItineraries.map(trip => ({
-    id: parseInt(trip.id),
-    name: trip.name,
-    cityId: parseInt(trip.city.id),
-    destination: `${trip.city.name}, ${trip.country.name}`,
-    startDate: trip.startDate,
-    endDate: trip.endDate,
-  }))
+  return data.getUserItineraries.map(tripFromGraphQL)
 }
 
-export async function createTrip(data: CreateTripRequest): Promise<Trip> {
-  const request = {
-    ...data,
-    startDate: toLocalDate(data.startDate),
-    endDate: toLocalDate(data.endDate),
+export async function createTrip(request: CreateTripRequest): Promise<Trip> {
+  const requestData = {
+    ...request,
+    startDate: request.startDate ? dateToLocalString(new Date(request.startDate)) : undefined,
+    endDate: request.endDate ? dateToLocalString(new Date(request.endDate)) : undefined,
   }
 
   const { data: result } = await apolloClient.mutate<{
-    createItinerary: TripGQL
+    createItinerary: TripGraphQL
   }>({
     mutation: CREATE_TRIP_MUTATION,
-    variables: { request },
+    variables: { request: requestData },
   })
 
   if (!result) throw new Error('Failed to create trip')
 
-  const trip = result.createItinerary
-  return {
-    id: parseInt(trip.id),
-    name: trip.name,
-    cityId: parseInt(trip.city.id),
-    destination: `${trip.city.name}, ${trip.country.name}`,
-    startDate: trip.startDate,
-    endDate: trip.endDate,
-  }
+  return tripFromGraphQL(result.createItinerary)
 }
 
-export async function updateTrip(id: number, data: UpdateTripRequest): Promise<Trip> {
-  const request = {
-    ...data,
-    startDate: toLocalDate(data.startDate),
-    endDate: toLocalDate(data.endDate),
+export async function updateTrip(id: number, request: UpdateTripRequest): Promise<Trip> {
+  const requestData = {
+    ...request,
+    startDate: request.startDate ? dateToLocalString(new Date(request.startDate)) : undefined,
+    endDate: request.endDate ? dateToLocalString(new Date(request.endDate)) : undefined,
   }
 
   const { data: result } = await apolloClient.mutate<{
-    updateItinerary: TripGQL
+    updateItinerary: TripGraphQL
   }>({
     mutation: UPDATE_TRIP_MUTATION,
     variables: {
       id: id.toString(),
-      request,
+      request: requestData,
     },
   })
 
   if (!result) throw new Error('Failed to update trip')
 
-  const trip = result.updateItinerary
-  return {
-    id: parseInt(trip.id),
-    name: trip.name,
-    cityId: parseInt(trip.city.id),
-    destination: `${trip.city.name}, ${trip.country.name}`,
-    startDate: trip.startDate,
-    endDate: trip.endDate,
-  }
+  return tripFromGraphQL(result.updateItinerary)
 }
 
-export async function deleteTrip(id: number): Promise<boolean> {
-  const { data } = await apolloClient.mutate<{
+export async function deleteTrip(id: number): Promise<void> {
+  await apolloClient.mutate<{
     deleteItinerary: { _empty?: string }
   }>({
     mutation: DELETE_TRIP_MUTATION,
     variables: { id: id.toString() },
   })
 
-  return !!data?.deleteItinerary
+  return
 }
 
 export async function getTripStayUnits(tripId: number): Promise<TripStayUnit[]> {
@@ -255,49 +232,14 @@ export async function getTripStayUnits(tripId: number): Promise<TripStayUnit[]> 
 
   if (!data) throw new Error('Failed to fetch trip stay units')
 
-  return data.getItineraryStayUnits
-    .filter(tsu => tsu.trip && tsu.stayUnit)
-    .map(tsu => ({
-      trip: {
-        id: parseInt(tsu.trip!.id),
-        name: tsu.trip!.name,
-        city: {
-          id: parseInt(tsu.trip!.city.id),
-          name: tsu.trip!.city.name,
-          nameAscii: tsu.trip!.city.name, // Fallback
-          latitude: 0, // Fallback
-          longitude: 0, // Fallback
-          timezone: '', // Fallback
-          population: 0, // Fallback
-          isCapital: false, // Fallback
-          isFeatured: false, // Fallback
-        },
-        country: {
-          id: 0, // Fallback
-          name: tsu.trip!.country.name,
-          iso2Code: '', // Fallback
-        },
-        startDate: tsu.trip!.startDate,
-        endDate: tsu.trip!.endDate,
-      },
-      stayUnit: {
-        id: parseInt(tsu.stayUnit!.id),
-        stayNumber: tsu.stayUnit!.stayNumber,
-        numberOfBeds: tsu.stayUnit!.numberOfBeds,
-        capacity: tsu.stayUnit!.capacity,
-        pricePerNight: tsu.stayUnit!.pricePerNight,
-        roomType: tsu.stayUnit!.roomType,
-      },
-      startDate: tsu.startDate,
-      endDate: tsu.endDate,
-    }))
+  return data.getItineraryStayUnits.map(tripStayUnitFromGraphQL).filter((tsu): tsu is TripStayUnit => tsu !== null)
 }
 
-export async function addStayUnitToTrip(tripId: number, data: AddStayUnitRequest): Promise<TripStayUnit> {
-  const request = {
-    stayUnitId: data.stayUnitId.toString(),
-    startDate: toLocalDate(data.startDate),
-    endDate: toLocalDate(data.endDate),
+export async function addStayUnitToTrip(tripId: number, request: AddStayUnitRequest): Promise<TripStayUnit> {
+  const requestData = {
+    stayUnitId: request.stayUnitId.toString(),
+    startDate: dateToLocalString(new Date(request.startDate)),
+    endDate: dateToLocalString(new Date(request.endDate)),
   }
 
   const { data: result } = await apolloClient.mutate<{
@@ -306,55 +248,22 @@ export async function addStayUnitToTrip(tripId: number, data: AddStayUnitRequest
     mutation: ADD_STAY_UNIT_TO_TRIP_MUTATION,
     variables: {
       tripId: tripId.toString(),
-      request,
+      request: requestData,
     },
   })
 
   if (!result) throw new Error('Failed to add stay unit to trip')
 
-  const tsu = result.addStayUnitToItinerary
-  if (!tsu.trip || !tsu.stayUnit) {
+  const tsu = tripStayUnitFromGraphQL(result.addStayUnitToItinerary)
+  if (!tsu) {
     throw new Error('Invalid response: missing trip or stayUnit data')
   }
 
-  return {
-    trip: {
-      id: parseInt(tsu.trip.id),
-      name: tsu.trip.name,
-      city: {
-        id: parseInt(tsu.trip.city.id),
-        name: tsu.trip.city.name,
-        nameAscii: tsu.trip.city.name, // Fallback
-        latitude: 0, // Fallback
-        longitude: 0, // Fallback
-        timezone: '', // Fallback
-        population: 0, // Fallback
-        isCapital: false, // Fallback
-        isFeatured: false, // Fallback
-      },
-      country: {
-        id: 0, // Fallback
-        name: tsu.trip.country.name,
-        iso2Code: '', // Fallback
-      },
-      startDate: tsu.trip.startDate,
-      endDate: tsu.trip.endDate,
-    },
-    stayUnit: {
-      id: parseInt(tsu.stayUnit.id),
-      stayNumber: tsu.stayUnit.stayNumber,
-      numberOfBeds: tsu.stayUnit.numberOfBeds,
-      capacity: tsu.stayUnit.capacity,
-      pricePerNight: tsu.stayUnit.pricePerNight,
-      roomType: tsu.stayUnit.roomType,
-    },
-    startDate: tsu.startDate,
-    endDate: tsu.endDate,
-  }
+  return tsu
 }
 
-export async function removeStayUnitFromTrip(tripId: number, stayUnitId: number): Promise<boolean> {
-  const { data } = await apolloClient.mutate<{
+export async function removeStayUnitFromTrip(tripId: number, stayUnitId: number): Promise<void> {
+  await apolloClient.mutate<{
     removeStayUnitFromItinerary: { _empty?: string }
   }>({
     mutation: REMOVE_STAY_UNIT_FROM_TRIP_MUTATION,
@@ -364,5 +273,5 @@ export async function removeStayUnitFromTrip(tripId: number, stayUnitId: number)
     },
   })
 
-  return !!data?.removeStayUnitFromItinerary
+  return
 }

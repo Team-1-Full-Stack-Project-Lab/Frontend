@@ -211,14 +211,15 @@ describe('tripService', () => {
   })
 
   describe('deleteTrip', () => {
-    it('should delete a trip and return true on success', async () => {
+    it('should delete a trip successfully', async () => {
       const tripId = 1
 
       vi.mocked(globalThis.fetch).mockResolvedValueOnce({
         ok: true,
+        status: 204,
       } as Response)
 
-      const result = await deleteTrip(tripId)
+      await deleteTrip(tripId)
 
       expect(globalThis.fetch).toHaveBeenCalledWith(
         `http://localhost:3000/trips/itineraries/${tripId}`,
@@ -227,17 +228,16 @@ describe('tripService', () => {
           credentials: 'include',
         })
       )
-
-      expect(result).toBe(true)
     })
 
-    it('should return false when delete fails', async () => {
+    it('should throw error when delete fails', async () => {
       vi.mocked(globalThis.fetch).mockResolvedValueOnce({
         ok: false,
+        status: 404,
+        statusText: 'Not Found',
       } as Response)
 
-      const result = await deleteTrip(999)
-      expect(result).toBe(false)
+      await expect(deleteTrip(999)).rejects.toThrow('Failed to delete trip: Not Found')
     })
   })
 })

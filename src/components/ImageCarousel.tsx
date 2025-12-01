@@ -7,13 +7,13 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from '@/components/ui/carousel'
-import type { StayImageResponse } from '@/types/stays'
+import type { StayImageResponse } from '@/types'
 
 type Props = {
   images: StayImageResponse[]
   altText: string
   className?: string
-  showIndicators?: boolean,
+  showIndicators?: boolean
   onImageClick?: (index: number) => void
   initialIndex?: number
 }
@@ -42,11 +42,7 @@ export function ImageCarousel({ images, altText, className = '', showIndicators 
 
   return (
     <div className="relative w-full h-full group">
-      <Carousel
-        setApi={setApi}
-        className={`w-full h-full ${className}`}
-        opts={{ loop: true }}
-      >
+      <Carousel setApi={setApi} className={`w-full h-full ${className}`} opts={{ loop: true }}>
         <CarouselContent>
           {images.map((image, index) => (
             <CarouselItem key={image.id}>
@@ -54,11 +50,7 @@ export function ImageCarousel({ images, altText, className = '', showIndicators 
                 className={`h-full w-full ${onImageClick ? 'cursor-zoom-in' : ''}`}
                 onClick={() => onImageClick?.(index)}
               >
-                <img
-                  src={image.link}
-                  alt={`${altText} - Image ${image.id}`}
-                  className="w-full h-full object-cover"
-                />
+                <img src={image.link} alt={`${altText} - Image ${image.id}`} className="w-full h-full object-cover" />
               </div>
             </CarouselItem>
           ))}
@@ -77,10 +69,9 @@ export function ImageCarousel({ images, altText, className = '', showIndicators 
           {images.map((_, index) => (
             <button
               key={index}
-              className={`h-1.5 rounded-full transition-all ${index === current
-                ? 'bg-white w-6'
-                : 'bg-white/60 w-1.5 hover:bg-white/80'
-                }`}
+              className={`h-1.5 rounded-full transition-all ${
+                index === current ? 'bg-white w-6' : 'bg-white/60 w-1.5 hover:bg-white/80'
+              }`}
               onClick={() => api?.scrollTo(index)}
               aria-label={`Go to image ${index + 1}`}
             />
