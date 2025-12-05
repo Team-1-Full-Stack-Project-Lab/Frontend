@@ -1,14 +1,17 @@
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Bed, Users, Plus } from 'lucide-react'
-import { AddUnitToTripPopover } from '@/components/AddUnitToTripPopover'
+import { AddUnitToTripPopover } from '@/components/Stays/AddUnitToTripPopover'
 import type { StayUnit } from '@/types'
+import { useAuth } from '@/hooks/useAuth'
 
 type Props = {
   unit: StayUnit
 }
 
 export function UnitCard({ unit }: Props) {
+  const { isAuthenticated } = useAuth()
+
   return (
     <Card className="p-4 flex flex-col">
       <h4 className="font-semibold mb-3">{unit.roomType}</h4>
@@ -34,12 +37,19 @@ export function UnitCard({ unit }: Props) {
           <div className="text-2xl font-bold text-primary">${unit.pricePerNight.toFixed(2)}</div>
           <div className="text-xs text-muted-foreground">per night</div>
         </div>
-        <AddUnitToTripPopover unit={unit}>
-          <Button size="sm" variant="outline" className="w-full gap-2">
+        {isAuthenticated ? (
+          <AddUnitToTripPopover unit={unit}>
+            <Button size="sm" variant="outline" className="w-full gap-2">
+              <Plus className="h-4 w-4" />
+              Add to Trip
+            </Button>
+          </AddUnitToTripPopover>
+        ) : (
+          <Button size="sm" variant="outline" className="w-full gap-2" disabled>
             <Plus className="h-4 w-4" />
             Add to Trip
           </Button>
-        </AddUnitToTripPopover>
+        )}
       </div>
     </Card>
   )
