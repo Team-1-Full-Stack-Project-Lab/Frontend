@@ -3,7 +3,11 @@ import { Plane } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { ThemeToggle } from './ThemeToggle'
 
-export function Header() {
+interface HeaderProps {
+  onTripsClick?: () => void
+}
+
+export function Header({ onTripsClick }: HeaderProps) {
   return (
     <header className="absolute top-0 left-0 right-0 z-50 border-b border-white/10 bg-white/5 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -21,9 +25,18 @@ export function Header() {
           <Link to="#" className="text-sm font-medium text-white/90 transition-colors hover:text-white">
             Deals
           </Link>
-          <Link to="#" className="text-sm font-medium text-white/90 transition-colors hover:text-white">
-            My Trips
-          </Link>
+          {onTripsClick ? (
+            <button
+              onClick={onTripsClick}
+              className="text-sm font-medium text-white/90 transition-colors hover:text-white"
+            >
+              My Trips
+            </button>
+          ) : (
+            <Link to="#" className="text-sm font-medium text-white/90 transition-colors hover:text-white">
+              My Trips
+            </Link>
+          )}
           <Link to="/help-center" className="text-sm font-medium text-white/90 transition-colors hover:text-white">
             Help Center
           </Link>

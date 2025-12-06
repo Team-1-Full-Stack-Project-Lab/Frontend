@@ -3,7 +3,7 @@ import { Calendar, MapPin, MoreVertical, Pencil, Trash2 } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import type { Trip } from '@/types'
-import { Button } from './ui/button'
+import { Button } from '@/components/ui/button'
 
 interface TripCardProps {
   trip: Trip

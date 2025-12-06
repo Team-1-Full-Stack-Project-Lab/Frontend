@@ -4,18 +4,18 @@ import { FaBars, FaTimes } from 'react-icons/fa'
 import { useAuth } from '@/hooks/useAuth'
 import { UserDropdown } from '@/components/UserDropdown'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { TripsDrawer } from '@/components/Trips/TripsDrawer'
 
 export default function MainLayout() {
   const navigate = useNavigate()
   const { logout, user, refreshUser, isAuthenticated } = useAuth()
 
   const [menuOpen, setMenuOpen] = useState(false)
+  const [tripsDrawerOpen, setTripsDrawerOpen] = useState(false)
 
   const handleLogout = () => {
     logout()
   }
-
-
 
   const handleSettings = () => {
     navigate('/settings')
@@ -36,9 +36,12 @@ export default function MainLayout() {
           <nav className="hidden lg:flex items-center space-x-4">
             {isAuthenticated && (
               <>
-                <Link to="/trips" className="text-foreground hover:text-primary font-medium">
+                <button
+                  onClick={() => setTripsDrawerOpen(true)}
+                  className="text-foreground hover:text-primary font-medium"
+                >
                   Trips
-                </Link>
+                </button>
                 <Link to="/help-center" className="text-foreground hover:text-primary font-medium">
                   Help Center
                 </Link>
@@ -73,13 +76,15 @@ export default function MainLayout() {
             <nav className="container mx-auto px-4 py-3 flex flex-col space-y-3">
               {isAuthenticated && (
                 <>
-                  <Link
-                    to="/trips"
-                    className="text-foreground hover:text-primary font-medium"
-                    onClick={() => setMenuOpen(false)}
+                  <button
+                    onClick={() => {
+                      setTripsDrawerOpen(true)
+                      setMenuOpen(false)
+                    }}
+                    className="text-foreground hover:text-primary font-medium text-left"
                   >
                     Trips
-                  </Link>
+                  </button>
                   <Link
                     to="/help-center"
                     className="text-foreground hover:text-primary font-medium"
@@ -92,11 +97,7 @@ export default function MainLayout() {
 
               <hr className="border-border" />
               {user ? (
-                <UserDropdown
-                  user={user}
-                  onLogout={handleLogout}
-                  onSettings={handleSettings}
-                />
+                <UserDropdown user={user} onLogout={handleLogout} onSettings={handleSettings} />
               ) : (
                 <Link
                   to="/login"
@@ -118,6 +119,12 @@ export default function MainLayout() {
       <footer className="bg-muted text-center text-sm text-muted-foreground p-4">
         Full stack web application developed by Team 1 - &copy; 2025
       </footer>
+
+      {isAuthenticated && (
+        <TripsDrawer open={tripsDrawerOpen} onOpenChange={setTripsDrawerOpen}>
+          <span />
+        </TripsDrawer>
+      )}
     </div>
   )
 }
