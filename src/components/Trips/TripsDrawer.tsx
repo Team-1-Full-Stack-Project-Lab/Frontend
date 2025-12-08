@@ -29,12 +29,28 @@ interface TripsDrawerProps {
 export function TripsDrawer({ children, open, onOpenChange }: TripsDrawerProps) {
   const { tripService } = useServices()
   const [trips, setTrips] = useState<Trip[]>([])
+  const [tripStayCounts, setTripStayCounts] = useState<Record<number, number>>({})
   const [editingTrip, setEditingTrip] = useState<Trip>()
   const [deletingTrip, setDeletingTrip] = useState<Trip>()
   const [viewingTrip, setViewingTrip] = useState<Trip | null>(null)
 
   const loadTrips = async () => {
-    setTrips(await tripService.getTrips())
+    const loadedTrips = await tripService.getTrips()
+    setTrips(loadedTrips)
+
+    // Cargar el conteo de stays para cada trip
+    const counts: Record<number, number> = {}
+    await Promise.all(
+      loadedTrips.map(async trip => {
+        try {
+          const stayUnits = await tripService.getTripStayUnits(trip.id)
+          counts[trip.id] = stayUnits.length
+        } catch {
+          counts[trip.id] = 0
+        }
+      })
+    )
+    setTripStayCounts(counts)
   }
 
   useEffect(() => {
@@ -70,6 +86,7 @@ export function TripsDrawer({ children, open, onOpenChange }: TripsDrawerProps) 
                       onEditTrip={setEditingTrip}
                       onDeleteTrip={setDeletingTrip}
                       onClick={setViewingTrip}
+                      staysCount={tripStayCounts[trip.id]}
                     />
                   ))}
                 </div>
