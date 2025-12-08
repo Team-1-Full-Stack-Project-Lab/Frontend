@@ -5,13 +5,14 @@ import { useAuth } from '@/hooks/useAuth'
 import { UserDropdown } from '@/components/UserDropdown'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { TripsDrawer } from '@/components/Trips/TripsDrawer'
+import { TripsDrawerProvider, useTripsDrawer } from '@/contexts/TripsDrawerContext'
 
-export default function MainLayout() {
+function MainLayoutContent() {
   const navigate = useNavigate()
   const { logout, user, refreshUser, isAuthenticated } = useAuth()
+  const { isOpen: tripsDrawerOpen, openDrawer: openTripsDrawer, closeDrawer: closeTripsDrawer } = useTripsDrawer()
 
   const [menuOpen, setMenuOpen] = useState(false)
-  const [tripsDrawerOpen, setTripsDrawerOpen] = useState(false)
 
   const handleLogout = () => {
     logout()
@@ -37,8 +38,8 @@ export default function MainLayout() {
             {isAuthenticated && (
               <>
                 <button
-                  onClick={() => setTripsDrawerOpen(true)}
-                  className="text-foreground hover:text-primary font-medium"
+                  onClick={openTripsDrawer}
+                  className="text-foreground hover:text-primary font-medium cursor-pointer"
                 >
                   Trips
                 </button>
@@ -64,7 +65,7 @@ export default function MainLayout() {
             <ThemeToggle />
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="text-foreground hover:text-primary focus:outline-none"
+              className="text-foreground hover:text-primary focus:outline-none cursor-pointer"
             >
               {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
             </button>
@@ -78,7 +79,7 @@ export default function MainLayout() {
                 <>
                   <button
                     onClick={() => {
-                      setTripsDrawerOpen(true)
+                      openTripsDrawer()
                       setMenuOpen(false)
                     }}
                     className="text-foreground hover:text-primary font-medium text-left"
@@ -121,10 +122,18 @@ export default function MainLayout() {
       </footer>
 
       {isAuthenticated && (
-        <TripsDrawer open={tripsDrawerOpen} onOpenChange={setTripsDrawerOpen}>
+        <TripsDrawer open={tripsDrawerOpen} onOpenChange={open => !open && closeTripsDrawer()}>
           <span />
         </TripsDrawer>
       )}
     </div>
+  )
+}
+
+export default function MainLayout() {
+  return (
+    <TripsDrawerProvider>
+      <MainLayoutContent />
+    </TripsDrawerProvider>
   )
 }

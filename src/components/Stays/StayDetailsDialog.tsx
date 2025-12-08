@@ -6,6 +6,7 @@ import { LucideIcon } from '@/components/LucideIcon'
 import { UnitCard } from './UnitCard'
 import type { Stay } from '@/types'
 import { useState } from 'react'
+import { useTripsDrawer } from '@/contexts/TripsDrawerContext'
 
 type Props = {
   stay: Stay
@@ -16,6 +17,15 @@ type Props = {
 export function StayDetailsDialog({ stay, isOpen, onOpenChange }: Props) {
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
   const [fullscreenStartIndex, setFullscreenStartIndex] = useState(0)
+  const { openDrawer } = useTripsDrawer()
+
+  const handleUnitAddedToTrip = () => {
+    onOpenChange(false)
+
+    setTimeout(() => {
+      openDrawer()
+    }, 300)
+  }
 
   const cityName = stay.city?.name || 'Unknown'
   const countryName = stay.city?.country?.name || ''
@@ -87,7 +97,7 @@ export function StayDetailsDialog({ stay, isOpen, onOpenChange }: Props) {
                 <h3 className="font-semibold text-lg mb-3">Available Units ({stay.units.length})</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {stay.units.map(unit => (
-                    <UnitCard key={unit.id} unit={unit} />
+                    <UnitCard key={unit.id} unit={unit} onAddedToTrip={handleUnitAddedToTrip} />
                   ))}
                 </div>
               </div>

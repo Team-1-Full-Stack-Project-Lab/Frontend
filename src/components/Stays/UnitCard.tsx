@@ -7,9 +7,10 @@ import { useAuth } from '@/hooks/useAuth'
 
 type Props = {
   unit: StayUnit
+  onAddedToTrip?: () => void
 }
 
-export function UnitCard({ unit }: Props) {
+export function UnitCard({ unit, onAddedToTrip }: Props) {
   const { isAuthenticated } = useAuth()
 
   return (
@@ -38,7 +39,7 @@ export function UnitCard({ unit }: Props) {
           <div className="text-xs text-muted-foreground">per night</div>
         </div>
         {isAuthenticated ? (
-          <AddUnitToTripPopover unit={unit}>
+          <AddUnitToTripPopover unit={unit} onSaved={onAddedToTrip}>
             <Button size="sm" variant="outline" className="w-full gap-2">
               <Plus className="h-4 w-4" />
               Add to Trip
