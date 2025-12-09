@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { parseISO } from 'date-fns'
 import { TripCard } from '../TripCard'
 import type { Trip } from '@/types'
 
@@ -10,8 +11,8 @@ describe('TripCard', () => {
     name: 'Summer Vacation',
     city: { id: 101, name: 'Paris', latitude: 0, longitude: 0, isCapital: false, isFeatured: false },
     destination: 'Paris, France',
-    startDate: new Date('2024-07-01'),
-    endDate: new Date('2024-07-10'),
+    startDate: parseISO('2024-07-01'),
+    endDate: parseISO('2024-07-10'),
     durationDays: 10,
   }
 
@@ -154,8 +155,8 @@ describe('TripCard', () => {
     it('should format different date ranges correctly', () => {
       const customTrip = {
         ...mockTrip,
-        startDate: new Date('2024-12-25'),
-        endDate: new Date('2025-01-05'),
+        startDate: parseISO('2024-12-25'),
+        endDate: parseISO('2025-01-05'),
         durationDays: 12,
       }
 
