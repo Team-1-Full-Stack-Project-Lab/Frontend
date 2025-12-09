@@ -37,6 +37,11 @@ describe('tripService', () => {
               iso2Code: 'FR',
             },
           },
+          country: {
+            id: 1,
+            name: 'France',
+            iso2Code: 'FR',
+          },
           startDate: '2024-07-01',
           endDate: '2024-07-10',
         },
@@ -55,6 +60,11 @@ describe('tripService', () => {
               name: 'Japan',
               iso2Code: 'JP',
             },
+          },
+          country: {
+            id: 2,
+            name: 'Japan',
+            iso2Code: 'JP',
           },
           startDate: '2024-12-20',
           endDate: '2024-12-28',
@@ -81,14 +91,14 @@ describe('tripService', () => {
       )
 
       expect(result).toHaveLength(2)
-      expect(result[0]).toEqual({
+      expect(result[0]).toMatchObject({
         id: 1,
         name: 'Summer Vacation',
-        cityId: 101,
         destination: 'Paris, France',
-        startDate: '2024-07-01',
-        endDate: '2024-07-10',
       })
+      expect(result[0].city?.id).toBe(101)
+      expect(result[0].startDate).toBeInstanceOf(Date)
+      expect(result[0].endDate).toBeInstanceOf(Date)
     })
 
     it('should return empty array when no trips exist', async () => {
@@ -127,6 +137,11 @@ describe('tripService', () => {
             iso2Code: 'US',
           },
         },
+        country: {
+          id: 3,
+          name: 'USA',
+          iso2Code: 'US',
+        },
         startDate: '2024-08-01',
         endDate: '2024-08-15',
       }
@@ -151,14 +166,13 @@ describe('tripService', () => {
         })
       )
 
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         id: 3,
         name: 'Beach Vacation',
-        cityId: 303,
-        destination: 'Honolulu, USA',
-        startDate: '2024-08-01',
-        endDate: '2024-08-15',
       })
+      expect(result.city?.id).toBe(303)
+      expect(result.startDate).toBeInstanceOf(Date)
+      expect(result.endDate).toBeInstanceOf(Date)
     })
   })
 

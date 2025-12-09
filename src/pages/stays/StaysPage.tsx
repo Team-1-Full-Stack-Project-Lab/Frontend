@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { HeroSearch } from '@/components/HeroSearch'
-import RentalCard from '@/components/RentalCard'
+import RentalCard from '@/components/Stays/RentalCard'
 import MapCard from '@/components/MapCard'
 import { useServices } from '@/hooks/useServices'
 import type { Stay } from '@/types'
@@ -49,7 +49,7 @@ export default function StaysPage() {
     <>
       <title>Stays</title>
 
-      <div className="mx-auto max-w-7xl p-6">
+      <div className="mx-auto max-w-6xl p-6">
         <div className="mb-8">
           <HeroSearch
             initialDestination={destination || undefined}

@@ -1,7 +1,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { CreateTripDialog } from '@/components/CreateTripDialog'
+import { CreateTripDialog } from '@/components/Trips/CreateTripDialog'
 import { DateRangePicker } from '@/components/DateRangePicker'
 import { useServices } from '@/hooks/useServices'
 import type { Trip, StayUnitResponse } from '@/types'
