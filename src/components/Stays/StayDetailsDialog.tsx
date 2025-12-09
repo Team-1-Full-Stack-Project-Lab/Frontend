@@ -6,7 +6,7 @@ import { LucideIcon } from '@/components/LucideIcon'
 import { UnitCard } from './UnitCard'
 import type { Stay } from '@/types'
 import { useState } from 'react'
-import { useTripsDrawer } from '@/contexts/TripsDrawerContext'
+import { useTripsDrawer } from '@/hooks/useTripsDrawer'
 
 type Props = {
   stay: Stay

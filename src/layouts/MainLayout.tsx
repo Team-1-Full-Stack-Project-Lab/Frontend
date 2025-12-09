@@ -5,7 +5,8 @@ import { useAuth } from '@/hooks/useAuth'
 import { UserDropdown } from '@/components/UserDropdown'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { TripsDrawer } from '@/components/Trips/TripsDrawer'
-import { TripsDrawerProvider, useTripsDrawer } from '@/contexts/TripsDrawerContext'
+import { useTripsDrawer } from '@/hooks/useTripsDrawer'
+import { TripsDrawerProvider } from '@/contexts/TripsDrawerProvider'
 
 function MainLayoutContent() {
   const navigate = useNavigate()
