@@ -22,10 +22,6 @@ import {
 import { handleResponse } from '@/utils/helpers'
 import { BACKEND_URL } from '@/config/api'
 
-export interface GetStaysParams extends PaginationParams {
-  cityId?: number
-}
-
 export async function getAllStays(params?: PaginationParams): Promise<Page<Stay>> {
   const searchParams = new URLSearchParams()
   if (params?.page !== undefined) searchParams.append('page', params.page.toString())
