@@ -3,6 +3,7 @@ import { HeroSearch } from '@/components/HeroSearch'
 import RentalCard from '@/components/Stays/RentalCard'
 import MapCard from '@/components/MapCard'
 import ServiceFilters from '@/components/ServiceFilters'
+import PriceRangeFilter from '@/components/PriceRangeFilter'
 import { Card } from '@/components/ui/card'
 import { useServices } from '@/hooks/useServices'
 import type { Stay } from '@/types'
@@ -14,6 +15,7 @@ export default function StaysPage() {
   const travelers = query.get('travelers') || '1'
   const from = query.get('from')
   const to = query.get('to')
+  const MAX_PRICE = 500
 
   const { stayService, cityService } = useServices()
   const [stays, setStays] = useState<Stay[]>([])
@@ -22,6 +24,8 @@ export default function StaysPage() {
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [selectedServiceIds, setSelectedServiceIds] = useState<number[]>([])
+  const [minPrice, setMinPrice] = useState(0)
+  const [maxPrice, setMaxPrice] = useState(MAX_PRICE)
 
   const handleServiceToggle = (serviceId: number) => {
     setSelectedServiceIds(prev => {
@@ -30,6 +34,12 @@ export default function StaysPage() {
       }
       return [...prev, serviceId]
     })
+    setPage(0)
+  }
+
+  const handlePriceChange = (min: number, max: number) => {
+    setMinPrice(min)
+    setMaxPrice(max)
     setPage(0)
   }
 
@@ -47,6 +57,8 @@ export default function StaysPage() {
           page,
           size: 20,
           serviceIds: selectedServiceIds.length > 0 ? selectedServiceIds : undefined,
+          minPrice: minPrice > 0 ? minPrice : undefined,
+          maxPrice: maxPrice < MAX_PRICE ? maxPrice : undefined,
         })
         setStays(response.content)
         setTotalPages(response.totalPages)
@@ -61,7 +73,7 @@ export default function StaysPage() {
     }
 
     loadStays()
-  }, [destination, page, selectedServiceIds, stayService, cityService])
+  }, [destination, page, selectedServiceIds, minPrice, maxPrice, stayService, cityService])
 
   return (
     <>
@@ -87,6 +99,15 @@ export default function StaysPage() {
                 <MapCard place={cityName} />
                 <Card className="p-6">
                   <ServiceFilters selectedServiceIds={selectedServiceIds} onToggle={handleServiceToggle} />
+                </Card>
+                <Card className="p-6">
+                  <PriceRangeFilter
+                    minPrice={minPrice}
+                    maxPrice={maxPrice}
+                    onPriceChange={handlePriceChange}
+                    defaultMin={0}
+                    defaultMax={MAX_PRICE}
+                  />
                 </Card>
               </div>
             </aside>
