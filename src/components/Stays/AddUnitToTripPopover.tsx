@@ -14,9 +14,17 @@ interface AddUnitToTripPopoverProps {
   unit: StayUnitResponse
   children: React.ReactNode
   onSaved?: () => void
+  initialCityId?: number
+  initialDateRange?: DateRange
 }
 
-export function AddUnitToTripPopover({ unit, children, onSaved }: AddUnitToTripPopoverProps) {
+export function AddUnitToTripPopover({
+  unit,
+  children,
+  onSaved,
+  initialCityId,
+  initialDateRange,
+}: AddUnitToTripPopoverProps) {
   const { tripService } = useServices()
 
   const [trips, setTrips] = useState<Trip[]>([])
@@ -104,6 +112,8 @@ export function AddUnitToTripPopover({ unit, children, onSaved }: AddUnitToTripP
                 <p className="text-sm text-muted-foreground mb-3">You don't have any trips yet</p>
                 <CreateTripDialog
                   onSuccess={handleNewTripCreated}
+                  initialCityId={initialCityId}
+                  initialDateRange={initialDateRange}
                   trigger={
                     <Button variant="outline" size="sm" className="w-full gap-2">
                       <Plus className="h-4 w-4" />
@@ -137,6 +147,8 @@ export function AddUnitToTripPopover({ unit, children, onSaved }: AddUnitToTripP
                 <div className="border-t p-3">
                   <CreateTripDialog
                     onSuccess={handleNewTripCreated}
+                    initialCityId={initialCityId}
+                    initialDateRange={initialDateRange}
                     trigger={
                       <Button
                         variant="ghost"

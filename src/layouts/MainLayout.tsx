@@ -11,7 +11,12 @@ import { TripsDrawerProvider } from '@/contexts/TripsDrawerProvider'
 function MainLayoutContent() {
   const navigate = useNavigate()
   const { logout, user, refreshUser, isAuthenticated } = useAuth()
-  const { isOpen: tripsDrawerOpen, openDrawer: openTripsDrawer, closeDrawer: closeTripsDrawer } = useTripsDrawer()
+  const {
+    isOpen: tripsDrawerOpen,
+    openDrawer: openTripsDrawer,
+    closeDrawer: closeTripsDrawer,
+    initialValues,
+  } = useTripsDrawer()
 
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -39,7 +44,7 @@ function MainLayoutContent() {
             {isAuthenticated && (
               <>
                 <button
-                  onClick={openTripsDrawer}
+                  onClick={() => openTripsDrawer()}
                   className="text-foreground hover:text-primary font-medium cursor-pointer"
                 >
                   Trips
@@ -123,7 +128,12 @@ function MainLayoutContent() {
       </footer>
 
       {isAuthenticated && (
-        <TripsDrawer open={tripsDrawerOpen} onOpenChange={open => !open && closeTripsDrawer()}>
+        <TripsDrawer
+          open={tripsDrawerOpen}
+          onOpenChange={open => !open && closeTripsDrawer()}
+          initialCityId={initialValues?.cityId}
+          initialDateRange={initialValues?.dateRange}
+        >
           <span />
         </TripsDrawer>
       )}

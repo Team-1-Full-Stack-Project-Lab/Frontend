@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { HeroSearch } from '@/components/HeroSearch'
 import RentalCard from '@/components/Stays/RentalCard'
 import MapCard from '@/components/MapCard'
@@ -7,7 +7,9 @@ import PriceRangeFilter from '@/components/PriceRangeFilter'
 import { Card } from '@/components/ui/card'
 import { useServices } from '@/hooks/useServices'
 import type { Stay } from '@/types'
+import type { DateRange } from 'react-day-picker'
 import { useQuery } from '@/hooks/useQuery'
+import { useTripsDrawer } from '@/hooks/useTripsDrawer'
 
 export default function StaysPage() {
   const query = useQuery()
@@ -18,6 +20,7 @@ export default function StaysPage() {
   const MAX_PRICE = 500
 
   const { stayService, cityService } = useServices()
+  const { setDefaultInitialValues } = useTripsDrawer()
   const [stays, setStays] = useState<Stay[]>([])
   const [loading, setLoading] = useState(true)
   const [cityName, setCityName] = useState<string>('')
@@ -26,6 +29,17 @@ export default function StaysPage() {
   const [selectedServiceIds, setSelectedServiceIds] = useState<number[]>([])
   const [minPrice, setMinPrice] = useState(0)
   const [maxPrice, setMaxPrice] = useState(MAX_PRICE)
+
+  const dateRange: DateRange | undefined = useMemo(
+    () =>
+      from && to
+        ? {
+            from: new Date(from),
+            to: new Date(to),
+          }
+        : undefined,
+    [from, to]
+  )
 
   const handleServiceToggle = (serviceId: number) => {
     setSelectedServiceIds(prev => {
@@ -42,6 +56,18 @@ export default function StaysPage() {
     setMaxPrice(max)
     setPage(0)
   }
+
+  useEffect(() => {
+    setDefaultInitialValues({
+      cityId: destination ? parseInt(destination) : undefined,
+      dateRange,
+    })
+
+    return () => {
+      setDefaultInitialValues(undefined)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [destination, from, to])
 
   useEffect(() => {
     const loadStays = async () => {
@@ -132,7 +158,11 @@ export default function StaysPage() {
                 <div className="grid gap-6">
                   {stays.map(stay => (
                     <div key={stay.id}>
-                      <RentalCard stay={stay} />
+                      <RentalCard
+                        stay={stay}
+                        initialCityId={destination ? parseInt(destination) : undefined}
+                        initialDateRange={dateRange}
+                      />
                     </div>
                   ))}
                 </div>

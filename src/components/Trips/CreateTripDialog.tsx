@@ -23,17 +23,19 @@ import type { GetCitiesParams, ValidationError } from '@/types'
 interface CreateTripDialogProps {
   trigger?: React.ReactNode
   onSuccess?: () => void
+  initialCityId?: number
+  initialDateRange?: DateRange
 }
 
-export function CreateTripDialog({ trigger, onSuccess }: CreateTripDialogProps) {
+export function CreateTripDialog({ trigger, onSuccess, initialCityId, initialDateRange }: CreateTripDialogProps) {
   const { tripService, cityService } = useServices()
 
   const [open, setOpen] = useState(false)
   const [citiesOptions, setCitiesOptions] = useState<SearchableSelectOption[]>([])
   const [searchQuery, setSearchQuery] = useState<string>()
   const [name, setName] = useState('')
-  const [cityId, setCityId] = useState<number>()
-  const [date, setDate] = useState<DateRange>()
+  const [cityId, setCityId] = useState<number | undefined>(initialCityId)
+  const [date, setDate] = useState<DateRange | undefined>(initialDateRange)
   const [errors, setErrors] = useState<ValidationError>({})
 
   const loadCities = async (params?: GetCitiesParams) => {
@@ -59,8 +61,8 @@ export function CreateTripDialog({ trigger, onSuccess }: CreateTripDialogProps) 
       })
 
       setName('')
-      setCityId(undefined)
-      setDate(undefined)
+      setCityId(initialCityId)
+      setDate(initialDateRange)
       setErrors({})
       setOpen(false)
 
