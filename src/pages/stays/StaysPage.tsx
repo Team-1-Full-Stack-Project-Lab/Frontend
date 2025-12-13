@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { HeroSearch } from '@/components/HeroSearch'
 import RentalCard from '@/components/Stays/RentalCard'
 import MapCard from '@/components/MapCard'
+import ServiceFilters from '@/components/ServiceFilters'
+import { Card } from '@/components/ui/card'
 import { useServices } from '@/hooks/useServices'
 import type { Stay } from '@/types'
 import { useQuery } from '@/hooks/useQuery'
@@ -19,6 +21,17 @@ export default function StaysPage() {
   const [cityName, setCityName] = useState<string>('')
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
+  const [selectedServiceIds, setSelectedServiceIds] = useState<number[]>([])
+
+  const handleServiceToggle = (serviceId: number) => {
+    setSelectedServiceIds(prev => {
+      if (prev.includes(serviceId)) {
+        return prev.filter(id => id !== serviceId)
+      }
+      return [...prev, serviceId]
+    })
+    setPage(0)
+  }
 
   useEffect(() => {
     const loadStays = async () => {
@@ -29,7 +42,12 @@ export default function StaysPage() {
 
       try {
         setLoading(true)
-        const response = await stayService.getStaysByCity(parseInt(destination), { page, size: 20 })
+        const response = await stayService.getAllStays({
+          cityId: parseInt(destination),
+          page,
+          size: 20,
+          serviceIds: selectedServiceIds.length > 0 ? selectedServiceIds : undefined,
+        })
         setStays(response.content)
         setTotalPages(response.totalPages)
 
@@ -43,7 +61,7 @@ export default function StaysPage() {
     }
 
     loadStays()
-  }, [destination, page, stayService, cityService])
+  }, [destination, page, selectedServiceIds, stayService, cityService])
 
   return (
     <>
@@ -65,8 +83,11 @@ export default function StaysPage() {
         <div className="flex flex-col lg:flex-row gap-6">
           {cityName && (
             <aside className="hidden lg:block w-80 flex-shrink-0">
-              <div className="sticky top-6">
+              <div className="sticky top-6 space-y-4">
                 <MapCard place={cityName} />
+                <Card className="p-6">
+                  <ServiceFilters selectedServiceIds={selectedServiceIds} onToggle={handleServiceToggle} />
+                </Card>
               </div>
             </aside>
           )}
