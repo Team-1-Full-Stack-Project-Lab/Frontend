@@ -103,7 +103,7 @@ export default function PriceRangeFilter({
               setInputMax(defaultMax.toString())
               onPriceChange(defaultMin, defaultMax)
             }}
-            className="text-xs text-muted-foreground hover:text-foreground underline-offset-4 hover:underline transition-colors"
+            className="text-xs text-muted-foreground cursor-pointer hover:text-foreground underline-offset-4 hover:underline transition-colors"
           >
             Reset
           </button>

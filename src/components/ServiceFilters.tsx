@@ -85,7 +85,7 @@ export default function ServiceFilters({ selectedServiceIds, onToggle }: Props) 
       {selectedServiceIds.length > 0 && (
         <button
           onClick={() => selectedServiceIds.forEach(id => onToggle(id))}
-          className="text-xs text-muted-foreground hover:text-foreground underline-offset-4 hover:underline transition-colors"
+          className="text-xs text-muted-foreground cursor-pointer hover:text-foreground underline-offset-4 hover:underline transition-colors"
         >
           Clear all filters
         </button>
