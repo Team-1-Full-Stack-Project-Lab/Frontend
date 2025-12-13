@@ -1,19 +1,8 @@
-import type { Stay, StayUnit, StayType, Service, StayImage } from '@/types/domain'
-import type {
-  StayResponse,
-  StayUnitResponse,
-  StayTypeResponse,
-  ServiceResponse,
-  StayImageResponse,
-} from '@/types/dtos/stays'
-import type {
-  StayGraphQL,
-  StayUnitGraphQL,
-  StayTypeGraphQL,
-  ServiceGraphQL,
-  StayImageGraphQL,
-} from '@/types/dtos/stays'
+import type { Stay, StayUnit, StayType, StayImage } from '@/types/domain'
+import type { StayResponse, StayUnitResponse, StayTypeResponse, StayImageResponse } from '@/types/dtos/stays'
+import type { StayGraphQL, StayUnitGraphQL, StayTypeGraphQL, StayImageGraphQL } from '@/types/dtos/stays'
 import { cityFromResponse, cityFromGraphQL } from './locationMapper'
+import { serviceFromResponse, serviceFromGraphQL } from './serviceMapper'
 
 export function stayTypeFromResponse(dto: StayTypeResponse): StayType {
   return {
@@ -26,22 +15,6 @@ export function stayTypeFromGraphQL(dto: StayTypeGraphQL): StayType {
   return {
     id: parseInt(dto.id),
     name: dto.name,
-  }
-}
-
-export function serviceFromResponse(dto: ServiceResponse): Service {
-  return {
-    id: dto.id,
-    name: dto.name,
-    icon: dto.icon,
-  }
-}
-
-export function serviceFromGraphQL(dto: ServiceGraphQL): Service {
-  return {
-    id: parseInt(dto.id),
-    name: dto.name,
-    icon: dto.icon,
   }
 }
 

@@ -1,5 +1,6 @@
 export * from './userMapper'
 export * from './locationMapper'
+export * from './serviceMapper'
 export * from './stayMapper'
 export * from './tripMapper'
 export * from './pageMapper'

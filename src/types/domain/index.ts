@@ -1,5 +1,6 @@
 export * from './user'
 export * from './location'
+export * from './service'
 export * from './stay'
 export * from './trip'
 export * from './page'

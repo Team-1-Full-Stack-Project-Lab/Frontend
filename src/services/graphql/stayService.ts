@@ -4,19 +4,13 @@ import type {
   Stay,
   StayUnit,
   StayType,
-  Service,
   Page,
   StayGraphQL,
   PaginationParams,
   SearchNearbyParams,
+  GetStaysParams,
 } from '@/types'
-import {
-  stayFromGraphQL,
-  stayUnitFromGraphQL,
-  stayTypeFromGraphQL,
-  serviceFromGraphQL,
-  pageFromResponse,
-} from '@/mappers'
+import { stayFromGraphQL, stayUnitFromGraphQL, stayTypeFromGraphQL, pageFromResponse } from '@/mappers'
 
 interface StayPageGraphQL {
   content: StayGraphQL[]
@@ -171,26 +165,6 @@ const GET_STAY_TYPE_BY_ID_QUERY = gql`
   }
 `
 
-const GET_ALL_SERVICES_QUERY = gql`
-  query GetAllServices($name: String) {
-    getAllServices(name: $name) {
-      id
-      name
-      icon
-    }
-  }
-`
-
-const GET_SERVICE_BY_ID_QUERY = gql`
-  query GetServiceById($id: ID!) {
-    getServiceById(id: $id) {
-      id
-      name
-      icon
-    }
-  }
-`
-
 const GET_STAY_UNIT_BY_ID_QUERY = gql`
   query GetStayUnitById($id: ID!) {
     getStayUnitById(id: $id) {
@@ -230,10 +204,14 @@ const SEARCH_AVAILABLE_UNITS_QUERY = gql`
   }
 `
 
-export async function getAllStays(params?: PaginationParams): Promise<Page<Stay>> {
+export async function getAllStays(params?: GetStaysParams): Promise<Page<Stay>> {
   const { data } = await apolloClient.query<{ getAllStays: StayPageGraphQL }>({
     query: GET_ALL_STAYS_QUERY,
     variables: {
+      cityId: params?.cityId?.toString(),
+      serviceIds: params?.serviceIds?.map(id => id.toString()),
+      minPrice: params?.minPrice,
+      maxPrice: params?.maxPrice,
       page: params?.page,
       size: params?.size,
     },
@@ -349,34 +327,6 @@ export async function getStayTypeById(id: number): Promise<StayType> {
   if (!data?.getStayTypeById) throw new Error('Stay type not found')
 
   return stayTypeFromGraphQL(data.getStayTypeById)
-}
-
-export async function getAllServices(name?: string): Promise<Service[]> {
-  const { data } = await apolloClient.query<{
-    getAllServices: Array<{ id: string; name: string; icon?: string }>
-  }>({
-    query: GET_ALL_SERVICES_QUERY,
-    variables: { name },
-    fetchPolicy: 'network-only',
-  })
-
-  if (!data) throw new Error('Failed to fetch services')
-
-  return data.getAllServices.map(serviceFromGraphQL)
-}
-
-export async function getServiceById(id: number): Promise<Service> {
-  const { data } = await apolloClient.query<{
-    getServiceById: { id: string; name: string; icon?: string } | null
-  }>({
-    query: GET_SERVICE_BY_ID_QUERY,
-    variables: { id: id.toString() },
-    fetchPolicy: 'network-only',
-  })
-
-  if (!data?.getServiceById) throw new Error('Service not found')
-
-  return serviceFromGraphQL(data.getServiceById)
 }
 
 export async function getStayUnitById(id: number): Promise<StayUnit> {

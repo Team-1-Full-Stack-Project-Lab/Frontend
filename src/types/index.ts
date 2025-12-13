@@ -27,15 +27,17 @@ export type {
   TripStayUnitsListGraphQL,
 } from './dtos/trips'
 
+// Service DTOs
+export type { ServiceResponse, ServiceGraphQL } from './dtos/services'
+
 // Stay DTOs
 export type {
+  GetStaysParams,
   StayTypeResponse,
-  ServiceResponse,
   StayUnitResponse,
   StayResponse,
   StayImageResponse,
   StayTypeGraphQL,
-  ServiceGraphQL,
   StayUnitGraphQL,
   StayImageGraphQL,
   StayGraphQL,

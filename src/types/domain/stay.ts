@@ -1,14 +1,9 @@
 import type { City } from './location'
+import type { Service } from './service'
 
 export interface StayType {
   id: number
   name: string
-}
-
-export interface Service {
-  id: number
-  name: string
-  icon?: string
 }
 
 export interface StayImage {
