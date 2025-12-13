@@ -5,6 +5,7 @@ import { FullscreenImageCarousel } from '@/components/FullscreenImageCarousel'
 import { LucideIcon } from '@/components/LucideIcon'
 import { UnitCard } from './UnitCard'
 import type { Stay } from '@/types'
+import type { DateRange } from 'react-day-picker'
 import { useState } from 'react'
 import { useTripsDrawer } from '@/hooks/useTripsDrawer'
 
@@ -12,9 +13,11 @@ type Props = {
   stay: Stay
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+  initialCityId?: number
+  initialDateRange?: DateRange
 }
 
-export function StayDetailsDialog({ stay, isOpen, onOpenChange }: Props) {
+export function StayDetailsDialog({ stay, isOpen, onOpenChange, initialCityId, initialDateRange }: Props) {
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
   const [fullscreenStartIndex, setFullscreenStartIndex] = useState(0)
   const { openDrawer } = useTripsDrawer()
@@ -97,7 +100,13 @@ export function StayDetailsDialog({ stay, isOpen, onOpenChange }: Props) {
                 <h3 className="font-semibold text-lg mb-3">Available Units ({stay.units.length})</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {stay.units.map(unit => (
-                    <UnitCard key={unit.id} unit={unit} onAddedToTrip={handleUnitAddedToTrip} />
+                    <UnitCard
+                      key={unit.id}
+                      unit={unit}
+                      onAddedToTrip={handleUnitAddedToTrip}
+                      initialCityId={initialCityId}
+                      initialDateRange={initialDateRange}
+                    />
                   ))}
                 </div>
               </div>

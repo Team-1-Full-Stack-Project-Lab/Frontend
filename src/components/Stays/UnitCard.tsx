@@ -3,14 +3,17 @@ import { Button } from '@/components/ui/button'
 import { Bed, Users, Plus } from 'lucide-react'
 import { AddUnitToTripPopover } from '@/components/Stays/AddUnitToTripPopover'
 import type { StayUnit } from '@/types'
+import type { DateRange } from 'react-day-picker'
 import { useAuth } from '@/hooks/useAuth'
 
 type Props = {
   unit: StayUnit
   onAddedToTrip?: () => void
+  initialCityId?: number
+  initialDateRange?: DateRange
 }
 
-export function UnitCard({ unit, onAddedToTrip }: Props) {
+export function UnitCard({ unit, onAddedToTrip, initialCityId, initialDateRange }: Props) {
   const { isAuthenticated } = useAuth()
 
   return (
@@ -39,7 +42,12 @@ export function UnitCard({ unit, onAddedToTrip }: Props) {
           <div className="text-xs text-muted-foreground">per night</div>
         </div>
         {isAuthenticated ? (
-          <AddUnitToTripPopover unit={unit} onSaved={onAddedToTrip}>
+          <AddUnitToTripPopover
+            unit={unit}
+            onSaved={onAddedToTrip}
+            initialCityId={initialCityId}
+            initialDateRange={initialDateRange}
+          >
             <Button size="sm" variant="outline" className="w-full gap-2">
               <Plus className="h-4 w-4" />
               Add to Trip

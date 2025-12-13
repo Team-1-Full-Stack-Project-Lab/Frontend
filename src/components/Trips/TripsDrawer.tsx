@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Calendar, Search } from 'lucide-react'
+import type { DateRange } from 'react-day-picker'
 import { CreateTripDialog } from './CreateTripDialog'
 import { useServices } from '@/hooks/useServices'
 import type { Trip } from '@/types'
@@ -24,9 +25,11 @@ interface TripsDrawerProps {
   children: React.ReactNode
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  initialCityId?: number
+  initialDateRange?: DateRange
 }
 
-export function TripsDrawer({ children, open, onOpenChange }: TripsDrawerProps) {
+export function TripsDrawer({ children, open, onOpenChange, initialCityId, initialDateRange }: TripsDrawerProps) {
   const { tripService } = useServices()
   const [trips, setTrips] = useState<Trip[]>([])
   const [tripStayCounts, setTripStayCounts] = useState<Record<number, number>>({})
@@ -38,7 +41,6 @@ export function TripsDrawer({ children, open, onOpenChange }: TripsDrawerProps) 
     const loadedTrips = await tripService.getTrips()
     setTrips(loadedTrips)
 
-    // Cargar el conteo de stays para cada trip
     const counts: Record<number, number> = {}
     await Promise.all(
       loadedTrips.map(async trip => {
@@ -72,7 +74,11 @@ export function TripsDrawer({ children, open, onOpenChange }: TripsDrawerProps) 
                   <DrawerTitle className="text-2xl">My Trips</DrawerTitle>
                   <DrawerDescription>Manage your travel plans</DrawerDescription>
                 </div>
-                <CreateTripDialog onSuccess={loadTrips} />
+                <CreateTripDialog
+                  onSuccess={loadTrips}
+                  initialCityId={initialCityId}
+                  initialDateRange={initialDateRange}
+                />
               </div>
             </DrawerHeader>
 

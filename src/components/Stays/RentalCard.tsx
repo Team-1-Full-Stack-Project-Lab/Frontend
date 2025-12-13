@@ -1,15 +1,18 @@
 import { Card } from '@/components/ui/card'
 import { useState } from 'react'
 import type { Stay } from '@/types'
+import type { DateRange } from 'react-day-picker'
 import { ImageCarousel } from '@/components/ImageCarousel'
 import { StayDetailsDialog } from './StayDetailsDialog'
 import { Button } from '@/components/ui/button'
 
 type Props = {
   stay: Stay
+  initialCityId?: number
+  initialDateRange?: DateRange
 }
 
-export default function RentalCard({ stay }: Props) {
+export default function RentalCard({ stay, initialCityId, initialDateRange }: Props) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const lowestPrice = stay.units && stay.units.length > 0 ? Math.min(...stay.units.map(u => u.pricePerNight)) : 0
@@ -68,7 +71,13 @@ export default function RentalCard({ stay }: Props) {
         </div>
       </Card>
 
-      <StayDetailsDialog stay={stay} isOpen={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      <StayDetailsDialog
+        stay={stay}
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        initialCityId={initialCityId}
+        initialDateRange={initialDateRange}
+      />
     </>
   )
 }

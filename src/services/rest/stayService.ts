@@ -1,29 +1,28 @@
 import type {
+  GetStaysParams,
   Stay,
   StayUnit,
   StayType,
-  Service,
   Page,
   StayResponse,
   StayTypeResponse,
-  ServiceResponse,
   StayUnitResponse,
   PageResponse,
   PaginationParams,
   SearchNearbyParams,
 } from '@/types'
-import {
-  stayFromResponse,
-  stayUnitFromResponse,
-  stayTypeFromResponse,
-  serviceFromResponse,
-  pageFromResponse,
-} from '@/mappers'
+import { stayFromResponse, stayUnitFromResponse, stayTypeFromResponse, pageFromResponse } from '@/mappers'
 import { handleResponse } from '@/utils/helpers'
 import { BACKEND_URL } from '@/config/api'
 
-export async function getAllStays(params?: PaginationParams): Promise<Page<Stay>> {
+export async function getAllStays(params?: GetStaysParams): Promise<Page<Stay>> {
   const searchParams = new URLSearchParams()
+  if (params?.cityId !== undefined) searchParams.append('cityId', params.cityId.toString())
+  if (params?.serviceIds && params.serviceIds.length > 0) {
+    params.serviceIds.forEach(id => searchParams.append('serviceIds', id.toString()))
+  }
+  if (params?.minPrice !== undefined) searchParams.append('minPrice', params.minPrice.toString())
+  if (params?.maxPrice !== undefined) searchParams.append('maxPrice', params.maxPrice.toString())
   if (params?.page !== undefined) searchParams.append('page', params.page.toString())
   if (params?.size !== undefined) searchParams.append('size', params.size.toString())
 
@@ -110,33 +109,6 @@ export async function getStayTypeById(id: number): Promise<StayType> {
 
   const result = await handleResponse<StayTypeResponse>(res)
   return stayTypeFromResponse(result)
-}
-
-export async function getAllServices(name?: string): Promise<Service[]> {
-  const searchParams = new URLSearchParams()
-  if (name) searchParams.append('name', name)
-
-  const res = await fetch(`${BACKEND_URL}/services?${searchParams.toString()}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-
-  const result = await handleResponse<ServiceResponse[]>(res)
-  return result.map(serviceFromResponse)
-}
-
-export async function getServiceById(id: number): Promise<Service> {
-  const res = await fetch(`${BACKEND_URL}/services/${id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-
-  const result = await handleResponse<ServiceResponse>(res)
-  return serviceFromResponse(result)
 }
 
 export async function getStayUnitById(id: number): Promise<StayUnit> {

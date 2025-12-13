@@ -1,12 +1,8 @@
+import type { ServiceGraphQL } from '../services'
+
 export interface StayTypeGraphQL {
   id: string
   name: string
-}
-
-export interface ServiceGraphQL {
-  id: string
-  name: string
-  icon?: string
 }
 
 export interface StayUnitGraphQL {
