@@ -14,7 +14,7 @@ export default function MapCard({ place }: Props) {
   const searchUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`
 
   return (
-    <div className="w-72 rounded-lg border bg-card shadow-sm overflow-hidden">
+    <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
       <div className="h-40 w-full bg-muted">
         {place ? (
           embedSrc ? (
