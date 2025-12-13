@@ -8,12 +8,13 @@ import AuthLayout from './layouts/AuthLayout'
 import ProtectedRoute from './layouts/ProtectedRoute'
 import SettingsPage from './pages/settings/SettingsPage'
 import HelpCenterPage from './pages/helpcenter/HelpCenterPage'
+import ChatLayout from './layouts/ChatLayout'
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<MainLayout />}>
+        <Route element={<><MainLayout /> <ChatLayout /></>}>
           <Route path="/" element={<HomePage />} />
           <Route path="/stays" element={<StaysPage />} />
 
