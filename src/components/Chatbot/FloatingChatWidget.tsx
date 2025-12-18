@@ -6,56 +6,30 @@ import { Plane, Send, X, User, MessageCircle } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { TypingIndicator } from "./TypingIndicator"
 import { StayCard } from "./StayCard"
+import type { ChatRequest, ConversationMessage, HotelData } from "@/types"
+import { useServices } from '@/hooks/useServices'
 
-type Message = {
-  id: string,
-  role: "user" | "assistant"
-  content: string
-  timestamp: Date
-  stays?: Stay[]
+type MessageWithHotels = ConversationMessage & {
+  hotels?: HotelData[]
 }
-type Stay = {
-  id: number
-  name: string
-  address: string
-  latitude: number
-  longitude: number
-  imageUrl: string | null
-}
-const mockStays: Stay[] = [
+const initialMessages: MessageWithHotels[] = [
   {
-    id: 1,
-    name: "Ocean View Resort",
-    address: "Malibu, California",
-    latitude: 34.0259,
-    longitude: -118.7798,
-    imageUrl: "/paris-france-eiffel-tower-romantic-sunset.jpg",
-  },
-  {
-    id: 2,
-    name: "Mountain Peak Lodge",
-    address: "Aspen, Colorado",
-    latitude: 39.1911,
-    longitude: -106.8175,
-    imageUrl: "/paris-france-eiffel-tower-romantic-sunset.jpg",
-  },
-]
-const initialMessages: Message[] = [
-  {
-    id: "1",
-    role: "assistant",
+    role: "agent",
     content:
       "Hello! I'm your Virtual Agent assistant. I'm here to help you find the perfect accommodation for your next adventure. Tell me about your travel plans - where would you like to go, and what kind of experience are you looking for?",
-    timestamp: new Date(),
+    timestamp: Date.now(),
   },
 ]
 
 export function FloatingChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState<Message[]>(initialMessages)
+  const [messages, setMessages] = useState<MessageWithHotels[]>(initialMessages)
   const [input, setInput] = useState("")
   const [isTyping, setIsTyping] = useState(false)
+  const [sessionId, setSessionId] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const { agentService } = useServices()
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -68,37 +42,55 @@ export function FloatingChatWidget() {
   }, [messages, isTyping, isOpen])
 
   const handleSend = async () => {
-    if (!input.trim()) return
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
+    if (!input.trim() || isTyping) return
+    const userMessage: MessageWithHotels = {
       role: "user",
       content: input,
-      timestamp: new Date(),
+      timestamp: Date.now(),
     }
 
     setMessages((prev) => [...prev, userMessage])
+    const messageToSend = input
     setInput("")
     setIsTyping(true)
+    setError(null)
 
-    // Simulate AI response
-    setTimeout(() => {
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content:
-          "Great choice! I've found some amazing stays that match your preferences. Here are my top recommendations for your trip:",
-        timestamp: new Date(),
-        stays: mockStays,
+    try {
+      const chatRequest: ChatRequest = {
+        message: messageToSend,
+      }
+      if (sessionId) {
+        chatRequest.sessionId = sessionId
+      }
+      const response = await agentService.chatWithAgent(chatRequest)
+      if (response.sessionId) {
+        setSessionId(response.sessionId)
+      }
+      const assistantMessage: MessageWithHotels = {
+        role: "agent",
+        content: response.response,
+        timestamp: Date.now(),
+        hotels: response.hotels || [],
       }
       setMessages((prev) => [...prev, assistantMessage])
-      setIsTyping(false)
-    }, 2000)
-  }
+    } catch (err) {
+      console.error('Error sending message:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Failed to send message'
+      setError(errorMessage)
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
+      const errorChatMessage: MessageWithHotels = {
+        role: "agent",
+        content: "Sorry, I encountered an error. Please try again.",
+        timestamp: Date.now(),
+      }
+      setMessages((prev) => [...prev, errorChatMessage])
+    } finally {
+      setIsTyping(false)
+    }
+  }
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault()
       handleSend()
     }
   }
@@ -107,7 +99,7 @@ export function FloatingChatWidget() {
       <Button
         onClick={() => setIsOpen(!isOpen)}
         size="icon"
-        className="fixed bottom-6 right-6 z-50 size-14 rounded-full bg-secondary shadow-lg ring-4 ring-secondary/20 transition-all hover:scale-110 hover:bg-secondary/90 hover:shadow-xl"
+        className="fixed bottom-6 right-6 z-50 size-14 rounded-full bg-secondary shadow-lg ring-4 ring-secondary/20 transition-all hover: scale-110 hover:bg-secondary/90 hover:shadow-xl"
         aria-label="Toggle chat"
       >
         {isOpen ? (
@@ -142,44 +134,51 @@ export function FloatingChatWidget() {
               </Button>
             </div>
           </header>
-
           {/* Messages */}
           <div className="flex-1 overflow-y-auto bg-background">
             <div className="px-4 py-4">
               <div className="space-y-4">
-                {messages.map((message) => (
+                {messages.map((message, index) => (
                   <div
-                    key={message.id}
+                    key={`${message.timestamp}-${index}`}
                     className={`flex gap-2 ${message.role === "user" ? "justify-end" : "justify-start"}`}
                   >
-                    {message.role === "assistant" && (
+                    {message.role === "agent" && (
                       <Avatar className="size-7 border-2 border-secondary">
                         <AvatarFallback className="bg-secondary text-secondary-foreground">
                           <Plane className="size-3.5" />
                         </AvatarFallback>
                       </Avatar>
                     )}
-
                     <div
                       className={`flex max-w-[75%] flex-col gap-2 ${message.role === "user" ? "items-end" : "items-start"}`}
                     >
                       <Card
-                        className={`px-3 py-2 ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-card"
-                          }`}
+                        className={`px-3 py-2 ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-card"}`}
                       >
-                        <p className="text-sm leading-relaxed">{message.content}</p>
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
                       </Card>
 
-                      {message.stays && (
-                        <div className="grid w-full gap-3 sm:grid-cols-1">
-                          {message.stays.map((stay) => (
-                            <StayCard key={stay.id} stay={stay} />
-                          ))}
+                      {/* Mostrar hoteles */}
+                      {message.role === "agent" && message.hotels && message.hotels.length > 0 && (
+                        <div className="w-full space-y-3">
+                          <p className="text-xs text-muted-foreground px-1">
+                            {message.hotels.length} {message.hotels.length === 1 ? 'hotel' : 'hotels'} found
+                          </p>
+                          <div className="grid w-full gap-3 sm:grid-cols-1">
+                            {message.hotels.map((hotel) => (
+                              <StayCard
+                                key={hotel.id}
+                                hotel={hotel}
+                              />
+                            ))}
+                          </div>
                         </div>
                       )}
 
+                      {/* Timestamp */}
                       <span className="text-muted-foreground text-xs">
-                        {message.timestamp.toLocaleTimeString([], {
+                        {new Date(message.timestamp || Date.now()).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
@@ -196,6 +195,7 @@ export function FloatingChatWidget() {
                   </div>
                 ))}
 
+                {/* Indicador de escritura */}
                 {isTyping && (
                   <div className="flex gap-2">
                     <Avatar className="size-7 border-2 border-secondary">
@@ -204,6 +204,15 @@ export function FloatingChatWidget() {
                       </AvatarFallback>
                     </Avatar>
                     <TypingIndicator />
+                  </div>
+                )}
+
+                {/* Mensaje de error */}
+                {error && (
+                  <div className="flex justify-center">
+                    <Card className="border-destructive bg-destructive/10 px-3 py-2">
+                      <p className="text-destructive text-sm">{error}</p>
+                    </Card>
                   </div>
                 )}
 
@@ -221,7 +230,9 @@ export function FloatingChatWidget() {
                 onKeyDown={handleKeyPress}
                 placeholder="Describe your ideal stay..."
                 className="h-10 text-sm"
+                disabled={isTyping}
               />
+
               <Button
                 onClick={handleSend}
                 size="icon"
@@ -231,7 +242,9 @@ export function FloatingChatWidget() {
                 <Send className="size-4" />
               </Button>
             </div>
-            <p className="mt-1.5 text-center text-muted-foreground text-xs">AI may occasionally make mistakes</p>
+            <p className="mt-1.5 text-center text-muted-foreground text-xs">
+              AI may occasionally make mistakes
+            </p>
           </div>
         </div>
       )}

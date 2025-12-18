@@ -1,10 +1,13 @@
 import { FloatingChatWidget } from "@/components/Chatbot/FloatingChatWidget";
+import { TripsDrawerProvider } from "@/contexts/TripsDrawerProvider";
 
 
 export default function ChatLayout() {
   return (
     <>
-      <FloatingChatWidget />
+      <TripsDrawerProvider>
+        <FloatingChatWidget />
+      </TripsDrawerProvider>
     </>
   )
 }
