@@ -1,6 +1,13 @@
 import { gql } from '@apollo/client'
 import { apolloClient } from '@/config/apolloClient'
-import type { ChatResponse, ConversationMessage, ChatRequest } from '@/types'
+import type {
+  ChatRequest,
+  ChatResponseGraphQL,
+  ConversationMessageGraphQL,
+  Chat,
+  Message
+} from '@/types'
+import { chatFromGraphQL, messageFromGraphQL } from '@/mappers/agentMapper'
 
 const CHAT_WITH_AGENT_MUTATION = gql`
   mutation ChatWithAgent($message: String!, $sessionId: String) {
@@ -29,9 +36,9 @@ const GET_SESSION_HISTORY_QUERY = gql`
   }
 `
 
-export async function chatWithAgent(data: ChatRequest): Promise<ChatResponse> {
+export async function chatWithAgent(data: ChatRequest): Promise<Chat> {
   const { data: responseData } = await apolloClient.mutate<{
-    chatWithAgent: ChatResponse
+    chatWithAgent: ChatResponseGraphQL
   }>({
     mutation: CHAT_WITH_AGENT_MUTATION,
     variables: {
@@ -42,14 +49,14 @@ export async function chatWithAgent(data: ChatRequest): Promise<ChatResponse> {
 
   if (!responseData) throw new Error('Failed to chat with agent')
 
-  return responseData.chatWithAgent
+  return chatFromGraphQL(responseData.chatWithAgent)
 }
 
 export async function getSessionHistory(
   sessionId: string
-): Promise<ConversationMessage[]> {
+): Promise<Message[]> {
   const { data } = await apolloClient.query<{
-    getSessionHistory: ConversationMessage[]
+    getSessionHistory: ConversationMessageGraphQL[]
   }>({
     query: GET_SESSION_HISTORY_QUERY,
     variables: { sessionId },
@@ -58,5 +65,5 @@ export async function getSessionHistory(
 
   if (!data) throw new Error('Failed to fetch session history')
 
-  return data.getSessionHistory
+  return data.getSessionHistory.map(messageFromGraphQL)
 }

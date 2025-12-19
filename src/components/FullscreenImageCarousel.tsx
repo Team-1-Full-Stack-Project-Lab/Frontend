@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { StayImageResponse } from '@/types'
@@ -55,7 +56,7 @@ export function FullscreenImageCarousel({ images, altText, isOpen, onClose, init
 
   if (!isOpen) return null
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center">
       <Button
         variant="ghost"
@@ -98,6 +99,7 @@ export function FullscreenImageCarousel({ images, altText, isOpen, onClose, init
       </div>
 
       <div className="absolute inset-0 -z-10" onClick={onClose} aria-label="Close fullscreen" />
-    </div>
+    </div>,
+    document.body
   )
 }

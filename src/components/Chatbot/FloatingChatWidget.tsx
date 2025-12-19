@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Plane, Send, X, User, MessageCircle } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { TypingIndicator } from "./TypingIndicator"
@@ -135,7 +136,7 @@ export function FloatingChatWidget() {
             </div>
           </header>
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto bg-background">
+          <ScrollArea className="flex-1 overflow-y-auto bg-background">
             <div className="px-4 py-4">
               <div className="space-y-4">
                 {messages.map((message, index) => (
@@ -219,7 +220,7 @@ export function FloatingChatWidget() {
                 <div ref={messagesEndRef} />
               </div>
             </div>
-          </div>
+          </ScrollArea>
 
           {/* Input */}
           <div className="border-t border-border bg-card p-3">

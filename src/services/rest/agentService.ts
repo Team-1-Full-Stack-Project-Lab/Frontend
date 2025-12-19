@@ -1,12 +1,15 @@
 import { BACKEND_URL } from '@/config/api'
+import { chatFromResponse, messageFromResponse } from '@/mappers/agentMapper'
 import type {
   ChatRequest,
   ChatResponse,
-  ConversationMessage
+  ConversationMessage,
+  Chat,
+  Message
 } from '@/types'
 import { handleResponse } from '@/utils/helpers'
 
-export async function chatWithAgent(data: ChatRequest): Promise<ChatResponse> {
+export async function chatWithAgent(data: ChatRequest): Promise<Chat> {
   const res = await fetch(`${BACKEND_URL}/agent/chat`, {
     method: 'POST',
     headers: {
@@ -16,7 +19,7 @@ export async function chatWithAgent(data: ChatRequest): Promise<ChatResponse> {
     credentials: 'include',
   })
   const result = await handleResponse<ChatResponse>(res)
-  return result
+  return chatFromResponse(result)
 }
 
 export async function clearSession(sessionId: string): Promise<void> {
@@ -32,7 +35,7 @@ export async function clearSession(sessionId: string): Promise<void> {
   }
 }
 
-export async function getSessionHistory(sessionId: string): Promise<ConversationMessage[]> {
+export async function getSessionHistory(sessionId: string): Promise<Message[]> {
   const res = await fetch(`${BACKEND_URL}/agent/session/${sessionId}/history`, {
     method: 'GET',
     headers: {
@@ -41,5 +44,5 @@ export async function getSessionHistory(sessionId: string): Promise<Conversation
     credentials: 'include',
   })
   const result = await handleResponse<ConversationMessage[]>(res)
-  return result
+  return result.map(messageFromResponse)
 }

@@ -12,7 +12,7 @@ export interface ChatResponseGraphQL {
   hotels?: HotelDataGraphQL[]
 }
 export interface ConversationMessageGraphQL {
-  role: string
+  role: 'user' | 'agent'
   content: string
   timestamp: number
 }
