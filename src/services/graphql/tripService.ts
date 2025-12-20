@@ -89,11 +89,9 @@ const GET_TRIP_STAY_UNITS_QUERY = gql`
         city {
           id
           name
-          country {
-            name
-          }
         }
         country {
+          id
           name
         }
         startDate
