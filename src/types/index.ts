@@ -52,3 +52,14 @@ export type {
   GetCitiesParams,
   CityGraphQL,
 } from './dtos/locations'
+
+// Agent DTOs
+export type {
+  ChatRequest,
+  ChatResponse,
+  HotelData,
+  ConversationMessage,
+  HotelDataGraphQL,
+  ChatResponseGraphQL,
+  ConversationMessageGraphQL,
+} from './dtos/agent'
