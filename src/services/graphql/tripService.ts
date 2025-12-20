@@ -19,11 +19,9 @@ const GET_TRIPS_QUERY = gql`
       city {
         id
         name
-        country {
-          name
-        }
       }
       country {
+        id
         name
       }
       startDate

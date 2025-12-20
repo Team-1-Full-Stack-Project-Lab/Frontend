@@ -6,11 +6,9 @@ export interface TripGraphQL {
   city: {
     id: string
     name: string
-    country: {
-      name: string
-    }
   }
   country: {
+    id: string
     name: string
   }
   startDate: string

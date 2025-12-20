@@ -50,14 +50,9 @@ export function tripFromGraphQL(dto: TripGraphQL): Trip {
       longitude: 0,
       isCapital: false,
       isFeatured: false,
-      country: {
-        id: 0,
-        name: dto.city.country.name,
-        iso2Code: '',
-      },
     },
     country: {
-      id: 0,
+      id: parseInt(dto.country.id),
       name: dto.country.name,
       iso2Code: '',
     },
