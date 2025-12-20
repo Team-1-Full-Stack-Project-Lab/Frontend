@@ -79,15 +79,21 @@ const STAY_FRAGMENT = gql`
     images {
       id
       link
-      stayId
     }
   }
 `
 
 const GET_ALL_STAYS_QUERY = gql`
   ${STAY_FRAGMENT}
-  query GetAllStays($page: Int, $size: Int) {
-    getAllStays(page: $page, size: $size) {
+  query GetAllStays($cityId: ID, $serviceIds: [ID!], $minPrice: Float, $maxPrice: Float, $page: Int, $size: Int) {
+    getAllStays(
+      cityId: $cityId
+      serviceIds: $serviceIds
+      minPrice: $minPrice
+      maxPrice: $maxPrice
+      page: $page
+      size: $size
+    ) {
       content {
         ...StayFields
       }
