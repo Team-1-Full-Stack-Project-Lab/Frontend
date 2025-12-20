@@ -1,5 +1,5 @@
 import { BACKEND_URL } from '@/config/api'
-import { chatFromResponse, messageFromResponse } from '@/mappers/agentMapper'
+import { chatFromResponse, messageFromResponse } from '@/mappers'
 import type {
   ChatRequest,
   ChatResponse,

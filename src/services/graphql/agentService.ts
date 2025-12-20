@@ -7,7 +7,7 @@ import type {
   Chat,
   Message
 } from '@/types'
-import { chatFromGraphQL, messageFromGraphQL } from '@/mappers/agentMapper'
+import { chatFromGraphQL, messageFromGraphQL } from '@/mappers'
 
 const CHAT_WITH_AGENT_MUTATION = gql`
   mutation ChatWithAgent($message: String!, $sessionId: String) {
