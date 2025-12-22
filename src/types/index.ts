@@ -30,6 +30,9 @@ export type {
 // Service DTOs
 export type { ServiceResponse, ServiceGraphQL } from './dtos/services'
 
+// Company DTOs
+export type { CompanyCreateRequest, CompanyUpdateRequest, CompanyResponse, CompanyGraphQL } from './dtos/companies'
+
 // Stay DTOs
 export type {
   GetStaysParams,

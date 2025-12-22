@@ -1,4 +1,5 @@
 export * from './userMapper'
+export * from './companyMapper'
 export * from './locationMapper'
 export * from './serviceMapper'
 export * from './stayMapper'

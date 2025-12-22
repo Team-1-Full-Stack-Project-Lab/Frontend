@@ -25,7 +25,7 @@ export function useAuth() {
   }, [dispatch])
 
   const refreshUser = useCallback(() => {
-    dispatch(checkAuth())
+    return dispatch(checkAuth())
   }, [dispatch])
 
   const deleteAccount = useCallback(() => {

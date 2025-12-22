@@ -1,3 +1,5 @@
+import type { CompanyResponse } from '../companies'
+
 export interface BaseUser {
   email: string
   firstName: string
@@ -21,4 +23,7 @@ export interface AuthState {
 }
 
 export type User = BaseUser
-export type UserResponse = BaseUser
+
+export type UserResponse = BaseUser & {
+  company?: CompanyResponse | null
+}

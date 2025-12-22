@@ -9,6 +9,16 @@ const GET_USER_QUERY = gql`
       email
       firstName
       lastName
+      company {
+        id
+        userId
+        name
+        email
+        phone
+        description
+        createdAt
+        updatedAt
+      }
     }
   }
 `
@@ -19,6 +29,16 @@ const UPDATE_USER_MUTATION = gql`
       email
       firstName
       lastName
+      company {
+        id
+        userId
+        name
+        email
+        phone
+        description
+        createdAt
+        updatedAt
+      }
     }
   }
 `
