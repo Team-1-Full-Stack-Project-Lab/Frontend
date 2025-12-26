@@ -1,5 +1,6 @@
 import type { City } from './location'
 import type { Service } from './service'
+import type { Company } from './company'
 
 export interface StayType {
   id: number
@@ -34,4 +35,5 @@ export interface Stay {
   services: Service[]
   units: StayUnit[]
   images: StayImage[]
+  company?: Company
 }

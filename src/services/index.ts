@@ -5,6 +5,7 @@ import * as cityServiceREST from './rest/cityService'
 import * as stayServiceREST from './rest/stayService'
 import * as serviceServiceREST from './rest/serviceService'
 import * as agentServiceREST from './rest/agentService'
+import * as companyServiceREST from './rest/companyService'
 
 import * as authServiceGraphQL from './graphql/authService'
 import * as userServiceGraphQL from './graphql/userService'
@@ -13,6 +14,7 @@ import * as cityServiceGraphQL from './graphql/cityService'
 import * as stayServiceGraphQL from './graphql/stayService'
 import * as serviceServiceGraphQL from './graphql/serviceService'
 import * as agentServiceGraphQL from './graphql/agentService'
+import * as companyServiceGraphQL from './graphql/companyService'
 
 export const services = {
   REST: {
@@ -23,6 +25,7 @@ export const services = {
     stay: stayServiceREST,
     service: serviceServiceREST,
     agent: agentServiceREST,
+    company: companyServiceREST,
   },
   GraphQL: {
     auth: authServiceGraphQL,
@@ -32,5 +35,6 @@ export const services = {
     stay: stayServiceGraphQL,
     service: serviceServiceGraphQL,
     agent: agentServiceGraphQL,
+    company: companyServiceGraphQL,
   },
 }

@@ -6,9 +6,14 @@ import type {
   StayType,
   Page,
   StayGraphQL,
+  StayUnitGraphQL,
   PaginationParams,
   SearchNearbyParams,
   GetStaysParams,
+  CreateStayRequest,
+  CreateStayUnitRequest,
+  UpdateStayRequest,
+  UpdateStayUnitRequest,
 } from '@/types'
 import { stayFromGraphQL, stayUnitFromGraphQL, stayTypeFromGraphQL, pageFromResponse } from '@/mappers'
 
@@ -80,13 +85,32 @@ const STAY_FRAGMENT = gql`
       id
       link
     }
+    company {
+      id
+      userId
+      name
+      email
+      phone
+      description
+      createdAt
+      updatedAt
+    }
   }
 `
 
 const GET_ALL_STAYS_QUERY = gql`
   ${STAY_FRAGMENT}
-  query GetAllStays($cityId: ID, $serviceIds: [ID!], $minPrice: Float, $maxPrice: Float, $page: Int, $size: Int) {
+  query GetAllStays(
+    $companyId: ID
+    $cityId: ID
+    $serviceIds: [ID!]
+    $minPrice: Float
+    $maxPrice: Float
+    $page: Int
+    $size: Int
+  ) {
     getAllStays(
+      companyId: $companyId
       cityId: $cityId
       serviceIds: $serviceIds
       minPrice: $minPrice
@@ -210,10 +234,67 @@ const SEARCH_AVAILABLE_UNITS_QUERY = gql`
   }
 `
 
+const CREATE_STAY_MUTATION = gql`
+  ${STAY_FRAGMENT}
+  mutation CreateStay($request: StayCreateRequest!) {
+    createStay(request: $request) {
+      ...StayFields
+    }
+  }
+`
+
+const UPDATE_STAY_MUTATION = gql`
+  ${STAY_FRAGMENT}
+  mutation UpdateStay($id: ID!, $request: StayUpdateRequest!) {
+    updateStay(id: $id, request: $request) {
+      ...StayFields
+    }
+  }
+`
+
+const DELETE_STAY_MUTATION = gql`
+  mutation DeleteStay($id: ID!) {
+    deleteStay(id: $id)
+  }
+`
+
+const CREATE_STAY_UNIT_MUTATION = gql`
+  mutation CreateStayUnit($request: StayUnitCreateRequest!) {
+    createStayUnit(request: $request) {
+      id
+      stayNumber
+      numberOfBeds
+      capacity
+      pricePerNight
+      roomType
+    }
+  }
+`
+
+const UPDATE_STAY_UNIT_MUTATION = gql`
+  mutation UpdateStayUnit($id: ID!, $request: StayUnitUpdateRequest!) {
+    updateStayUnit(id: $id, request: $request) {
+      id
+      stayNumber
+      numberOfBeds
+      capacity
+      pricePerNight
+      roomType
+    }
+  }
+`
+
+const DELETE_STAY_UNIT_MUTATION = gql`
+  mutation DeleteStayUnit($id: ID!) {
+    deleteStayUnit(id: $id)
+  }
+`
+
 export async function getAllStays(params?: GetStaysParams): Promise<Page<Stay>> {
   const { data } = await apolloClient.query<{ getAllStays: StayPageGraphQL }>({
     query: GET_ALL_STAYS_QUERY,
     variables: {
+      companyId: params?.companyId?.toString(),
       cityId: params?.cityId?.toString(),
       serviceIds: params?.serviceIds?.map(id => id.toString()),
       minPrice: params?.minPrice,
@@ -400,4 +481,85 @@ export async function searchAvailableUnits(stayId: number, minCapacity: number, 
   if (!data) throw new Error('Failed to search available units')
 
   return data.searchAvailableUnits.map(u => stayUnitFromGraphQL(u, true))
+}
+
+export async function createStay(request: CreateStayRequest, _token: string): Promise<Stay> {
+  const { data } = await apolloClient.mutate<{ createStay: StayGraphQL }>({
+    mutation: CREATE_STAY_MUTATION,
+    variables: {
+      request: {
+        ...request,
+        cityId: request.cityId.toString(),
+        stayTypeId: request.stayTypeId.toString(),
+        serviceIds: request.serviceIds?.map(id => id.toString()) || [],
+      },
+    },
+  })
+
+  if (!data?.createStay) throw new Error('Failed to create stay')
+  return stayFromGraphQL(data.createStay, true)
+}
+
+export async function updateStay(id: number, request: UpdateStayRequest, _token: string): Promise<Stay> {
+  const { data } = await apolloClient.mutate<{ updateStay: StayGraphQL }>({
+    mutation: UPDATE_STAY_MUTATION,
+    variables: {
+      id: id.toString(),
+      request: {
+        ...request,
+        cityId: request.cityId?.toString(),
+        stayTypeId: request.stayTypeId?.toString(),
+        serviceIds: request.serviceIds?.map(id => id.toString()),
+      },
+    },
+  })
+
+  if (!data?.updateStay) throw new Error('Failed to update stay')
+  return stayFromGraphQL(data.updateStay, true)
+}
+
+export async function deleteStay(id: number, _token: string): Promise<void> {
+  const { data } = await apolloClient.mutate<{ deleteStay: boolean }>({
+    mutation: DELETE_STAY_MUTATION,
+    variables: { id: id.toString() },
+  })
+
+  if (!data?.deleteStay) throw new Error('Failed to delete stay')
+}
+
+export async function createStayUnit(request: CreateStayUnitRequest, _token: string): Promise<StayUnit> {
+  const { data } = await apolloClient.mutate<{ createStayUnit: StayUnitGraphQL }>({
+    mutation: CREATE_STAY_UNIT_MUTATION,
+    variables: {
+      request: {
+        ...request,
+        stayId: request.stayId.toString(),
+      },
+    },
+  })
+
+  if (!data?.createStayUnit) throw new Error('Failed to create stay unit')
+  return stayUnitFromGraphQL(data.createStayUnit, true)
+}
+
+export async function updateStayUnit(id: number, request: UpdateStayUnitRequest, _token: string): Promise<StayUnit> {
+  const { data } = await apolloClient.mutate<{ updateStayUnit: StayUnitGraphQL }>({
+    mutation: UPDATE_STAY_UNIT_MUTATION,
+    variables: {
+      id: id.toString(),
+      request,
+    },
+  })
+
+  if (!data?.updateStayUnit) throw new Error('Failed to update stay unit')
+  return stayUnitFromGraphQL(data.updateStayUnit, true)
+}
+
+export async function deleteStayUnit(id: number, _token: string): Promise<void> {
+  const { data } = await apolloClient.mutate<{ deleteStayUnit: boolean }>({
+    mutation: DELETE_STAY_UNIT_MUTATION,
+    variables: { id: id.toString() },
+  })
+
+  if (!data?.deleteStayUnit) throw new Error('Failed to delete stay unit')
 }

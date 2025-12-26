@@ -12,5 +12,6 @@ export function useServices() {
     stayService: services[apiMode].stay,
     serviceService: services[apiMode].service,
     agentService: services[apiMode].agent,
+    companyService: services[apiMode].company,
   }
 }

@@ -1,4 +1,5 @@
 export * from './user'
+export * from './company'
 export * from './location'
 export * from './service'
 export * from './stay'

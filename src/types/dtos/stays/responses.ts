@@ -1,4 +1,4 @@
-import type { CityResponse, ServiceResponse, PaginationParams } from '@/types'
+import type { CityResponse, ServiceResponse, PaginationParams, CompanyResponse } from '@/types'
 
 export interface StayTypeResponse {
   id: number
@@ -27,6 +27,7 @@ export interface StayResponse {
   services?: ServiceResponse[]
   units?: StayUnitResponse[]
   images?: StayImageResponse[]
+  company?: CompanyResponse
 }
 
 export interface StayImageResponse {
@@ -40,4 +41,5 @@ export interface GetStaysParams extends PaginationParams {
   serviceIds?: number[]
   minPrice?: number
   maxPrice?: number
+  companyId?: number
 }

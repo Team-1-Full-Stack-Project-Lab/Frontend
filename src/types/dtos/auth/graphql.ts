@@ -1,3 +1,8 @@
-import type { BaseUser } from './responses'
+import type { CompanyGraphQL } from '../companies'
 
-export type UserGraphQL = BaseUser
+export interface UserGraphQL {
+  email: string
+  firstName: string
+  lastName: string
+  company?: CompanyGraphQL | null
+}

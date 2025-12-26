@@ -1,4 +1,5 @@
 import type { ServiceGraphQL } from '../services'
+import type { CompanyGraphQL } from '../companies'
 
 export interface StayTypeGraphQL {
   id: string
@@ -60,4 +61,5 @@ export interface StayGraphQL {
   services?: ServiceGraphQL[]
   units?: StayUnitGraphQL[]
   images?: StayImageGraphQL[]
+  company?: CompanyGraphQL
 }
