@@ -10,6 +10,10 @@ import type {
   PageResponse,
   PaginationParams,
   SearchNearbyParams,
+  CreateStayRequest,
+  CreateStayUnitRequest,
+  UpdateStayRequest,
+  UpdateStayUnitRequest,
 } from '@/types'
 import { stayFromResponse, stayUnitFromResponse, stayTypeFromResponse, pageFromResponse } from '@/mappers'
 import { handleResponse } from '@/utils/helpers'
@@ -23,6 +27,7 @@ export async function getAllStays(params?: GetStaysParams): Promise<Page<Stay>> 
   }
   if (params?.minPrice !== undefined) searchParams.append('minPrice', params.minPrice.toString())
   if (params?.maxPrice !== undefined) searchParams.append('maxPrice', params.maxPrice.toString())
+  if (params?.companyId !== undefined) searchParams.append('companyId', params.companyId.toString())
   if (params?.page !== undefined) searchParams.append('page', params.page.toString())
   if (params?.size !== undefined) searchParams.append('size', params.size.toString())
 
@@ -150,4 +155,86 @@ export async function searchAvailableUnits(stayId: number, minCapacity: number, 
 
   const result = await handleResponse<StayUnitResponse[]>(res)
   return result.map(u => stayUnitFromResponse(u, true))
+}
+
+export async function createStay(request: CreateStayRequest, token: string): Promise<Stay> {
+  const res = await fetch(`${BACKEND_URL}/stays`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(request),
+  })
+
+  const result = await handleResponse<StayResponse>(res)
+  return stayFromResponse(result, true)
+}
+
+export async function createStayUnit(request: CreateStayUnitRequest, token: string): Promise<StayUnit> {
+  const res = await fetch(`${BACKEND_URL}/stay-units`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(request),
+  })
+
+  const result = await handleResponse<StayUnitResponse>(res)
+  return stayUnitFromResponse(result, true)
+}
+
+export async function updateStay(id: number, request: UpdateStayRequest, token: string): Promise<Stay> {
+  const res = await fetch(`${BACKEND_URL}/stays/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(request),
+  })
+
+  const result = await handleResponse<StayResponse>(res)
+  return stayFromResponse(result, true)
+}
+
+export async function deleteStay(id: number, token: string): Promise<void> {
+  const res = await fetch(`${BACKEND_URL}/stays/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!res.ok) {
+    await handleResponse(res)
+  }
+}
+
+export async function updateStayUnit(id: number, request: UpdateStayUnitRequest, token: string): Promise<StayUnit> {
+  const res = await fetch(`${BACKEND_URL}/stay-units/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(request),
+  })
+
+  const result = await handleResponse<StayUnitResponse>(res)
+  return stayUnitFromResponse(result, true)
+}
+
+export async function deleteStayUnit(id: number, token: string): Promise<void> {
+  const res = await fetch(`${BACKEND_URL}/stay-units/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!res.ok) {
+    await handleResponse(res)
+  }
 }

@@ -44,6 +44,10 @@ export type {
   StayUnitGraphQL,
   StayImageGraphQL,
   StayGraphQL,
+  CreateStayRequest,
+  CreateStayUnitRequest,
+  UpdateStayRequest,
+  UpdateStayUnitRequest,
 } from './dtos/stays'
 
 // Location DTOs

@@ -3,6 +3,7 @@ import type { StayResponse, StayUnitResponse, StayTypeResponse, StayImageRespons
 import type { StayGraphQL, StayUnitGraphQL, StayTypeGraphQL, StayImageGraphQL } from '@/types/dtos/stays'
 import { cityFromResponse, cityFromGraphQL } from './locationMapper'
 import { serviceFromResponse, serviceFromGraphQL } from './serviceMapper'
+import { companyFromResponse, companyFromGraphQL } from './companyMapper'
 
 export function stayTypeFromResponse(dto: StayTypeResponse): StayType {
   return {
@@ -71,6 +72,7 @@ export function stayFromResponse(dto: StayResponse, includeUnits = true): Stay {
     services: dto.services?.map(serviceFromResponse) || [],
     units: includeUnits ? dto.units?.map(u => stayUnitFromResponse(u, false)) || [] : [],
     images: dto.images?.map(stayImageFromResponse) || [],
+    company: dto.company ? companyFromResponse(dto.company) : undefined,
   }
 }
 
@@ -87,5 +89,6 @@ export function stayFromGraphQL(dto: StayGraphQL, includeUnits = true): Stay {
     services: dto.services?.map(serviceFromGraphQL) || [],
     units: includeUnits ? dto.units?.map(u => stayUnitFromGraphQL(u, false)) || [] : [],
     images: dto.images?.map(stayImageFromGraphQL) || [],
+    company: dto.company ? companyFromGraphQL(dto.company) : undefined,
   }
 }

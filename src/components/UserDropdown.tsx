@@ -1,4 +1,5 @@
-import { LogOut, Settings, User } from 'lucide-react'
+import { LogOut, Settings, User, Building2, Home } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,18 +9,21 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from './ui/button'
+import type { Company } from '@/types'
 
 interface UserDropdownProps {
   user: {
     email: string
     firstName: string
     lastName: string
+    company?: Company | null
   }
   onLogout?: () => void
   onSettings?: () => void
+  isHostDashboard?: boolean
 }
 
-export function UserDropdown({ user, onLogout, onSettings }: UserDropdownProps) {
+export function UserDropdown({ user, onLogout, onSettings, isHostDashboard = false }: UserDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -35,6 +39,29 @@ export function UserDropdown({ user, onLogout, onSettings }: UserDropdownProps) 
           <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        {isHostDashboard ? (
+          <>
+            <DropdownMenuItem asChild>
+              <Link to="/">
+                <Home className="mr-2 h-4 w-4" />
+                <span>Back to Home</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        ) : (
+          user.company && (
+            <>
+              <DropdownMenuItem asChild>
+                <Link to="/host/dashboard">
+                  <Building2 className="mr-2 h-4 w-4" />
+                  <span>Host Dashboard</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )
+        )}
         <DropdownMenuItem onClick={onSettings}>
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>

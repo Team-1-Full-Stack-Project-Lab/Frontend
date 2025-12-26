@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Building2, PenLine, PlusCircle, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -21,6 +22,7 @@ import { ApiException } from '@/utils/exceptions'
 import type { Company, ValidationError } from '@/types'
 
 export default function CompanySection() {
+  const navigate = useNavigate()
   const { user, refreshUser } = useAuth()
   const { companyService } = useServices()
   const company = user?.company ?? null
@@ -168,6 +170,9 @@ export default function CompanySection() {
               <h2 className="text-xl font-semibold">{company.name}</h2>
             </div>
             <div className="flex flex-wrap gap-2">
+              <Button onClick={() => navigate('/host/dashboard')}>
+                <Building2 className="mr-2 h-4 w-4" /> Host Dashboard
+              </Button>
               <Button variant="outline" onClick={() => openEditDialog(company)}>
                 <PenLine className="mr-2 h-4 w-4" /> Edit
               </Button>
