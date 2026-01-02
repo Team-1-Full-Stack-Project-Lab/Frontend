@@ -182,23 +182,50 @@ docker run -p 3000:80 travel-booking-frontend
 
 ## 🔧 Environment Variables
 
-Create a `.env` file in the root directory:
+The application uses different environment files for development and production:
+
+### Development (`.env`)
+
+Create a `.env` file in the root directory for local development:
 
 ```env
 # API Configuration
 VITE_BACKEND_URL=http://localhost:8080
-VITE_GRAPHQL_URL=http://localhost:8080/graphql
 
 # API Mode: 'rest' or 'graphql'
 VITE_API_MODE=rest
 ```
 
+### Production (`.env.production`)
+
+Already included in the repository:
+
+```env
+VITE_BACKEND_URL=<PRODUCTION_URL>
+VITE_API_MODE=REST
+```
+
+### How It Works
+
+**Development:**
+
+- Frontend runs on `http://localhost:5173`
+- Backend runs on `http://localhost:8080`
+- Requests go to `http://localhost:8080/api/...`
+
+**Production:**
+
+- Both served through Nginx on same domain (e.g., `http://yourdomain.com`)
+- Frontend makes relative requests: `/api/...`
+- Nginx proxies `/api` → backend container
+- No CORS issues (same origin)
+
 ### API Mode Selection
 
 The application supports dual API integration:
 
-- **REST**: Traditional HTTP endpoints with JSON
-- **GraphQL**: Single endpoint with flexible queries
+- **REST**: Traditional HTTP endpoints with JSON (`/api/*`)
+- **GraphQL**: Single endpoint with flexible queries (`/graphql`)
 
 Toggle between modes using `VITE_API_MODE` environment variable. The service layer automatically adapts based on this setting.
 
