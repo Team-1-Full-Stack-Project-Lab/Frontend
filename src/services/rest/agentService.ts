@@ -10,7 +10,7 @@ import type {
 import { handleResponse } from '@/utils/helpers'
 
 export async function chatWithAgent(data: ChatRequest): Promise<Chat> {
-  const res = await fetch(`${BACKEND_URL}/agent/chat`, {
+  const res = await fetch(`${BACKEND_URL}/api/agent/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ export async function chatWithAgent(data: ChatRequest): Promise<Chat> {
 }
 
 export async function clearSession(sessionId: string): Promise<void> {
-  const res = await fetch(`${BACKEND_URL}/agent/session/${sessionId}`, {
+  const res = await fetch(`${BACKEND_URL}/api/agent/session/${sessionId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export async function clearSession(sessionId: string): Promise<void> {
 }
 
 export async function getSessionHistory(sessionId: string): Promise<Message[]> {
-  const res = await fetch(`${BACKEND_URL}/agent/session/${sessionId}/history`, {
+  const res = await fetch(`${BACKEND_URL}/api/agent/session/${sessionId}/history`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

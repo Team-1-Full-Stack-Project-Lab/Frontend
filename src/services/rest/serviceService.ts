@@ -7,7 +7,7 @@ export async function getAllServices(name?: string): Promise<Service[]> {
   const searchParams = new URLSearchParams()
   if (name) searchParams.append('name', name)
 
-  const res = await fetch(`${BACKEND_URL}/services?${searchParams.toString()}`, {
+  const res = await fetch(`${BACKEND_URL}/api/services?${searchParams.toString()}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export async function getAllServices(name?: string): Promise<Service[]> {
 }
 
 export async function getServiceById(id: number): Promise<Service> {
-  const res = await fetch(`${BACKEND_URL}/services/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/services/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

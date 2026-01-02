@@ -14,7 +14,7 @@ import { handleResponse } from '@/utils/helpers'
 import { BACKEND_URL } from '@/config/api'
 
 export async function getTrips(): Promise<Trip[]> {
-  const res = await fetch(`${BACKEND_URL}/trips/itineraries`, {
+  const res = await fetch(`${BACKEND_URL}/api/trips/itineraries`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export async function getTrips(): Promise<Trip[]> {
 }
 
 export async function createTrip(data: CreateTripRequest): Promise<Trip> {
-  const res = await fetch(`${BACKEND_URL}/trips/itineraries`, {
+  const res = await fetch(`${BACKEND_URL}/api/trips/itineraries`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export async function createTrip(data: CreateTripRequest): Promise<Trip> {
 }
 
 export async function updateTrip(id: number, data: UpdateTripRequest): Promise<Trip> {
-  const res = await fetch(`${BACKEND_URL}/trips/itineraries/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/trips/itineraries/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ export async function updateTrip(id: number, data: UpdateTripRequest): Promise<T
 }
 
 export async function deleteTrip(id: number): Promise<void> {
-  const res = await fetch(`${BACKEND_URL}/trips/itineraries/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/trips/itineraries/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ export async function deleteTrip(id: number): Promise<void> {
 }
 
 export async function getTripStayUnits(tripId: number): Promise<TripStayUnit[]> {
-  const res = await fetch(`${BACKEND_URL}/trips/itineraries/${tripId}/stayunits`, {
+  const res = await fetch(`${BACKEND_URL}/api/trips/itineraries/${tripId}/stayunits`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ export async function getTripStayUnits(tripId: number): Promise<TripStayUnit[]> 
 }
 
 export async function addStayUnitToTrip(tripId: number, data: AddStayUnitRequest): Promise<TripStayUnit> {
-  const res = await fetch(`${BACKEND_URL}/trips/itineraries/${tripId}/stayunits`, {
+  const res = await fetch(`${BACKEND_URL}/api/trips/itineraries/${tripId}/stayunits`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ export async function addStayUnitToTrip(tripId: number, data: AddStayUnitRequest
 }
 
 export async function removeStayUnitFromTrip(tripId: number, stayUnitId: number): Promise<void> {
-  const res = await fetch(`${BACKEND_URL}/trips/itineraries/${tripId}/stayunits/${stayUnitId}`, {
+  const res = await fetch(`${BACKEND_URL}/api/trips/itineraries/${tripId}/stayunits/${stayUnitId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

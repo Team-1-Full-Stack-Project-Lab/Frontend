@@ -14,7 +14,7 @@ function withAuthHeaders() {
 }
 
 export async function getCompanyById(id: number): Promise<Company> {
-  const res = await fetch(`${BACKEND_URL}/companies/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/companies/${id}`, {
     method: 'GET',
     headers: withAuthHeaders(),
     credentials: 'include',
@@ -25,7 +25,7 @@ export async function getCompanyById(id: number): Promise<Company> {
 }
 
 export async function createCompany(payload: CompanyCreateRequest): Promise<Company> {
-  const res = await fetch(`${BACKEND_URL}/companies`, {
+  const res = await fetch(`${BACKEND_URL}/api/companies`, {
     method: 'POST',
     headers: withAuthHeaders(),
     credentials: 'include',
@@ -37,7 +37,7 @@ export async function createCompany(payload: CompanyCreateRequest): Promise<Comp
 }
 
 export async function updateCompany(id: number, payload: CompanyUpdateRequest): Promise<Company> {
-  const res = await fetch(`${BACKEND_URL}/companies/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/companies/${id}`, {
     method: 'PUT',
     headers: withAuthHeaders(),
     credentials: 'include',
@@ -49,7 +49,7 @@ export async function updateCompany(id: number, payload: CompanyUpdateRequest): 
 }
 
 export async function deleteCompany(id: number): Promise<void> {
-  const res = await fetch(`${BACKEND_URL}/companies/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/companies/${id}`, {
     method: 'DELETE',
     headers: withAuthHeaders(),
     credentials: 'include',

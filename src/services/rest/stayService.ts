@@ -31,7 +31,7 @@ export async function getAllStays(params?: GetStaysParams): Promise<Page<Stay>> 
   if (params?.page !== undefined) searchParams.append('page', params.page.toString())
   if (params?.size !== undefined) searchParams.append('size', params.size.toString())
 
-  const res = await fetch(`${BACKEND_URL}/stays?${searchParams.toString()}`, {
+  const res = await fetch(`${BACKEND_URL}/api/stays?${searchParams.toString()}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export async function getAllStays(params?: GetStaysParams): Promise<Page<Stay>> 
 }
 
 export async function getStayById(id: number): Promise<Stay> {
-  const res = await fetch(`${BACKEND_URL}/stays/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/stays/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ export async function getStaysByCity(cityId: number, params?: PaginationParams):
   if (params?.page !== undefined) searchParams.append('page', params.page.toString())
   if (params?.size !== undefined) searchParams.append('size', params.size.toString())
 
-  const res = await fetch(`${BACKEND_URL}/stays/city/${cityId}?${searchParams.toString()}`, {
+  const res = await fetch(`${BACKEND_URL}/api/stays/city/${cityId}?${searchParams.toString()}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export async function searchStaysNearby(params: SearchNearbyParams): Promise<Pag
   if (params.page !== undefined) searchParams.append('page', params.page.toString())
   if (params.size !== undefined) searchParams.append('size', params.size.toString())
 
-  const res = await fetch(`${BACKEND_URL}/stays/nearby?${searchParams.toString()}`, {
+  const res = await fetch(`${BACKEND_URL}/api/stays/nearby?${searchParams.toString()}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ export async function getAllStayTypes(name?: string): Promise<StayType[]> {
   const searchParams = new URLSearchParams()
   if (name) searchParams.append('name', name)
 
-  const res = await fetch(`${BACKEND_URL}/stay-types?${searchParams.toString()}`, {
+  const res = await fetch(`${BACKEND_URL}/api/stay-types?${searchParams.toString()}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ export async function getAllStayTypes(name?: string): Promise<StayType[]> {
 }
 
 export async function getStayTypeById(id: number): Promise<StayType> {
-  const res = await fetch(`${BACKEND_URL}/stay-types/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/stay-types/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ export async function getStayTypeById(id: number): Promise<StayType> {
 }
 
 export async function getStayUnitById(id: number): Promise<StayUnit> {
-  const res = await fetch(`${BACKEND_URL}/stay-units/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/stay-units/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -129,7 +129,7 @@ export async function getStayUnitById(id: number): Promise<StayUnit> {
 }
 
 export async function getStayUnitsByStayId(stayId: number): Promise<StayUnit[]> {
-  const res = await fetch(`${BACKEND_URL}/stay-units/stay/${stayId}`, {
+  const res = await fetch(`${BACKEND_URL}/api/stay-units/stay/${stayId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ export async function searchAvailableUnits(stayId: number, minCapacity: number, 
   searchParams.append('minCapacity', minCapacity.toString())
   searchParams.append('maxPrice', maxPrice.toString())
 
-  const res = await fetch(`${BACKEND_URL}/stay-units/search?${searchParams.toString()}`, {
+  const res = await fetch(`${BACKEND_URL}/api/stay-units/search?${searchParams.toString()}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ export async function searchAvailableUnits(stayId: number, minCapacity: number, 
 }
 
 export async function createStay(request: CreateStayRequest, token: string): Promise<Stay> {
-  const res = await fetch(`${BACKEND_URL}/stays`, {
+  const res = await fetch(`${BACKEND_URL}/api/stays`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ export async function createStay(request: CreateStayRequest, token: string): Pro
 }
 
 export async function createStayUnit(request: CreateStayUnitRequest, token: string): Promise<StayUnit> {
-  const res = await fetch(`${BACKEND_URL}/stay-units`, {
+  const res = await fetch(`${BACKEND_URL}/api/stay-units`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -186,7 +186,7 @@ export async function createStayUnit(request: CreateStayUnitRequest, token: stri
 }
 
 export async function updateStay(id: number, request: UpdateStayRequest, token: string): Promise<Stay> {
-  const res = await fetch(`${BACKEND_URL}/stays/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/stays/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -200,7 +200,7 @@ export async function updateStay(id: number, request: UpdateStayRequest, token: 
 }
 
 export async function deleteStay(id: number, token: string): Promise<void> {
-  const res = await fetch(`${BACKEND_URL}/stays/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/stays/${id}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -213,7 +213,7 @@ export async function deleteStay(id: number, token: string): Promise<void> {
 }
 
 export async function updateStayUnit(id: number, request: UpdateStayUnitRequest, token: string): Promise<StayUnit> {
-  const res = await fetch(`${BACKEND_URL}/stay-units/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/stay-units/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -227,7 +227,7 @@ export async function updateStayUnit(id: number, request: UpdateStayUnitRequest,
 }
 
 export async function deleteStayUnit(id: number, token: string): Promise<void> {
-  const res = await fetch(`${BACKEND_URL}/stay-units/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/stay-units/${id}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,

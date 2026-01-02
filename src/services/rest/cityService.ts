@@ -16,7 +16,7 @@ export async function getCities(params?: GetCitiesParams): Promise<Page<City>> {
     if (params.size !== undefined) searchParams.append('size', params.size.toString())
   }
 
-  const res = await fetch(`${BACKEND_URL}/cities${searchParams.toString() ? `?${searchParams.toString()}` : ''}`, {
+  const res = await fetch(`${BACKEND_URL}/api/cities${searchParams.toString() ? `?${searchParams.toString()}` : ''}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ export async function getCities(params?: GetCitiesParams): Promise<Page<City>> {
 }
 
 export async function getCityById(id: number): Promise<City> {
-  const res = await fetch(`${BACKEND_URL}/cities/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/cities/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
