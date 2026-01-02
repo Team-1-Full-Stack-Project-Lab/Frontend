@@ -15,6 +15,7 @@ This is the frontend portion of a comprehensive travel booking platform similar 
 - [API Integration](#api-integration)
 - [Key Concepts](#key-concepts)
 - [Available Scripts](#available-scripts)
+- [Docker Deployment](#docker-deployment)
 - [Development Guidelines](#development-guidelines)
 - [Learning Outcomes](#learning-outcomes)
 
@@ -128,9 +129,10 @@ Frontend/
 
 ### Prerequisites
 
-- Node.js (22 or higher)
-- npm or yarn package manager
-- Backend server running (see Backend README)
+- **Node.js 22** or higher
+- **npm** or yarn package manager
+- **Backend server** running (see Backend README)
+- **Docker** (optional, for containerization)
 
 ### Installation
 
@@ -162,6 +164,21 @@ npm run dev
 ```
 
 The application will be available at `http://localhost:5173`
+
+### Quick Start with Docker
+
+```bash
+# Build image
+docker build -t travel-booking-frontend .
+
+# Run container
+docker run -p 80:80 travel-booking-frontend
+# Access at http://localhost
+
+# Or with custom port
+docker run -p 3000:80 travel-booking-frontend
+# Access at http://localhost:3000
+```
 
 ## 🔧 Environment Variables
 
@@ -299,7 +316,92 @@ npm run lint         # Run ESLint
 npm run test         # Run tests
 ```
 
-## 👨‍💻 Development Guidelines
+## � Docker Deployment
+
+### Docker Configuration
+
+The frontend is containerized using a **multi-stage build** for optimal production deployment:
+
+**Stage 1 - Build:**
+
+- Uses `node:20-alpine` to build the React application
+- Installs dependencies and runs production build
+- Outputs static files to `/dist` folder
+
+**Stage 2 - Production:**
+
+- Uses `nginx:alpine` (~20MB) to serve static files
+- Includes custom Nginx configuration for SPA routing
+- Adds security headers and caching optimization
+
+### Files Structure
+
+```
+Frontend/
+├── Dockerfile           # Multi-stage Docker build
+├── .dockerignore       # Excludes node_modules, build artifacts
+└── nginx.conf          # Nginx configuration for SPA
+```
+
+### Building and Running
+
+**Local Build:**
+
+```bash
+# Build Docker image
+docker build -t travel-booking-frontend .
+
+# Run container
+docker run -p 80:80 travel-booking-frontend
+
+# Access at http://localhost
+```
+
+**With Custom Port:**
+
+```bash
+docker run -p 3000:80 travel-booking-frontend
+# Access at http://localhost:3000
+```
+
+### Nginx Configuration
+
+The included `nginx.conf` provides:
+
+- **SPA Routing**: Redirects all routes to `index.html` for React Router
+- **Gzip Compression**: Reduces bundle sizes for faster loading
+- **Security Headers**: X-Frame-Options, X-Content-Type-Options, XSS-Protection
+- **Cache Optimization**:
+  - Static assets (JS, CSS, images): 1 year cache
+  - `index.html`: No cache (always fresh)
+- **Health Endpoint**: `/health` for container health checks
+
+### Production Deployment Architecture
+
+When deploying to a server (Azure VM, AWS EC2, etc.), the recommended setup is:
+
+```
+Internet (Port 80/443)
+         ↓
+    [Nginx Reverse Proxy on Server]
+         ↓                    ↓
+  Frontend Container    Backend Container
+  (localhost:3000)      (localhost:8080)
+         ↓
+    [PostgreSQL]
+  (localhost:5432)
+```
+
+**Benefits:**
+
+- Single entry point for HTTPS/SSL
+- Simplified CORS configuration
+- Centralized logging
+- Better security (containers not exposed to internet)
+
+See the root `docker-compose.yml` for full orchestration setup.
+
+## �👨‍💻 Development Guidelines
 
 ### Code Style
 
