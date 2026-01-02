@@ -1,4 +1,5 @@
-import { LogOut, Settings, User } from 'lucide-react'
+import { LogOut, Settings, User, Building2, Home } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,20 +9,21 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from './ui/button'
+import type { Company } from '@/types'
 
 interface UserDropdownProps {
   user: {
-    id: number
     email: string
     firstName: string
     lastName: string
+    company?: Company | null
   }
   onLogout?: () => void
-  onProfile?: () => void
   onSettings?: () => void
+  isHostDashboard?: boolean
 }
 
-export function UserDropdown({ user, onLogout, onProfile, onSettings }: UserDropdownProps) {
+export function UserDropdown({ user, onLogout, onSettings, isHostDashboard = false }: UserDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -37,10 +39,29 @@ export function UserDropdown({ user, onLogout, onProfile, onSettings }: UserDrop
           <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onProfile}>
-          <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
-        </DropdownMenuItem>
+        {isHostDashboard ? (
+          <>
+            <DropdownMenuItem asChild>
+              <Link to="/">
+                <Home className="mr-2 h-4 w-4" />
+                <span>Back to Home</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        ) : (
+          user.company && (
+            <>
+              <DropdownMenuItem asChild>
+                <Link to="/host/dashboard">
+                  <Building2 className="mr-2 h-4 w-4" />
+                  <span>Host Dashboard</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )
+        )}
         <DropdownMenuItem onClick={onSettings}>
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>

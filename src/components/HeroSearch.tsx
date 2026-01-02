@@ -62,9 +62,10 @@ export function HeroSearch({
   const [searchQuery, setSearchQuery] = useState<string>()
 
   const loadCities = async (params?: GetCitiesParams) => {
-    const cities = await cityService.getCities(params)
+    const result = await cityService.getCities(params)
+    const citiesArray = Array.isArray(result) ? result : result.content
     setCitiesOptions(
-      cities.map(city => ({
+      citiesArray.map(city => ({
         value: city.id.toString(),
         label: `${city.name}, ${city.country?.name || ''}`,
       }))
@@ -180,7 +181,7 @@ export function HeroSearch({
   }
 
   return (
-    <Card className="mx-auto w-full max-w-5xl bg-white p-6 shadow-2xl">
+    <Card className="mx-auto w-full max-w-5xl bg-card p-6 shadow-2xl">
       <div className={`grid gap-4 ${gridCols}`}>
         <div className="space-y-2">
           <Label htmlFor="destination" className="text-sm font-medium">

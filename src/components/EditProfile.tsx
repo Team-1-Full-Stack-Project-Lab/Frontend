@@ -1,5 +1,5 @@
-import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
+import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -8,15 +8,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useState, type FormEvent } from "react"
-import { useAuth } from "@/hooks/useAuth"
-import type { User } from "@/types/auth"
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useState, type FormEvent } from 'react'
+import { useAuth } from '@/hooks/useAuth'
+import type { User } from '@/types'
 
 interface EditProfileProps {
-  user: User | null;
+  user: User | null
 }
 
 export function EditProfile({ user }: EditProfileProps) {
@@ -24,33 +24,33 @@ export function EditProfile({ user }: EditProfileProps) {
   const [open, setOpen] = useState(false)
 
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    const email = user?.email || ""
+    e.preventDefault()
+    const email = user?.email || ''
     const formData = new FormData(e.target as HTMLFormElement)
-    const firstName = formData.get("firstName") as string
-    const lastName = formData.get("lastName") as string
+    const firstName = formData.get('firstName') as string
+    const lastName = formData.get('lastName') as string
     try {
       updateProfile(email, firstName, lastName)
       setOpen(false)
-      toast.success("Profile updated successfully")
+      toast.success('Profile updated successfully')
     } catch (error) {
-      console.error("Error updating profile:", error)
+      console.error('Error updating profile:', error)
       setOpen(false)
-      toast.error("Failed to update profile. Please try again.")
+      toast.error('Failed to update profile. Please try again.')
     }
-  };
+  }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="text-blue-600 hover:text-blue-500">Edit</Button>
+        <Button variant="ghost" className="text-primary hover:text-primary">
+          Edit
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Edit Profile</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click "Save" when you're done.
-            </DialogDescription>
+            <DialogDescription>Make changes to your profile here. Click "Save" when you're done.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
@@ -67,7 +67,7 @@ export function EditProfile({ user }: EditProfileProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-500" >Save</Button>
+            <Button type="submit">Save</Button>
           </DialogFooter>
         </form>
       </DialogContent>
