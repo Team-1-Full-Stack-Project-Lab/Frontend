@@ -233,7 +233,47 @@ const SEARCH_AVAILABLE_UNITS_QUERY = gql`
     }
   }
 `
-
+const GET_POPULAR_STAYS_QUERY = gql`
+  query GetPopularStays {
+    getPopularStays(limit: 6) {
+      id
+      name
+      address
+      description
+      latitude
+      longitude
+      city {
+        id
+        name
+        country {
+          id
+          name
+        }
+      }
+      stayType {
+        id
+        name
+      }
+      images {
+        id
+        link
+      }
+      units {
+        id
+        stayNumber
+        numberOfBeds
+        capacity
+        pricePerNight
+        roomType
+      }
+      services {
+        id
+        name
+        icon
+      }
+    }
+  }
+`
 const CREATE_STAY_MUTATION = gql`
   ${STAY_FRAGMENT}
   mutation CreateStay($request: StayCreateRequest!) {
@@ -562,4 +602,15 @@ export async function deleteStayUnit(id: number, _token: string): Promise<void> 
   })
 
   if (!data?.deleteStayUnit) throw new Error('Failed to delete stay unit')
+}
+
+export async function getPopularStays(): Promise<Stay[]> {
+  const { data } = await apolloClient.query<{ getPopularStays: StayGraphQL[] }>({
+    query: GET_POPULAR_STAYS_QUERY,
+    fetchPolicy: 'network-only',
+  })
+
+  if (!data?.getPopularStays) throw new Error('Failed to fetch popular stays')
+
+  return data.getPopularStays.map(dto => stayFromGraphQL(dto, true))
 }
