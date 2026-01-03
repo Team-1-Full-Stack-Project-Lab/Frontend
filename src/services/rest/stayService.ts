@@ -238,3 +238,15 @@ export async function deleteStayUnit(id: number, token: string): Promise<void> {
     await handleResponse(res)
   }
 }
+
+export async function getPopularStays(): Promise<Stay[]> {
+  const res = await fetch(`${BACKEND_URL}/api/stays/popular`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+  const result = await handleResponse<StayResponse[]>(res)
+  return result.map((dto) => stayFromResponse(dto, true))
+}

@@ -69,9 +69,8 @@ export function ImageCarousel({ images, altText, className = '', showIndicators 
           {images.map((_, index) => (
             <button
               key={index}
-              className={`h-1.5 rounded-full transition-all ${
-                index === current ? 'bg-white w-6' : 'bg-white/60 w-1.5 hover:bg-white/80'
-              }`}
+              className={`h-1.5 rounded-full transition-all ${index === current ? 'bg-white w-6' : 'bg-white/60 w-1.5 hover:bg-white/80'
+                }`}
               onClick={() => api?.scrollTo(index)}
               aria-label={`Go to image ${index + 1}`}
             />
