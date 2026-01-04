@@ -41,7 +41,7 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
 
   Cookies.set(TOKEN_COOKIE_NAME, result.login.token, {
     expires: TOKEN_EXPIRY_DAYS,
-    secure: true,
+    secure: window.location.protocol === 'https:',
     sameSite: 'strict',
   })
 
@@ -58,7 +58,7 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
 
   Cookies.set(TOKEN_COOKIE_NAME, result.register.token, {
     expires: TOKEN_EXPIRY_DAYS,
-    secure: true,
+    secure: window.location.protocol === 'https:',
     sameSite: 'strict',
   })
 
