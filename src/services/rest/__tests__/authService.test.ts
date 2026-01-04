@@ -53,7 +53,7 @@ describe('authService', () => {
 
       expect(Cookies.set).toHaveBeenCalledWith('token', 'jwt-token-123', {
         expires: 7,
-        secure: true,
+        secure: false,
         sameSite: 'strict',
       })
 
@@ -92,7 +92,7 @@ describe('authService', () => {
 
       expect(Cookies.set).toHaveBeenCalledWith('token', 'jwt-token-456', {
         expires: 7,
-        secure: true,
+        secure: false,
         sameSite: 'strict',
       })
 
