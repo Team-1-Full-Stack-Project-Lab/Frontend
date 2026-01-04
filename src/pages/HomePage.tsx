@@ -1,36 +1,36 @@
+import { useEffect, useState } from 'react'
 import { HeroSearch } from '@/components/HeroSearch'
-import { DestinationCard } from '@/components/DestinationCard'
-import { TrendingUp } from 'lucide-react'
+import { PopularStaysCarousel } from '@/components/PopularDestination/PopularStaysCarousel'
+import { TrendingUp, AlertCircle, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { useServices } from '@/hooks/useServices'
+import type { Stay } from '@/types'
 
 export default function HomePage() {
-  const featuredDeals = [
-    {
-      image: '/tokyo-japan-cherry-blossoms-city-skyline.jpg',
-      title: 'Tokyo Cultural Journey',
-      location: 'Tokyo, Japan',
-      rating: 4.9,
-      reviews: 4102,
-      price: 1199,
-      badge: 'Trending',
-    },
-    {
-      image: '/paris-france-eiffel-tower-romantic-sunset.jpg',
-      title: 'Romantic Paris Experience',
-      location: 'Paris, France',
-      rating: 4.7,
-      reviews: 5234,
-      price: 1099,
-      originalPrice: 1399,
-    },
-    {
-      image: '/iceland-northern-lights-aurora-mountains.jpg',
-      title: 'Iceland Northern Lights',
-      location: 'Reykjavik, Iceland',
-      rating: 4.8,
-      reviews: 2341,
-      price: 1349,
-    },
-  ]
+  const { stayService } = useServices()
+  const [stays, setStays] = useState<Stay[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const fetchPopularStays = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+
+      const data = await stayService.getPopularStays()
+      setStays(data)
+    } catch (err) {
+      console.error('Error fetching popular stays:', err)
+      setError('Failed to load popular stays.   Please try again later.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchPopularStays()
+  }, [])
 
   return (
     <>
@@ -66,11 +66,45 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredDeals.map((deal, index) => (
-            <DestinationCard key={index} {...deal} />
-          ))}
-        </div>
+        {isLoading && (
+          <div className="flex flex-col items-center justify-center py-12 gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <span className="text-muted-foreground">Loading popular stays...</span>
+          </div>
+        )}
+
+        {error && !isLoading && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription className="flex items-center justify-between gap-4">
+              <span>{error}</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={fetchPopularStays}
+                className="shrink-0"
+              >
+                Try Again
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {!isLoading && !error && stays.length === 0 && (
+          <div className="py-12 text-center">
+            <p className="text-lg text-muted-foreground">
+              No popular stays available at the moment.
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Check back soon for exciting destinations!
+            </p>
+          </div>
+        )}
+
+        {!isLoading && !error && stays.length > 0 && (
+          <PopularStaysCarousel stays={stays} />
+        )}
       </section>
     </>
   )

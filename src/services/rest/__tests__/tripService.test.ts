@@ -79,7 +79,7 @@ describe('tripService', () => {
       const result = await getTrips()
 
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        'http://localhost:3000/trips/itineraries',
+        'http://localhost:3000/api/trips/itineraries',
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({
@@ -154,7 +154,7 @@ describe('tripService', () => {
       const result = await createTrip(mockRequest)
 
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        'http://localhost:3000/trips/itineraries',
+        'http://localhost:3000/api/trips/itineraries',
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({
@@ -212,9 +212,13 @@ describe('tripService', () => {
       const result = await updateTrip(tripId, mockRequest)
 
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        `http://localhost:3000/trips/itineraries/${tripId}`,
+        `http://localhost:3000/api/trips/itineraries/${tripId}`,
         expect.objectContaining({
           method: 'PUT',
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer fake-token-12345',
+          }),
           body: JSON.stringify(mockRequest),
           credentials: 'include',
         })
@@ -236,9 +240,13 @@ describe('tripService', () => {
       await deleteTrip(tripId)
 
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        `http://localhost:3000/trips/itineraries/${tripId}`,
+        `http://localhost:3000/api/trips/itineraries/${tripId}`,
         expect.objectContaining({
           method: 'DELETE',
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer fake-token-12345',
+          }),
           credentials: 'include',
         })
       )
