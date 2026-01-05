@@ -35,7 +35,7 @@ export function SettingsSidebar() {
   const location = useLocation()
 
   return (
-    <nav className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
+    <nav className="mb-2 flex flex-col md:flex-row md:flex-wrap lg:flex-col space-y-1 md:space-y-0 md:space-x-2 lg:space-x-0">
       {sidebarNavItems.map(item => (
         <Link
           key={item.href}
