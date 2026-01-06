@@ -29,6 +29,7 @@ export default function StaysPage() {
   const [selectedServiceIds, setSelectedServiceIds] = useState<number[]>([])
   const [minPrice, setMinPrice] = useState(0)
   const [maxPrice, setMaxPrice] = useState(MAX_PRICE)
+  const [cityCoordinates, setCityCoordinates] = useState<{ latitude: number; longitude: number } | null>(null)
 
   const dateRange: DateRange | undefined = useMemo(
     () =>
@@ -91,6 +92,7 @@ export default function StaysPage() {
 
         const city = await cityService.getCityById(parseInt(destination))
         setCityName(`${city.name}, ${city.country?.name || ''}`)
+        setCityCoordinates({ latitude: city.latitude, longitude: city.longitude })
       } catch (error) {
         console.error('Failed to load stays:', error)
       } finally {
@@ -139,6 +141,23 @@ export default function StaysPage() {
               </aside>
             )}
 
+        <div className="flex flex-col lg:flex-row gap-6">
+          {cityName && (
+            <aside className="hidden lg:block w-80 flex-shrink-0">
+              <div className="sticky top-6 space-y-4">
+                <MapCard place={cityName} latitude={cityCoordinates?.latitude} longitude={cityCoordinates?.longitude} />
+                <Card className="p-6">
+                  <ServiceFilters selectedServiceIds={selectedServiceIds} onToggle={handleServiceToggle} />
+                </Card>
+                <Card className="p-6">
+                  <PriceRangeFilter
+                    minPrice={minPrice}
+                    maxPrice={maxPrice}
+                    onPriceChange={handlePriceChange}
+                    defaultMin={0}
+                    defaultMax={MAX_PRICE}
+                  />
+                </Card>
             <div className="flex-1 min-w-0">
               <div className="mb-6">
                 <h1 className="text-3xl font-bold">{cityName ? `Stays in ${cityName}` : 'Search Results'}</h1>
