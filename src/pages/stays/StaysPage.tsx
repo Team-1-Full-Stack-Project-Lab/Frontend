@@ -5,11 +5,14 @@ import MapCard from '@/components/MapCard'
 import ServiceFilters from '@/components/ServiceFilters'
 import PriceRangeFilter from '@/components/PriceRangeFilter'
 import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useServices } from '@/hooks/useServices'
 import type { Stay } from '@/types'
 import type { DateRange } from 'react-day-picker'
 import { useQuery } from '@/hooks/useQuery'
 import { useTripsDrawer } from '@/hooks/useTripsDrawer'
+import { SlidersHorizontal } from 'lucide-react'
 
 export default function StaysPage() {
   const query = useQuery()
@@ -30,14 +33,15 @@ export default function StaysPage() {
   const [minPrice, setMinPrice] = useState(0)
   const [maxPrice, setMaxPrice] = useState(MAX_PRICE)
   const [cityCoordinates, setCityCoordinates] = useState<{ latitude: number; longitude: number } | null>(null)
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false)
 
   const dateRange: DateRange | undefined = useMemo(
     () =>
       from && to
         ? {
-          from: new Date(from),
-          to: new Date(to),
-        }
+            from: new Date(from),
+            to: new Date(to),
+          }
         : undefined,
     [from, to]
   )
@@ -106,9 +110,9 @@ export default function StaysPage() {
   return (
     <>
       <title>Stays</title>
-      <section className="relative flex min-h-[600px] overflow-hidden ">
-        <div className="mx-auto max-w-6xl p-6">
-          <div className="mb-8">
+      <section className="relative flex min-h-[600px] overflow-hidden">
+        <div className="mx-auto w-full max-w-7xl p-4 sm:p-6">
+          <div className="mb-6 sm:mb-8">
             <HeroSearch
               initialDestination={destination || undefined}
               initialFrom={from ?? undefined}
@@ -124,7 +128,11 @@ export default function StaysPage() {
             {cityName && (
               <aside className="hidden lg:block w-80 flex-shrink-0">
                 <div className="sticky top-6 space-y-4">
-                  <MapCard place={cityName} latitude={cityCoordinates?.latitude} longitude={cityCoordinates?.longitude} />
+                  <MapCard
+                    place={cityName}
+                    latitude={cityCoordinates?.latitude}
+                    longitude={cityCoordinates?.longitude}
+                  />
                   <Card className="p-6">
                     <ServiceFilters selectedServiceIds={selectedServiceIds} onToggle={handleServiceToggle} />
                   </Card>
@@ -142,8 +150,47 @@ export default function StaysPage() {
             )}
 
             <div className="flex-1 min-w-0">
-              <div className="mb-6">
-                <h1 className="text-3xl font-bold">{cityName ? `Stays in ${cityName}` : 'Search Results'}</h1>
+              <div className="mb-4 sm:mb-6 flex items-center justify-between gap-4">
+                <h1 className="text-2xl sm:text-3xl font-bold truncate">
+                  {cityName ? `Stays in ${cityName}` : 'Search Results'}
+                </h1>
+
+                {cityName && (
+                  <Sheet open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
+                    <SheetTrigger asChild>
+                      <Button variant="outline" size="sm" className="lg:hidden flex items-center gap-2 shrink-0">
+                        <SlidersHorizontal className="h-4 w-4" />
+                        <span className="hidden sm:inline">Filters</span>
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="w-full sm:w-96 overflow-y-auto">
+                      <SheetHeader>
+                        <SheetTitle>Filters</SheetTitle>
+                      </SheetHeader>
+                      <div className="mx-2 mb-4 space-y-6">
+                        <div>
+                          <MapCard
+                            place={cityName}
+                            latitude={cityCoordinates?.latitude}
+                            longitude={cityCoordinates?.longitude}
+                          />
+                        </div>
+                        <Card className="p-4">
+                          <ServiceFilters selectedServiceIds={selectedServiceIds} onToggle={handleServiceToggle} />
+                        </Card>
+                        <Card className="p-4">
+                          <PriceRangeFilter
+                            minPrice={minPrice}
+                            maxPrice={maxPrice}
+                            onPriceChange={handlePriceChange}
+                            defaultMin={0}
+                            defaultMax={MAX_PRICE}
+                          />
+                        </Card>
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                )}
               </div>
 
               {loading ? (
@@ -170,21 +217,21 @@ export default function StaysPage() {
                   </div>
 
                   {totalPages > 1 && (
-                    <div className="mt-8 flex items-center justify-center gap-4">
+                    <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                       <button
                         onClick={() => setPage(p => Math.max(0, p - 1))}
                         disabled={page === 0}
-                        className="px-4 py-2 rounded-lg border border-border bg-card hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full sm:w-auto px-4 py-2 rounded-lg border border-border bg-card hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         Previous
                       </button>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-sm text-muted-foreground whitespace-nowrap">
                         Page {page + 1} of {totalPages}
                       </span>
                       <button
                         onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
                         disabled={page === totalPages - 1}
-                        className="px-4 py-2 rounded-lg border border-border bg-card hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full sm:w-auto px-4 py-2 rounded-lg border border-border bg-card hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         Next
                       </button>
