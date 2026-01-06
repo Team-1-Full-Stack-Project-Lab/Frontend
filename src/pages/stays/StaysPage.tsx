@@ -124,7 +124,7 @@ export default function StaysPage() {
             {cityName && (
               <aside className="hidden lg:block w-80 flex-shrink-0">
                 <div className="sticky top-6 space-y-4">
-                  <MapCard place={cityName} />
+                  <MapCard place={cityName} latitude={cityCoordinates?.latitude} longitude={cityCoordinates?.longitude} />
                   <Card className="p-6">
                     <ServiceFilters selectedServiceIds={selectedServiceIds} onToggle={handleServiceToggle} />
                   </Card>
@@ -141,23 +141,6 @@ export default function StaysPage() {
               </aside>
             )}
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          {cityName && (
-            <aside className="hidden lg:block w-80 flex-shrink-0">
-              <div className="sticky top-6 space-y-4">
-                <MapCard place={cityName} latitude={cityCoordinates?.latitude} longitude={cityCoordinates?.longitude} />
-                <Card className="p-6">
-                  <ServiceFilters selectedServiceIds={selectedServiceIds} onToggle={handleServiceToggle} />
-                </Card>
-                <Card className="p-6">
-                  <PriceRangeFilter
-                    minPrice={minPrice}
-                    maxPrice={maxPrice}
-                    onPriceChange={handlePriceChange}
-                    defaultMin={0}
-                    defaultMax={MAX_PRICE}
-                  />
-                </Card>
             <div className="flex-1 min-w-0">
               <div className="mb-6">
                 <h1 className="text-3xl font-bold">{cityName ? `Stays in ${cityName}` : 'Search Results'}</h1>
