@@ -43,7 +43,7 @@ export function DestinationCard({ stay }: DestinationCardProps) {
 
   return (
     <>
-      <Card className="overflow-hidden transition-all p-0 hover:shadow-lg">
+      <Card className="h-full overflow-hidden transition-all p-0 hover:shadow-lg">
         <div className="relative h-60 w-full overflow-hidden">
           {stay.images && stay.images.length > 0 ? (
             <ImageCarousel
