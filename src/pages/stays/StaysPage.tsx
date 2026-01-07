@@ -86,7 +86,7 @@ export default function StaysPage() {
         const response = await stayService.getAllStays({
           cityId: parseInt(destination),
           page,
-          size: 20,
+          size: 8,
           serviceIds: selectedServiceIds.length > 0 ? selectedServiceIds : undefined,
           minPrice: minPrice > 0 ? minPrice : undefined,
           maxPrice: maxPrice < MAX_PRICE ? maxPrice : undefined,
